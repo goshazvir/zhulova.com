@@ -1,18 +1,18 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version Change: Initial creation → 1.0.0
-Modified Principles: N/A (initial constitution)
+Version Change: 1.0.0 → 1.1.0
+Modified Principles:
+  - I. Static-First Architecture → Static-First Delivery (enhanced with progressive enhancement and security)
+  - IV. Accessibility-First Design → Accessibility & SEO Baseline (enhanced with metadata requirements)
 Added Sections:
-  - Core Principles (5 principles)
-  - Performance & Quality Gates
-  - Development Workflow
-  - Governance
+  - III. Simplicity Over Tooling (NEW principle)
+  - Core Principles expanded from 5 to 6 principles
 Removed Sections: N/A
 Templates Status:
-  ✅ plan-template.md - Reviewed (Constitution Check section aligns)
-  ✅ spec-template.md - Reviewed (Requirements section aligns with principles)
-  ✅ tasks-template.md - Reviewed (Task organization supports all principles)
+  ✅ plan-template.md - Updated (Constitution Check now includes 6 principles)
+  ✅ spec-template.md - Compatible (Requirements align with new principles)
+  ✅ tasks-template.md - Compatible (Task organization supports all principles)
 Follow-up TODOs: None
 -->
 
@@ -20,9 +20,11 @@ Follow-up TODOs: None
 
 ## Core Principles
 
-### I. Static-First Architecture (NON-NEGOTIABLE)
+### I. Static-First Delivery (NON-NEGOTIABLE)
 
-Every page MUST be pre-rendered at build time as static HTML/CSS/JS. The build strategy is:
+The site ships as HTML, CSS, JS, and static assets via a CDN. No server-side execution.
+
+**Build Strategy:**
 ```
 User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interactive
 ```
@@ -32,13 +34,16 @@ User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interacti
 - No runtime database queries or API calls for SEO-critical content
 - All content rendered at build time via Astro's static site generation
 - React hydration only for interactive islands (forms, modals, UI state)
+- **Progressive Enhancement:** Core content MUST be usable without JavaScript where feasible; degrade gracefully
+- **Security:** Dynamic content, if any, is fetched client-side from public endpoints only. NEVER embed secrets in client code
 
 **Prohibited:**
 - `output: 'server'` or `output: 'hybrid'` in `astro.config.mjs`
 - Server routes, runtime data fetching for critical content
 - Database integrations, backend logic, Node.js server requirements
+- Embedding API keys, credentials, or secrets in client-side code
 
-**Rationale:** Ensures maximum performance, optimal SEO, zero server costs, and simplest deployment model (CDN-only). Static-first architecture is the foundation enabling all performance targets.
+**Rationale:** Ensures maximum performance, optimal SEO, zero server costs, simplest deployment model (CDN-only), and enhanced security. Static-first architecture is the foundation enabling all performance targets.
 
 ### II. Performance-First Development (NON-NEGOTIABLE)
 
@@ -67,7 +72,35 @@ All features MUST meet performance budgets before deployment. Performance is not
 
 **Rationale:** Performance directly impacts user experience, conversion rates, and SEO rankings. These targets ensure fast load times even on 3G connections, supporting the luxury coach brand positioning with a premium user experience.
 
-### III. Accessibility-First Design (WCAG AA Compliance)
+### III. Simplicity Over Tooling (NON-NEGOTIABLE)
+
+Prefer vanilla HTML/CSS/JS. Introduce build tooling only when it clearly reduces size or complexity.
+
+**Mandatory Rules:**
+- **Minimal Dependencies:** Keep dependencies minimal; justify any framework choice with clear benefits
+- **Small Initial JavaScript:** Keep initial JavaScript small (<50KB gzipped); defer or lazy-load non-critical code
+- **Avoid Over-Engineering:** Use the simplest solution that meets requirements
+- **Framework Justification:** Current stack (Astro + React islands + Tailwind + Zustand) is approved for:
+  - **Astro:** Static site generation with optimal DX and performance
+  - **React:** Interactive islands only (forms, modals, state-driven UI)
+  - **Tailwind:** Utility-first CSS with automatic purging
+  - **Zustand:** Lightweight state management (1KB gzipped)
+
+**Before Adding New Dependencies:**
+1. Can vanilla JS/CSS solve this?
+2. Does this reduce bundle size or complexity?
+3. Is there a lighter alternative?
+4. What's the maintenance cost?
+
+**Prohibited:**
+- ❌ Heavy libraries without clear justification (moment.js → use native Date, lodash → use native methods)
+- ❌ CSS-in-JS frameworks (styled-components, emotion)
+- ❌ Unnecessary build complexity
+- ❌ Client-side frameworks for static content
+
+**Rationale:** Simplicity reduces bundle size, improves maintainability, decreases build times, and minimizes technical debt. Every dependency is a liability - choose wisely.
+
+### IV. Accessibility-First Design (WCAG AA Compliance)
 
 All components MUST be accessible to users with disabilities. Accessibility is a requirement, not a feature.
 
@@ -88,7 +121,15 @@ All components MUST be accessible to users with disabilities. Accessibility is a
 
 **Rationale:** Accessibility ensures the site is usable by everyone, expands audience reach, improves SEO, and is legally required in many jurisdictions. WCAG AA compliance is a professional standard for modern web applications.
 
-### IV. TypeScript Strict Mode & Type Safety
+**SEO Metadata Requirements:**
+- **HTML Lang:** Set `lang` attribute on `<html>` tag (e.g., `<html lang="ru">`)
+- **Meta Tags:** Title (50-60 chars), description (150-160 chars), canonical URL
+- **Social Sharing:** Open Graph tags (og:title, og:description, og:image, og:url)
+- **Twitter Cards:** twitter:card, twitter:title, twitter:description, twitter:image
+- **Structured Data:** JSON-LD schema for Person/Organization/Course
+- **Sitemaps:** `robots.txt` in public/, `sitemap.xml` auto-generated
+
+### V. TypeScript Strict Mode & Type Safety
 
 All code MUST use TypeScript in strict mode. No `any` types without explicit justification.
 
@@ -116,7 +157,7 @@ All code MUST use TypeScript in strict mode. No `any` types without explicit jus
 
 **Rationale:** TypeScript strict mode catches errors at compile time, improves maintainability, enables better IDE support, and reduces runtime bugs. Type safety is essential for long-term codebase health.
 
-### V. Design System Consistency
+### VI. Design System Consistency
 
 All UI components MUST use the established design system. No deviations without explicit approval.
 
@@ -294,9 +335,10 @@ npm run preview    # Preview production build
 All feature specifications (`spec.md`), implementation plans (`plan.md`), and task lists (`tasks.md`) MUST verify compliance with this constitution.
 
 **Constitution Check (in plan.md):**
-- Static-First Architecture: Verified ✓
+- Static-First Delivery: Verified ✓
 - Performance Budgets: Validated ✓
-- Accessibility Requirements: Confirmed ✓
+- Simplicity Over Tooling: Confirmed ✓
+- Accessibility & SEO: Verified ✓
 - TypeScript Strict Mode: Enabled ✓
 - Design System: Followed ✓
 
@@ -332,4 +374,4 @@ For day-to-day development guidance, developers should consult:
 
 ---
 
-**Version**: 1.0.0 | **Ratified**: 2025-11-14 | **Last Amended**: 2025-11-14
+**Version**: 1.1.0 | **Ratified**: 2025-11-14 | **Last Amended**: 2025-11-14

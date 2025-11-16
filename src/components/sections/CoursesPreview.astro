@@ -1,0 +1,89 @@
+---
+import { featuredCourse } from '@/data/homePageContent';
+---
+
+<section id="courses" class="py-20 bg-gradient-to-br from-gold-50 to-white" data-animate>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy-900 mb-4">
+        Мої курси
+      </h2>
+      <p class="text-lg text-navy-700 max-w-3xl mx-auto">
+        Практичні інструменти для самостійного розвитку
+      </p>
+    </div>
+
+    {/* Featured Course Card */}
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow">
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+          {/* Left: Course Image/Visual */}
+          <div class="bg-gradient-to-br from-gold-500 to-gold-600 p-12 flex items-center justify-center">
+            <div class="text-center">
+              <div class="inline-flex items-center justify-center w-24 h-24 bg-white/20 rounded-full mb-6">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <h3 class="text-3xl font-serif font-bold text-white mb-2">
+                {featuredCourse.title}
+              </h3>
+              <div class="w-16 h-1 bg-white/30 mx-auto"></div>
+            </div>
+          </div>
+
+          {/* Right: Course Info */}
+          <div class="p-8 lg:p-12 flex flex-col justify-center">
+            <div class="mb-6">
+              <h4 class="text-2xl font-serif font-bold text-navy-900 mb-4">
+                Навчись залучати гроші кожен день
+              </h4>
+              <p class="text-lg text-navy-700 leading-relaxed mb-6">
+                {featuredCourse.description}
+              </p>
+
+              {/* Course Benefits */}
+              <ul class="space-y-3 mb-8">
+                <li class="flex items-start gap-3">
+                  <svg class="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-navy-700">Зміна мислення про гроші</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-navy-700">Практичні вправи для щоденного використання</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg class="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-navy-700">Доступ до спільноти однодумців</span>
+                </li>
+              </ul>
+            </div>
+
+            <a
+              href={featuredCourse.link}
+              class="inline-flex items-center justify-center bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500 shadow-lg hover:shadow-xl"
+            >
+              {featuredCourse.ctaText}
+              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Additional Info */}
+    <div class="text-center mt-12">
+      <p class="text-navy-600">
+        Хочете дізнатися більше про інші мої програми? Зв'яжіться зі мною для індивідуальної консультації.
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,155 @@
+---
+import { personalQuestions, businessQuestions } from '@/data/homePageContent';
+---
+
+<section class="py-20 bg-white" data-animate>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy-900 mb-4">
+        Чи знайомі вам ці питання?
+      </h2>
+      <p class="text-lg text-navy-700 max-w-3xl mx-auto">
+        Якщо хоча б на одне з цих питань ви відповіли "так" — я можу вам допомогти
+      </p>
+    </div>
+
+    {/* Tabs */}
+    <div class="flex justify-center mb-12">
+      <div class="inline-flex rounded-lg border border-navy-200 p-1 bg-navy-50">
+        <button
+          id="personal-tab"
+          type="button"
+          class="px-6 py-3 rounded-md font-medium transition-colors"
+          data-tab="personal"
+          aria-selected="true"
+          role="tab"
+        >
+          Особисті питання
+        </button>
+        <button
+          id="business-tab"
+          type="button"
+          class="px-6 py-3 rounded-md font-medium transition-colors"
+          data-tab="business"
+          aria-selected="false"
+          role="tab"
+        >
+          Бізнес і лідерство
+        </button>
+      </div>
+    </div>
+
+    {/* Tab Panels */}
+    <div class="max-w-5xl mx-auto">
+      {/* Personal Questions Panel */}
+      <div
+        id="personal-panel"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4"
+        role="tabpanel"
+        aria-labelledby="personal-tab"
+      >
+        {personalQuestions.map((question, index) => (
+          <div
+            class="flex items-start gap-3 p-4 rounded-lg bg-sage-50 hover:bg-sage-100 transition-colors"
+            data-animate
+            style={`animation-delay: ${index * 50}ms`}
+          >
+            <svg class="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-navy-700 font-medium">{question}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Business Questions Panel */}
+      <div
+        id="business-panel"
+        class="hidden grid-cols-1 md:grid-cols-2 gap-4"
+        role="tabpanel"
+        aria-labelledby="business-tab"
+      >
+        {businessQuestions.map((question, index) => (
+          <div
+            class="flex items-start gap-3 p-4 rounded-lg bg-sage-50 hover:bg-sage-100 transition-colors"
+            data-animate
+            style={`animation-delay: ${index * 50}ms`}
+          >
+            <svg class="w-6 h-6 text-gold-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-navy-700 font-medium">{question}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* CTA */}
+    <div class="text-center mt-12">
+      <p class="text-lg text-navy-700 mb-6">
+        Давайте знайдемо відповіді разом
+      </p>
+      <button
+        id="questions-cta"
+        type="button"
+        class="bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500 shadow-lg hover:shadow-xl"
+      >
+        Записатись на консультацію
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { useUIStore } from '@/stores/uiStore';
+
+  // Tab switching functionality
+  const personalTab = document.getElementById('personal-tab');
+  const businessTab = document.getElementById('business-tab');
+  const personalPanel = document.getElementById('personal-panel');
+  const businessPanel = document.getElementById('business-panel');
+
+  function switchTab(tab: 'personal' | 'business') {
+    if (tab === 'personal') {
+      personalTab?.classList.add('bg-white', 'text-navy-900', 'shadow-sm');
+      personalTab?.classList.remove('text-navy-600');
+      personalTab?.setAttribute('aria-selected', 'true');
+
+      businessTab?.classList.remove('bg-white', 'text-navy-900', 'shadow-sm');
+      businessTab?.classList.add('text-navy-600');
+      businessTab?.setAttribute('aria-selected', 'false');
+
+      personalPanel?.classList.remove('hidden');
+      personalPanel?.classList.add('grid');
+      businessPanel?.classList.add('hidden');
+      businessPanel?.classList.remove('grid');
+    } else {
+      businessTab?.classList.add('bg-white', 'text-navy-900', 'shadow-sm');
+      businessTab?.classList.remove('text-navy-600');
+      businessTab?.setAttribute('aria-selected', 'true');
+
+      personalTab?.classList.remove('bg-white', 'text-navy-900', 'shadow-sm');
+      personalTab?.classList.add('text-navy-600');
+      personalTab?.setAttribute('aria-selected', 'false');
+
+      businessPanel?.classList.remove('hidden');
+      businessPanel?.classList.add('grid');
+      personalPanel?.classList.add('hidden');
+      personalPanel?.classList.remove('grid');
+    }
+  }
+
+  // Initialize first tab as active
+  switchTab('personal');
+
+  personalTab?.addEventListener('click', () => switchTab('personal'));
+  businessTab?.addEventListener('click', () => switchTab('business'));
+
+  // CTA button
+  const questionsCTA = document.getElementById('questions-cta');
+  if (questionsCTA) {
+    questionsCTA.addEventListener('click', () => {
+      useUIStore.getState().openConsultationModal();
+    });
+  }
+</script>

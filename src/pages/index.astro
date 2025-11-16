@@ -1,213 +1,86 @@
 ---
-import BaseLayout from '@layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import HeroSection from '@/components/sections/HeroSection.astro';
+import StatsSection from '@/components/sections/StatsSection.astro';
+import CaseStudiesSection from '@/components/sections/CaseStudiesSection.astro';
+import QuestionsSection from '@/components/sections/QuestionsSection.astro';
+import MotivationalQuote from '@/components/sections/MotivationalQuote.astro';
+import TestimonialsSection from '@/components/sections/TestimonialsSection.astro';
+import CoursesPreview from '@/components/sections/CoursesPreview.astro';
+import ConsultationModal from '@/components/forms/ConsultationModal';
 
-const title = 'Mindset Coach';
-const description =
-  'Transform your thinking, transform your life. Professional mindset coaching for entrepreneurs and IT professionals.';
+const title = 'Вікторія Жульова - Сертифікований коуч | Коучинг для підприємців та IT-спеціалістів';
+const description = 'Допоможу досягти ваших цілей за допомогою коучингу, медитацій, НЛП та перепрограмування старих патернів. 10+ років досвіду, 200+ успішних клієнтів.';
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="min-h-screen flex flex-col">
-    <!-- Hero Section -->
-    <section
-      class="flex-1 flex items-center justify-center px-6 py-24 md:py-32 lg:py-40"
-    >
-      <div class="max-w-4xl mx-auto text-center">
-        <!-- Hero Content -->
-        <h1
-          class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-navy-900 mb-6 text-balance"
-        >
-          Transform Your <span class="text-gold-500">Mindset</span>,<br />
-          Transform Your Life
-        </h1>
+  <Header />
 
-        <p
-          class="text-lg md:text-xl text-navy-700 mb-8 max-w-2xl mx-auto text-balance"
-        >
-          Professional coaching for entrepreneurs and IT professionals seeking
-          clarity, confidence, and sustainable growth.
-        </p>
+  <main>
+    <!-- Hero Section with CTA -->
+    <HeroSection />
 
-        <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/courses"
-            class="px-8 py-4 bg-navy-900 text-white font-medium rounded-lg hover:bg-navy-800 transition-colors focus:ring-2 focus:ring-gold-500 focus:ring-offset-2"
-          >
-            Explore Courses
-          </a>
-          <a
-            href="/contact"
-            class="px-8 py-4 bg-white text-navy-900 font-medium rounded-lg border-2 border-navy-900 hover:bg-navy-50 transition-colors focus:ring-2 focus:ring-gold-500 focus:ring-offset-2"
-          >
-            Book a Session
-          </a>
-        </div>
+    <!-- Statistics Section -->
+    <StatsSection />
 
-        <!-- Trust Indicators -->
-        <div class="mt-16 pt-8 border-t border-navy-100">
-          <p class="text-sm text-navy-600 mb-4">Trusted by professionals at</p>
-          <div class="flex flex-wrap justify-center gap-8 items-center">
-            <!-- Placeholder for company logos -->
-            <div class="text-navy-400 font-medium">Google</div>
-            <div class="text-navy-400 font-medium">Microsoft</div>
-            <div class="text-navy-400 font-medium">Amazon</div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Case Studies Section -->
+    <CaseStudiesSection />
 
-    <!-- About Preview Section -->
-    <section class="bg-sage-50 px-6 py-24">
-      <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h2 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-6">
-            Hi, I'm Viktoria
-          </h2>
-          <p class="text-lg text-navy-700 mb-4">
-            I help entrepreneurs and IT professionals break through mental
-            barriers, gain clarity, and achieve sustainable success.
-          </p>
-          <p class="text-navy-600 mb-6">
-            With years of experience in mindset coaching and personal
-            development, I've helped hundreds of clients transform their
-            thinking patterns and reach their full potential.
-          </p>
-          <a
-            href="/about"
-            class="inline-flex items-center text-gold-600 font-medium hover:text-gold-700 transition-colors"
-          >
-            Learn more about my approach
-            <svg
-              class="w-5 h-5 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-        <div class="aspect-square bg-navy-100 rounded-lg flex items-center justify-center">
-          <!-- Placeholder for image -->
-          <span class="text-navy-400">Photo placeholder</span>
-        </div>
-      </div>
-    </section>
+    <!-- Questions Section -->
+    <QuestionsSection />
 
-    <!-- Services Preview -->
-    <section class="px-6 py-24">
-      <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-4">
-            How I Can Help You
-          </h2>
-          <p class="text-lg text-navy-600 max-w-2xl mx-auto">
-            Personalized coaching programs designed for your unique goals and
-            challenges.
-          </p>
-        </div>
+    <!-- Motivational Quote Section -->
+    <MotivationalQuote />
 
-        <div class="grid md:grid-cols-3 gap-8">
-          <!-- Service 1 -->
-          <div class="bg-white p-8 rounded-lg border border-navy-100 hover:border-gold-300 transition-colors">
-            <div class="w-12 h-12 bg-gold-100 rounded-lg flex items-center justify-center mb-6">
-              <svg
-                class="w-6 h-6 text-gold-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-serif font-semibold text-navy-900 mb-3">
-              1:1 Coaching
-            </h3>
-            <p class="text-navy-600">
-              Personalized sessions focused on your specific challenges and
-              goals.
-            </p>
-          </div>
+    <!-- Testimonials Section -->
+    <TestimonialsSection />
 
-          <!-- Service 2 -->
-          <div class="bg-white p-8 rounded-lg border border-navy-100 hover:border-gold-300 transition-colors">
-            <div class="w-12 h-12 bg-gold-100 rounded-lg flex items-center justify-center mb-6">
-              <svg
-                class="w-6 h-6 text-gold-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                ></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-serif font-semibold text-navy-900 mb-3">
-              Online Courses
-            </h3>
-            <p class="text-navy-600">
-              Self-paced learning programs to develop key mindset skills.
-            </p>
-          </div>
-
-          <!-- Service 3 -->
-          <div class="bg-white p-8 rounded-lg border border-navy-100 hover:border-gold-300 transition-colors">
-            <div class="w-12 h-12 bg-gold-100 rounded-lg flex items-center justify-center mb-6">
-              <svg
-                class="w-6 h-6 text-gold-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                ></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-serif font-semibold text-navy-900 mb-3">
-              Group Programs
-            </h3>
-            <p class="text-navy-600">
-              Collaborative learning with like-minded professionals.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="bg-navy-900 text-white px-6 py-24">
-      <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">
-          Ready to Start Your Transformation?
-        </h2>
-        <p class="text-lg text-navy-200 mb-8 max-w-2xl mx-auto">
-          Book a free discovery call to discuss your goals and how we can work
-          together.
-        </p>
-        <a
-          href="/contact"
-          class="inline-block px-8 py-4 bg-gold-500 text-navy-900 font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-gold-300 focus:ring-offset-2 focus:ring-offset-navy-900"
-        >
-          Schedule Free Call
-        </a>
-      </div>
-    </section>
+    <!-- Courses Preview Section -->
+    <CoursesPreview />
   </main>
+
+  <Footer />
+
+  <!-- Consultation Modal (React Component) -->
+  <ConsultationModal client:load />
 </BaseLayout>
+
+<script>
+  import { initScrollAnimations } from '@/utils/scrollAnimations';
+
+  // Initialize scroll animations after page load
+  document.addEventListener('DOMContentLoaded', () => {
+    initScrollAnimations();
+  });
+</script>
+
+<style>
+  /* Fade-in-up animation for scroll effects */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

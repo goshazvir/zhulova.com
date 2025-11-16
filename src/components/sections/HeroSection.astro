@@ -1,0 +1,102 @@
+---
+import { heroContent } from '@/data/homePageContent';
+import { Image } from 'astro:assets';
+---
+
+<section id="home" class="relative min-h-screen flex items-center pt-20 bg-gradient-to-br from-white via-sage-50 to-white" data-animate>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Left Column: Text Content -->
+      <div class="space-y-8">
+        <div class="space-y-4">
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-navy-900 leading-tight">
+            {heroContent.title}
+          </h1>
+          <p class="text-xl md:text-2xl text-gold-600 font-medium">
+            {heroContent.subtitle}
+          </p>
+        </div>
+
+        <p class="text-lg md:text-xl text-navy-700 leading-relaxed">
+          {heroContent.description}
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            id="hero-cta-button"
+            type="button"
+            class="bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500 shadow-lg hover:shadow-xl"
+            aria-label="Записатись на безкоштовну консультацію"
+          >
+            {heroContent.ctaText}
+          </button>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="flex flex-wrap gap-8 pt-8 border-t border-navy-200">
+          <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-navy-700 font-medium">Сертифікований коуч</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-navy-700 font-medium">10+ років досвіду</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-navy-700 font-medium">200+ успішних клієнтів</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Image -->
+      <div class="relative">
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+          <Image
+            src={heroContent.imageSrc}
+            alt={heroContent.imageAlt}
+            width={800}
+            height={1000}
+            format="webp"
+            quality={90}
+            loading="eager"
+            fetchpriority="high"
+            class="w-full h-auto object-cover"
+          />
+          <!-- Decorative overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-navy-900/20 to-transparent pointer-events-none"></div>
+        </div>
+
+        <!-- Decorative elements -->
+        <div class="absolute -top-4 -right-4 w-24 h-24 bg-gold-500 rounded-full opacity-20 blur-xl" aria-hidden="true"></div>
+        <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-sage-500 rounded-full opacity-20 blur-xl" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <a href="#about" aria-label="Прокрутити далі" class="text-navy-400 hover:text-gold-500 transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<script>
+  import { useUIStore } from '@/stores/uiStore';
+
+  const heroCTAButton = document.getElementById('hero-cta-button');
+  if (heroCTAButton) {
+    heroCTAButton.addEventListener('click', () => {
+      useUIStore.getState().openConsultationModal();
+    });
+  }
+</script>

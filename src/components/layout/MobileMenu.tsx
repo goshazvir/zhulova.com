@@ -111,7 +111,7 @@ export default function MobileMenu() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://www.youtube.com/@vikazhu"
+                href="https://www.youtube.com/@%D0%9A%D0%BE%D1%83%D1%87%D0%92%D0%B8%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D1%8F"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
@@ -122,7 +122,7 @@ export default function MobileMenu() {
                 </svg>
               </a>
               <a
-                href="https://www.instagram.com/vikazhu"
+                href="https://www.instagram.com/viktoria_revolution/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"

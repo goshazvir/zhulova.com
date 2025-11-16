@@ -31,13 +31,9 @@
 - [x] **Resend email service fully configured**:
   - Account created at resend.com
   - API key generated and added to `.env` and Vercel
-  - **Domain `zhulova.com` verified** (Ireland/eu-west-1 region)
-  - DNS records configured in Vercel:
-    - TXT: `resend._domainkey` (Domain Verification/DKIM) ✅
-    - MX: `send` → `feedback-smtp.eu-west-1.amazonses.com` ✅
-    - TXT: `send` → SPF record ✅
-    - TXT: `_dmarc` → DMARC policy ✅
-  - **Status: Verified** - ready to send emails from `noreply@zhulova.com`
+  - Domain verified (Ireland/eu-west-1 region)
+  - DNS records configured (DKIM, MX, SPF, DMARC)
+  - **Status: Verified** - ready to send emails
 - [x] **Email integration packages installed**:
   - `resend` - Email sending service client
   - `zod` - Runtime validation for API routes
@@ -190,42 +186,14 @@ WHERE tablename = 'leads';
    - Select region: **Ireland (eu-west-1)** (optimal for European audience)
    - Click "Add Domain"
 
-4. **Configure DNS records in Vercel**:
+4. **Configure DNS records**:
    - Go to Vercel Dashboard → Domains → zhulova.com → "View DNS Records & More"
-   - Add the following records:
-
-   **Record 1 - Domain Verification (DKIM)**:
-   ```
-   Type: TXT
-   Name: resend._domainkey
-   Value: p=MIGfMA0GCS... (copy from Resend)
-   TTL: Auto
-   ```
-
-   **Record 2 - MX for sending**:
-   ```
-   Type: MX
-   Name: send
-   Value: feedback-smtp.eu-west-1.amazonses.com
-   Priority: 10
-   TTL: 60
-   ```
-
-   **Record 3 - SPF**:
-   ```
-   Type: TXT
-   Name: send
-   Value: v=spf1 include:amazonses.com ~all
-   TTL: 60
-   ```
-
-   **Record 4 - DMARC (optional but recommended)**:
-   ```
-   Type: TXT
-   Name: _dmarc
-   Value: v=DMARC1; p=none;
-   TTL: Auto
-   ```
+   - Resend will show 4 DNS records to add (copy exact values from Resend Dashboard):
+     - **TXT record** for domain verification (DKIM)
+     - **MX record** for email sending
+     - **TXT record** for SPF
+     - **TXT record** for DMARC (optional but recommended)
+   - Add each record exactly as shown in Resend Dashboard
 
 5. **Wait for verification**:
    - Return to Resend Dashboard
@@ -239,7 +207,7 @@ curl -X POST 'https://api.resend.com/emails' \
   -H 'Authorization: Bearer re_your-api-key-here' \
   -H 'Content-Type: application/json' \
   -d '{
-    "from": "noreply@zhulova.com",
+    "from": "noreply@your-verified-domain.com",
     "to": "your-email@example.com",
     "subject": "Test Email",
     "text": "If you receive this, Resend is configured correctly!"
@@ -247,7 +215,7 @@ curl -X POST 'https://api.resend.com/emails' \
 ```
 
 **Important notes**:
-- Use `noreply@zhulova.com` or `send@zhulova.com` as sender (verified domain)
+- Use sender address from your verified domain
 - Enable Receiving is NOT needed (we only send emails, not receive)
 - Click Tracking and Open Tracking can stay disabled for privacy
 

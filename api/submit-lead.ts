@@ -22,8 +22,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Send email notification via Resend
     const { data, error } = await resend.emails.send({
-      from: 'Website Contact Form <noreply@zhulova.com>',
-      to: 'goshazvir@gmail.com', // Your email to receive notifications
+      from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
+      to: process.env.NOTIFICATION_EMAIL || 'admin@example.com',
       replyTo: validatedData.email,
       subject: `New Contact Form Submission from ${validatedData.name}`,
       html: `

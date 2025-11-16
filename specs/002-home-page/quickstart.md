@@ -3,6 +3,39 @@
 **Feature**: 002-home-page | **Date**: 2025-01-16
 **Prerequisites**: Node.js 18+, Git, Supabase account, Resend account
 
+---
+
+## 🎯 Current Progress
+
+**Last Updated**: 2025-01-16 | **Branch**: 002-home-page | **Commit**: fd73eeb
+
+### ✅ Completed
+
+- [x] Repository cloned and dependencies installed
+- [x] Feature branch `002-home-page` created
+- [x] Supabase account created and project configured
+- [x] Database schema implemented:
+  - `leads` table created with constraints, indexes, RLS policies
+  - Verified all constraints and indexes in Supabase Dashboard
+- [x] Environment variables configured in `.env`
+- [x] Testing infrastructure setup:
+  - Created `.claude/scripts/test-supabase.js` utility script
+  - Added `npm run test:supabase` command
+  - All database tests passing
+- [x] Documentation updated:
+  - Updated `CLAUDE.md` with Utility Scripts section
+  - Configured `.gitignore` for proper `.claude/` tracking
+
+### ⏳ In Progress / Next Steps
+
+- [ ] **Resend Setup**: Create account and configure email service
+- [ ] **Vercel Deployment**: Add environment variables to Vercel Dashboard
+- [ ] **Local Testing**: Test serverless functions with `vercel dev`
+- [ ] **Homepage Implementation**: Build UI components and sections
+- [ ] **Form Integration**: Connect consultation form to backend
+
+---
+
 ## Initial Setup
 
 ### 1. Clone Repository & Switch to Feature Branch
@@ -68,14 +101,40 @@ supabase db push
 ```
 
 **Verify database**:
+
+```bash
+# Option 1: Run automated test script (recommended)
+npm run test:supabase
+
+# This will:
+# - Check environment variables
+# - Test database connection
+# - Insert test record
+# - Read from database
+# - Count records
+# - Delete test record
+# - Verify deletion
+```
+
 ```sql
--- Run in Supabase SQL Editor
+# Option 2: Manual verification in Supabase SQL Editor
 SELECT * FROM leads LIMIT 1;
 -- Should return empty result (no rows yet)
 
 -- Check RLS policies
 SELECT * FROM pg_policies WHERE tablename = 'leads';
 -- Should show 3 policies
+
+-- Check constraints
+SELECT constraint_name, constraint_type
+FROM information_schema.table_constraints
+WHERE table_name = 'leads';
+-- Should show 6 constraints
+
+-- Check indexes
+SELECT indexname FROM pg_indexes
+WHERE tablename = 'leads';
+-- Should show 5 indexes
 ```
 
 ### 4. Resend Email Setup

@@ -13,6 +13,7 @@ High-performance static website for Viktoria Zhulova, a mindset coach. Built wit
 - **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1
 - **Accessibility:** WCAG AA compliance mandatory
 - **Security:** Input validation, environment variables, RLS policies
+- **⚠️ CRITICAL: English only for Git** - ALL git commits, PR titles, PR descriptions, PR comments, and git-related communication MUST be written in English. Never use Ukrainian, Russian, or any other language in git operations.
 
 ## Spec-Driven Development
 
@@ -77,6 +78,13 @@ Project utility scripts are located in `.claude/scripts/`:
   - Validates table structure and RLS policies
   - Performs full CRUD cycle (insert, read, delete)
   - Usage: `npm run test:supabase` or `node .claude/scripts/test-supabase.js`
+
+- **`generate-favicon-from-svg.js`** - Favicon PNG generator from SVG
+  - Generates all PNG favicon formats from favicon.svg
+  - Creates: favicon.ico, apple-touch-icon.png, icon-192.png, icon-512.png, favicon-16.png, favicon-32.png
+  - Uses Sharp for SVG to PNG conversion
+  - Usage: `npm run favicon:update` or `node .claude/scripts/generate-favicon-from-svg.js`
+  - Source: `public/favicon.svg` (square dark badge with white VZ)
 
 **When creating new scripts:**
 - Place all utility scripts in `.claude/scripts/` directory

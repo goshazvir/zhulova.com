@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Square badge with padding - readable at all sizes -->
+  <defs>
+    <style>
+      .square-bg {
+        fill: #1a1a2e;
+      }
+      .vz-gold-white {
+        font-family: Georgia, serif;
+        font-weight: 900;
+        font-size: 56px;
+        fill: #ffffff;
+        letter-spacing: -5px;
+      }
+      .accent-corner {
+        fill: #D4AF37;
+      }
+    </style>
+  </defs>
+
+  <!-- Dark square background with rounded corners -->
+  <rect width="100" height="100" class="square-bg" rx="8"/>
+
+  <!-- Gold accent corner -->
+  <rect width="20" height="20" class="accent-corner"/>
+
+  <!-- White VZ centered -->
+  <text x="50" y="68" class="vz-gold-white" text-anchor="middle">VZ</text>
+</svg>

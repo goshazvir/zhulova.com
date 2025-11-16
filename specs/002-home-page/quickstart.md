@@ -7,7 +7,7 @@
 
 ## 🎯 Current Progress
 
-**Last Updated**: 2025-01-16 | **Branch**: 002-home-page | **Commit**: 00abac5
+**Last Updated**: 2025-11-16 | **Branch**: 002-home-page | **Commit**: 00abac5
 
 ### ✅ Completed - Infrastructure Setup
 
@@ -28,14 +28,30 @@
 - [x] Documentation updated:
   - Updated `CLAUDE.md` with Utility Scripts section
   - Configured `.gitignore` for proper `.claude/` tracking
-- [x] Resend email service configured:
-  - Account created
-  - API key generated and added to `.env`
+- [x] **Resend email service fully configured**:
+  - Account created at resend.com
+  - API key generated and added to `.env` and Vercel
+  - **Domain `zhulova.com` verified** (Ireland/eu-west-1 region)
+  - DNS records configured in Vercel:
+    - TXT: `resend._domainkey` (Domain Verification/DKIM) ✅
+    - MX: `send` → `feedback-smtp.eu-west-1.amazonses.com` ✅
+    - TXT: `send` → SPF record ✅
+    - TXT: `_dmarc` → DMARC policy ✅
+  - **Status: Verified** - ready to send emails from `noreply@zhulova.com`
+- [x] **Email integration packages installed**:
+  - `resend` - Email sending service client
+  - `zod` - Runtime validation for API routes
+  - `react-hook-form` - Form state management (ready for future use)
+- [x] **API route created**: `/api/submit-lead.ts`
+  - Email notification via Resend
+  - Zod validation for input data
+  - Error handling and logging
+  - Ready for testing
 - [x] Vercel deployment configuration:
   - GitHub repository connected to Vercel
   - All environment variables added to Vercel Dashboard:
     - SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY
-    - RESEND_API_KEY
+    - RESEND_API_KEY ✅
     - PUBLIC_SITE_URL
   - Fixed vercel.json configuration (removed invalid runtime)
   - Deployment passing successfully
@@ -156,24 +172,84 @@ WHERE tablename = 'leads';
 
 ### 4. Resend Email Setup
 
-1. **Add sender domain**:
-   - Go to Resend Dashboard → Domains
-   - Add domain `zhulova.com`
-   - Add DNS records (TXT, CNAME) to domain provider
-   - Wait for verification (~5 minutes)
+1. **Create Resend account**:
+   - Go to https://resend.com and sign up
+   - Verify email address
 
-2. **Test email sending** (optional):
+2. **Create API key**:
+   - Go to Resend Dashboard → API Keys
+   - Click "Create API Key"
+   - Copy the key (starts with `re_...`)
+   - Add to `.env`: `RESEND_API_KEY=re_your-api-key-here`
+   - Add to Vercel: Settings → Environment Variables → Add
+
+3. **Add and verify sender domain**:
+   - Go to Resend Dashboard → Domains
+   - Click "Add Domain"
+   - Enter `zhulova.com`
+   - Select region: **Ireland (eu-west-1)** (optimal for European audience)
+   - Click "Add Domain"
+
+4. **Configure DNS records in Vercel**:
+   - Go to Vercel Dashboard → Domains → zhulova.com → "View DNS Records & More"
+   - Add the following records:
+
+   **Record 1 - Domain Verification (DKIM)**:
+   ```
+   Type: TXT
+   Name: resend._domainkey
+   Value: p=MIGfMA0GCS... (copy from Resend)
+   TTL: Auto
+   ```
+
+   **Record 2 - MX for sending**:
+   ```
+   Type: MX
+   Name: send
+   Value: feedback-smtp.eu-west-1.amazonses.com
+   Priority: 10
+   TTL: 60
+   ```
+
+   **Record 3 - SPF**:
+   ```
+   Type: TXT
+   Name: send
+   Value: v=spf1 include:amazonses.com ~all
+   TTL: 60
+   ```
+
+   **Record 4 - DMARC (optional but recommended)**:
+   ```
+   Type: TXT
+   Name: _dmarc
+   Value: v=DMARC1; p=none;
+   TTL: Auto
+   ```
+
+5. **Wait for verification**:
+   - Return to Resend Dashboard
+   - Click "I've added the records"
+   - Wait 5-15 minutes for DNS propagation
+   - Status will change from "Pending" to "Verified"
+
+6. **Test email sending** (after verification):
 ```bash
 curl -X POST 'https://api.resend.com/emails' \
   -H 'Authorization: Bearer re_your-api-key-here' \
   -H 'Content-Type: application/json' \
   -d '{
-    "from": "website@zhulova.com",
+    "from": "noreply@zhulova.com",
     "to": "your-email@example.com",
     "subject": "Test Email",
     "text": "If you receive this, Resend is configured correctly!"
   }'
 ```
+
+**Important notes**:
+- Use `noreply@zhulova.com` or `send@zhulova.com` as sender (verified domain)
+- Enable Receiving is NOT needed (we only send emails, not receive)
+- Click Tracking and Open Tracking can stay disabled for privacy
 
 ---
 

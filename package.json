@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "test:supabase": "node .claude/scripts/test-supabase.js",
-    "favicon:update": "node .claude/scripts/generate-favicon-from-svg.js"
+    "favicon:update": "node .claude/scripts/generate-favicon-from-svg.js",
+    "og:update": "node .claude/scripts/generate-og-image.js"
   },
   "dependencies": {
     "@astrojs/react": "^3.6.2",

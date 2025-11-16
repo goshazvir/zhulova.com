@@ -25,12 +25,16 @@
 - [x] Documentation updated:
   - Updated `CLAUDE.md` with Utility Scripts section
   - Configured `.gitignore` for proper `.claude/` tracking
+- [x] Vercel configuration (partial):
+  - GitHub repository connected to Vercel
+  - Supabase environment variables added (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY)
 
 ### ⏳ In Progress / Next Steps
 
-- [ ] **Resend Setup**: Create account and configure email service
-- [ ] **Vercel Deployment**: Add environment variables to Vercel Dashboard
-- [ ] **Local Testing**: Test serverless functions with `vercel dev`
+- [ ] **Resend Setup**: Create account and get API key
+- [ ] **Vercel Configuration**: Add RESEND_API_KEY and PUBLIC_SITE_URL to environment variables
+- [ ] **Local Testing**: Test serverless functions with `npm run dev:vercel`
+- [ ] **Production Deployment**: Push to main branch for automatic deployment
 - [ ] **Homepage Implementation**: Build UI components and sections
 - [ ] **Form Integration**: Connect consultation form to backend
 

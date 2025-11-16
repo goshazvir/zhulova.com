@@ -8,6 +8,7 @@
 ._*
 .Spotlight-V100
 .Trashes
+.env
 
 # Windows
 Thumbs.db
@@ -98,3 +99,4 @@ temp/
 .fuse_hidden*
 .directory
 .Trash-*
+.vercel

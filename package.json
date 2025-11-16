@@ -11,7 +11,8 @@
     "astro": "astro",
     "test:supabase": "node .claude/scripts/test-supabase.js",
     "favicon:update": "node .claude/scripts/generate-favicon-from-svg.js",
-    "og:update": "node .claude/scripts/generate-og-image.js"
+    "og:update": "node .claude/scripts/generate-og-image.js",
+    "hero:update": "node .claude/scripts/generate-hero-image.js"
   },
   "dependencies": {
     "@astrojs/react": "^3.6.2",

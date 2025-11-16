@@ -8,7 +8,7 @@ export const heroContent = {
   subtitle: "сертифікований коуч",
   description: "Я допоможу тобі досягнути своїх цілей за допомогою коучингу, медитацій, НЛП та перепрограмування старих патернів.",
   ctaText: "Записатись на розбір",
-  imageSrc: "/images/hero-viktoria.webp",
+  imageSrc: "/images/hero-viktoria-luxury.webp",
   imageAlt: "Вікторія Жульова - професійний коуч",
 } as const;
 

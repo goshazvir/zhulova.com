@@ -14,6 +14,7 @@ High-performance static website for Viktoria Zhulova, a mindset coach. Built wit
 - **Accessibility:** WCAG AA compliance mandatory
 - **Security:** Input validation, environment variables, RLS policies
 - **⚠️ CRITICAL: English only for Git** - ALL git commits, PR titles, PR descriptions, PR comments, and git-related communication MUST be written in English. Never use Ukrainian, Russian, or any other language in git operations.
+- **⚠️ CRITICAL: Never push without approval** - NEVER execute `git push` without explicit user approval. Always wait for the user to explicitly say "push", "deploy", or give clear permission before pushing to any remote repository.
 
 ## Spec-Driven Development
 

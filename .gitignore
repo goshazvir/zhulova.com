@@ -1,5 +1,7 @@
 # Spec-kit agent credentials and private data
-.claude/
+.claude/settings.local.json
+.claude/.agent-*
+.claude/.scratch/
 
 # macOS
 .DS_Store

@@ -39,6 +39,8 @@ This project uses **[Spec-Kit](https://github.com/github/spec-kit)** for structu
 **Spec-Kit files:**
 - `.specify/` - Spec-Kit templates and memory
 - `.claude/commands/speckit.*.md` - Slash command definitions
+- `.claude/docs/` - Project documentation (technical-spec.md, about.md)
+- `.claude/scripts/` - Utility scripts for testing and maintenance
 
 ## Project Documentation
 
@@ -65,6 +67,23 @@ All project documentation is centralized in `.claude/docs/`:
 1. Consult `technical-spec.md` for technical constraints
 2. Reference `about.md` for business requirements and design direction
 3. Both documents are authoritative - follow them strictly
+
+## Utility Scripts
+
+Project utility scripts are located in `.claude/scripts/`:
+
+- **`test-supabase.js`** - Supabase connection test script
+  - Tests database connection and credentials
+  - Validates table structure and RLS policies
+  - Performs full CRUD cycle (insert, read, delete)
+  - Usage: `npm run test:supabase` or `node .claude/scripts/test-supabase.js`
+
+**When creating new scripts:**
+- Place all utility scripts in `.claude/scripts/` directory
+- Use descriptive names (e.g., `test-<feature>.js`, `migrate-<task>.js`)
+- Add shebang `#!/usr/bin/env node` for Node.js scripts
+- Document script purpose and usage in header comments
+- Use English for all comments and console output
 
 ## Development Commands
 

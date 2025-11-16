@@ -1,5 +1,7 @@
 # Spec-kit agent credentials and private data
-.claude/
+.claude/settings.local.json
+.claude/.agent-*
+.claude/.scratch/
 
 # macOS
 .DS_Store
@@ -8,6 +10,7 @@
 ._*
 .Spotlight-V100
 .Trashes
+.env
 
 # Windows
 Thumbs.db
@@ -98,3 +101,4 @@ temp/
 .fuse_hidden*
 .directory
 .Trash-*
+.vercel

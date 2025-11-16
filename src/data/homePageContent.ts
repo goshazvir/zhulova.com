@@ -153,6 +153,7 @@ export const featuredCourse = {
 export const socialLinks = {
   youtube: "https://www.youtube.com/@%D0%9A%D0%BE%D1%83%D1%87%D0%92%D0%B8%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D1%8F",
   instagram: "https://www.instagram.com/viktoria_revolution/",
+  telegram: "https://t.me/viktoria_revolution",
   facebook: "https://www.facebook.com/profile.php?id=61572253897749",
   tiktok: "https://www.tiktok.com/@viktoria_coach2",
 } as const;

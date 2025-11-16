@@ -78,6 +78,13 @@ Project utility scripts are located in `.claude/scripts/`:
   - Performs full CRUD cycle (insert, read, delete)
   - Usage: `npm run test:supabase` or `node .claude/scripts/test-supabase.js`
 
+- **`generate-favicon.js`** - Favicon generator script
+  - Generates all required favicon formats from source image
+  - Creates: favicon.ico, apple-touch-icon.png, icon-192.png, icon-512.png
+  - Uses Sharp for image processing
+  - Usage: `npm run generate:favicon` or `node .claude/scripts/generate-favicon.js`
+  - Source image: `public/vz-logo-source.png`
+
 **When creating new scripts:**
 - Place all utility scripts in `.claude/scripts/` directory
 - Use descriptive names (e.g., `test-<feature>.js`, `migrate-<task>.js`)

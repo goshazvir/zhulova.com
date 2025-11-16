@@ -13,6 +13,7 @@ High-performance static website for Viktoria Zhulova, a mindset coach. Built wit
 - **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1
 - **Accessibility:** WCAG AA compliance mandatory
 - **Security:** Input validation, environment variables, RLS policies
+- **⚠️ CRITICAL: English only for Git** - ALL git commits, PR titles, PR descriptions, PR comments, and git-related communication MUST be written in English. Never use Ukrainian, Russian, or any other language in git operations.
 
 ## Spec-Driven Development
 

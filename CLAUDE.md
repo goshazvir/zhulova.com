@@ -6,12 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 High-performance static website for Viktoria Zhulova, a mindset coach. Built with Astro's Islands Architecture for optimal performance and SEO.
 
-**Tech Stack:** Astro v4 + React v18 + TypeScript v5 (strict) + Tailwind CSS v3 + Zustand v4
+**Tech Stack:** Astro v4 + React v18 + TypeScript v5 (strict) + Tailwind CSS v3 + Zustand v4 + Supabase + Resend
 
 **Critical Constraints:**
-- **Static-first only** - No SSR, no runtime API calls for critical content
+- **Hybrid static-first** - Static pages + Serverless functions for forms
 - **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1
 - **Accessibility:** WCAG AA compliance mandatory
+- **Security:** Input validation, environment variables, RLS policies
 
 ## Spec-Driven Development
 
@@ -38,6 +39,8 @@ This project uses **[Spec-Kit](https://github.com/github/spec-kit)** for structu
 **Spec-Kit files:**
 - `.specify/` - Spec-Kit templates and memory
 - `.claude/commands/speckit.*.md` - Slash command definitions
+- `.claude/docs/` - Project documentation (technical-spec.md, about.md)
+- `.claude/scripts/` - Utility scripts for testing and maintenance
 
 ## Project Documentation
 
@@ -65,31 +68,65 @@ All project documentation is centralized in `.claude/docs/`:
 2. Reference `about.md` for business requirements and design direction
 3. Both documents are authoritative - follow them strictly
 
+## Utility Scripts
+
+Project utility scripts are located in `.claude/scripts/`:
+
+- **`test-supabase.js`** - Supabase connection test script
+  - Tests database connection and credentials
+  - Validates table structure and RLS policies
+  - Performs full CRUD cycle (insert, read, delete)
+  - Usage: `npm run test:supabase` or `node .claude/scripts/test-supabase.js`
+
+**When creating new scripts:**
+- Place all utility scripts in `.claude/scripts/` directory
+- Use descriptive names (e.g., `test-<feature>.js`, `migrate-<task>.js`)
+- Add shebang `#!/usr/bin/env node` for Node.js scripts
+- Document script purpose and usage in header comments
+- Use English for all comments and console output
+
 ## Development Commands
 
 ```bash
-npm run dev        # Dev server at localhost:4321
-npm run build      # Type-check + build to dist/
-npm run preview    # Preview production build
-npm run astro      # Astro CLI access
+npm run dev          # Astro dev server at localhost:4321 (static pages only)
+npm run dev:vercel   # Vercel dev server at localhost:3000 (with serverless functions)
+npm run build        # Type-check + build to dist/
+npm run preview      # Preview production build
+npm run astro        # Astro CLI access
 ```
+
+**Which command to use:**
+- **`npm run dev`** - Fast development, use for UI/styling work (NO serverless functions)
+- **`npm run dev:vercel`** - Full environment, use when testing forms/API routes (WITH serverless functions)
 
 **Build process:** `astro check` (TypeScript validation) runs before every build. Build fails on type errors.
 
 ## Architecture
 
-### Static-First Philosophy
+### Hybrid Static-First Philosophy
 
-Every page is pre-rendered at build time. The build strategy is:
+Every **page** is pre-rendered at build time. Serverless functions handle non-SEO operations:
+
 ```
 User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interactive
+                                      ↓
+                     Form Submit → Serverless Function → Supabase/Resend
 ```
 
+**Static Layer (pages):**
+- All pages pre-rendered at build time
+- No SSR (`output: 'static'` in astro.config.mjs)
+- Content from Astro Content Collections
+
+**Dynamic Layer (serverless functions):**
+- Form submissions → `/api/submit-lead`
+- Email notifications → Resend
+- Database writes → Supabase PostgreSQL
+
 **Never add:**
-- Server-side routes (`output: 'server'` or `output: 'hybrid'`)
-- Runtime database queries
+- Server-side routes for page rendering (`output: 'server'` or `output: 'hybrid'`)
+- Database queries for page content (use Content Collections)
 - Client-side data fetching for SEO-critical content
-- Any feature requiring a Node.js server
 
 ### Islands Architecture
 
@@ -206,6 +243,29 @@ import heroImage from '../assets/hero.jpg';
 - Zustand for state management (1KB gzipped)
 
 **Console logs removed in production** (terser config in `astro.config.mjs`).
+
+### Performance Monitoring
+
+**Real User Monitoring (RUM) enabled via Vercel:**
+
+```astro
+// src/layouts/BaseLayout.astro
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+
+<Analytics client:load />        <!-- User behavior tracking -->
+<SpeedInsights client:load />    <!-- Core Web Vitals monitoring -->
+```
+
+**What is tracked automatically:**
+- Page views, unique visitors, top pages
+- Core Web Vitals: LCP, FID, CLS, FCP, TTFB, INP
+- Performance by region, device, browser
+- Bundle impact: ~3KB total (gzipped)
+
+**Access data:**
+- Vercel Dashboard → zhulova-com → Analytics
+- Vercel Dashboard → zhulova-com → Speed Insights
 
 ## Component Patterns
 
@@ -359,17 +419,58 @@ Every page must use `BaseLayout.astro` and provide:
 
 Custom spacing scale: `spacing-{18, 88, 112, 128}` for large layouts.
 
+## Environment Variables
+
+**Required variables:**
+
+```bash
+# Supabase Configuration
+SUPABASE_URL=https://project.supabase.co
+SUPABASE_ANON_KEY=eyJ...         # Public key (safe for client)
+SUPABASE_SERVICE_KEY=eyJ...      # Secret key (server only, NEVER expose)
+
+# Resend Configuration
+RESEND_API_KEY=re_...            # Secret key (server only)
+
+# Site Configuration
+PUBLIC_SITE_URL=https://zhulova.com
+```
+
+**Setup:**
+1. Copy `.env.example` to `.env`
+2. Fill in actual values
+3. Add same variables to Vercel Dashboard (Settings → Environment Variables)
+4. Download from Vercel: `vercel env pull .env`
+
+**Security rules:**
+- ✅ `PUBLIC_*` variables → exposed to client-side
+- ❌ Non-public variables → serverless functions only
+- ❌ Never commit `.env` to Git (already in `.gitignore`)
+
 ## Deployment
 
-**Build output:** Static files in `dist/`
+**Platform:** Vercel (primary)
 
-**Deployment platforms:**
-- Vercel (recommended)
-- Netlify
-- Cloudflare Pages
+**Build output:**
+- Static files in `dist/`
+- Serverless functions in `api/`
+
+**Setup:**
+1. Connect GitHub repository to Vercel
+2. Add environment variables in Vercel Dashboard
+3. Auto-deploy on push to main branch
+
+**Configuration:**
+- `vercel.json` - Vercel configuration (already configured)
+- `.vercel/` - Local Vercel settings (in .gitignore)
 
 **Build command:** `npm run build`
 **Output directory:** `dist`
+**Serverless functions:** `api/**/*.ts`
+
+**Alternative platforms:**
+- Netlify (with Netlify Functions)
+- Cloudflare Pages (with Workers)
 
 ## Common Patterns
 
@@ -395,17 +496,54 @@ Custom spacing scale: `spacing-{18, 88, 112, 128}` for large layouts.
 3. Use Zustand's `create` with typed state
 4. Import and use selectively in React components
 
+### Adding a Serverless Function
+
+1. Create file in `api/function-name.ts`
+2. Import `APIRoute` from Astro
+3. Define Zod validation schema
+4. Export `POST` (or `GET`) handler
+5. Validate inputs with Zod
+6. Interact with Supabase/Resend using server-only env vars
+7. Return JSON response
+8. Test locally with `npm run dev:vercel`
+
+**Example structure:**
+```typescript
+// api/submit-lead.ts
+import type { APIRoute } from 'astro';
+import { z } from 'zod';
+
+const schema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+
+export const POST: APIRoute = async ({ request }) => {
+  const body = await request.json();
+  const data = schema.parse(body);
+
+  // Save to Supabase, send email, etc.
+
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+};
+```
+
 ## What NOT to Do
 
-- ❌ Add `output: 'server'` or `output: 'hybrid'` to `astro.config.mjs`
+- ❌ Add `output: 'server'` or `output: 'hybrid'` to `astro.config.mjs` (keep `output: 'static'`)
 - ❌ Use CSS-in-JS libraries (styled-components, emotion)
 - ❌ Add heavy npm packages without justification
 - ❌ Skip TypeScript types or use `any`
 - ❌ Ignore accessibility attributes
 - ❌ Use inline styles instead of Tailwind
-- ❌ Add database integrations
+- ❌ Database queries in Astro components (only in serverless functions)
 - ❌ Implement complex payment logic (use external checkout URLs)
 - ❌ Client-side fetch for SEO content
+- ❌ Expose secret environment variables to client (no `PUBLIC_` prefix for secrets)
+- ❌ Skip input validation in API routes
 - ❌ Modify or delete `.specify/` or `.claude/commands/` directories (Spec-Kit system files)
 
 ## Project-Specific Context
@@ -428,8 +566,38 @@ For detailed technical specifications, see:
 For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 
 ## Active Technologies
-- TypeScript 5.x (strict mode) + Astro 4.x (SSG framework), React 18.x (interactive islands), Tailwind CSS 3.x (styling), Zustand 4.x (state management) (001-base-infrastructure)
-- N/A (static site, no database) (001-base-infrastructure)
+
+**Frontend (Static):**
+- TypeScript 5.x (strict mode) - Type safety
+- Astro 4.x - SSG framework with Islands Architecture
+- React 18.x - Interactive islands only
+- Tailwind CSS 3.x - Utility-first styling
+- Zustand 4.x - Lightweight state management (1KB)
+
+**Backend (Serverless):**
+- Vercel Functions - Serverless API routes
+- Supabase PostgreSQL - Serverless database with RLS
+- Resend - Email service
+
+**Validation & Forms:**
+- Zod 3.x - Runtime schema validation with TypeScript inference
+- React Hook Form 7.x - Performant form state management
+
+**Analytics & Monitoring:**
+- @vercel/analytics - Privacy-friendly user behavior tracking (~2.5KB)
+- @vercel/speed-insights - Real User Monitoring for Core Web Vitals (~0.7KB)
+
+**Deployment:**
+- Vercel - Hosting + Serverless Functions + Edge Network + Analytics
 
 ## Recent Changes
-- 001-base-infrastructure: Added TypeScript 5.x (strict mode) + Astro 4.x (SSG framework), React 18.x (interactive islands), Tailwind CSS 3.x (styling), Zustand 4.x (state management)
+
+- **002-home-page** (2025-01-16):
+  - Added hybrid architecture with serverless functions
+  - Supabase PostgreSQL integration for lead storage
+  - Resend email service for notifications
+  - Zod validation + React Hook Form
+  - Environment variables setup
+  - Vercel integration with Analytics and Speed Insights
+  - Real User Monitoring (RUM) for performance tracking
+- **001-base-infrastructure** (2025-01-14): Initial project setup with TypeScript 5.x (strict mode) + Astro 4.x (SSG framework), React 18.x (interactive islands), Tailwind CSS 3.x (styling), Zustand 4.x (state management)

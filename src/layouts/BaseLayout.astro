@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 interface Props {
   title: string;
@@ -60,5 +62,11 @@ const ogImage = new URL(image, Astro.site);
   </head>
   <body>
     <slot />
+
+    <!-- Vercel Analytics - tracks page views and user behavior -->
+    <Analytics client:load />
+
+    <!-- Vercel Speed Insights - monitors Core Web Vitals performance -->
+    <SpeedInsights client:load />
   </body>
 </html>

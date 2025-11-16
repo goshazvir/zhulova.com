@@ -1,0 +1,242 @@
+openapi: 3.0.3
+info:
+  title: Zhulova Homepage - Lead Submission API
+  description: API contract for submitting consultation requests from homepage form
+  version: 1.0.0
+  contact:
+    name: Zhulova Development Team
+    url: https://zhulova.com
+
+servers:
+  - url: https://zhulova.com/api
+    description: Production server
+  - url: https://staging.zhulova.com/api
+    description: Staging server
+  - url: http://localhost:4321/api
+    description: Local development server
+
+paths:
+  /submit-lead:
+    post:
+      summary: Submit consultation request
+      description: |
+        Accepts a consultation request from a potential client via the homepage form.
+        Validates input data, stores in database, and sends email notification to coach.
+      operationId: submitLead
+      tags:
+        - Leads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadSubmissionRequest'
+            examples:
+              complete:
+                summary: Complete form submission
+                value:
+                  name: "Олена Коваленко"
+                  phone: "+380501234567"
+                  telegram: "@olena_coach"
+                  email: "olena@example.com"
+              minimal:
+                summary: Minimal required fields
+                value:
+                  name: "Іван Петренко"
+                  phone: "+380671234567"
+              no_telegram:
+                summary: Without Telegram
+                value:
+                  name: "Марія Шевченко"
+                  phone: "+380631234567"
+                  email: "maria@example.com"
+      responses:
+        '200':
+          description: Lead submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadSubmissionSuccess'
+              examples:
+                success:
+                  summary: Successful submission
+                  value:
+                    success: true
+                    leadId: "550e8400-e29b-41d4-a716-446655440000"
+                    message: "Дякуємо! Ваша заявка успішно надіслана. Ми зв'яжемося з вами найближчим часом."
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation_error:
+                  summary: Validation error
+                  value:
+                    success: false
+                    error:
+                      code: "VALIDATION_ERROR"
+                      message: "Некоректні дані форми"
+                      details:
+                        name:
+                          _errors: ["Ім'я має містити мінімум 2 символи"]
+                        phone:
+                          _errors: ["Введіть номер у форматі +380XXXXXXXXX"]
+                invalid_phone:
+                  summary: Invalid phone format
+                  value:
+                    success: false
+                    error:
+                      code: "VALIDATION_ERROR"
+                      message: "Некоректні дані форми"
+                      details:
+                        phone:
+                          _errors: ["Введіть номер у форматі +380XXXXXXXXX"]
+                invalid_telegram:
+                  summary: Invalid Telegram format
+                  value:
+                    success: false
+                    error:
+                      code: "VALIDATION_ERROR"
+                      message: "Некоректні дані форми"
+                      details:
+                        telegram:
+                          _errors: ["Telegram має формат @username"]
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                rate_limit:
+                  summary: Too many requests
+                  value:
+                    success: false
+                    error:
+                      code: "RATE_LIMIT_EXCEEDED"
+                      message: "Забагато запитів. Спробуйте пізніше."
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                database_error:
+                  summary: Database error
+                  value:
+                    success: false
+                    error:
+                      code: "DATABASE_ERROR"
+                      message: "Помилка сервера. Спробуйте пізніше."
+                email_error:
+                  summary: Email sending failed
+                  value:
+                    success: false
+                    error:
+                      code: "EMAIL_ERROR"
+                      message: "Заявку збережено, але не вдалося надіслати повідомлення. Ми зв'яжемося з вами найближчим часом."
+
+components:
+  schemas:
+    LeadSubmissionRequest:
+      type: object
+      required:
+        - name
+        - phone
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          description: Client's full name
+          example: "Олена Коваленко"
+        phone:
+          type: string
+          pattern: '^\+380\d{9}$'
+          description: Ukrainian phone number in format +380XXXXXXXXX
+          example: "+380501234567"
+        telegram:
+          type: string
+          pattern: '^@[a-zA-Z0-9_]{5,32}$'
+          nullable: true
+          description: Telegram handle starting with @
+          example: "@olena_coach"
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          nullable: true
+          description: Email address
+          example: "olena@example.com"
+      additionalProperties: false
+
+    LeadSubmissionSuccess:
+      type: object
+      required:
+        - success
+        - leadId
+        - message
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+          description: Indicates successful submission
+          example: true
+        leadId:
+          type: string
+          format: uuid
+          description: Unique identifier of the created lead record
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        message:
+          type: string
+          description: Success message in Ukrainian
+          example: "Дякуємо! Ваша заявка успішно надіслана. Ми зв'яжемося з вами найближчим часом."
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+          description: Indicates failed submission
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              enum:
+                - VALIDATION_ERROR
+                - RATE_LIMIT_EXCEEDED
+                - DATABASE_ERROR
+                - EMAIL_ERROR
+                - INTERNAL_ERROR
+              description: Machine-readable error code
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              description: Human-readable error message in Ukrainian
+              example: "Некоректні дані форми"
+            details:
+              type: object
+              description: Additional error details (e.g., validation errors per field)
+              example:
+                name:
+                  _errors: ["Ім'я має містити мінімум 2 символи"]
+                phone:
+                  _errors: ["Введіть номер у форматі +380XXXXXXXXX"]
+
+  securitySchemes: {}
+
+tags:
+  - name: Leads
+    description: Lead submission and management endpoints

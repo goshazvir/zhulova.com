@@ -45,9 +45,9 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       />
 
       {/* Modal Container */}
-      <div className="flex min-h-full items-center justify-center p-3 sm:p-4">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4 py-8 sm:py-12">
         {/* Modal Panel - Soft Luxury Glass */}
-        <div className="relative bg-gradient-to-br from-white to-sage-50 border border-gold-200 shadow-2xl shadow-gold-500/15 rounded-xl sm:rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+        <div className="relative bg-gradient-to-br from-white to-sage-50 border border-gold-200 shadow-2xl shadow-gold-500/15 rounded-xl sm:rounded-2xl max-w-lg w-full transform transition-all duration-300">
           {/* Header - Gold Top Line + Gradient */}
           <div className="relative flex items-center justify-between gap-3 p-4 sm:p-6 border-b border-gold-200/30 border-t-2 sm:border-t-4 border-t-gold-400 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-r from-transparent via-gold-50/30 to-transparent">
             <h2 id="modal-title" className="text-lg sm:text-2xl font-serif font-bold text-navy-900 leading-tight">

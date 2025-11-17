@@ -68,34 +68,39 @@ export default function ConsultationModal() {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Записатись на консультацію">
       {submitStatus === 'success' ? (
-        <div className="text-center py-8">
-          <div className="mb-4">
-            <svg
-              className="w-16 h-16 text-green-500 mx-auto"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+        <div className="text-center py-6 sm:py-8">
+          <div className="mb-4 sm:mb-6 flex justify-center">
+            <div className="relative">
+              {/* Gold gradient circle background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gold-400 to-gold-500 rounded-full blur-xl opacity-20 animate-pulse" />
+              {/* Icon */}
+              <svg
+                className="relative w-16 h-16 sm:w-20 sm:h-20 text-gold-500 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
           </div>
-          <h3 className="text-xl font-semibold text-navy-900 mb-2">
+          <h3 className="text-xl sm:text-2xl font-serif font-bold text-navy-900 mb-2 sm:mb-3">
             Дякуємо за вашу заявку!
           </h3>
-          <p className="text-navy-700">
+          <p className="text-base sm:text-lg text-navy-700 leading-relaxed">
             Ми зв'яжемося з вами найближчим часом для підтвердження консультації.
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <p className="text-navy-700">
-            Заповніть форму нижче, і я зв'яжуся з вами для призначення безкоштовної діагностичної сесії.
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <p className="text-sm sm:text-base text-navy-700 leading-relaxed">
+            Заповніть форму нижче, і я зв'яжуся з вами для призначення <span className="font-semibold text-navy-900">безкоштовної діагностичної сесії</span>.
           </p>
 
           {/* Name Field */}
@@ -150,13 +155,13 @@ export default function ConsultationModal() {
           )}
 
           {/* Submit Button */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button
               type="submit"
               variant="primary"
               size="lg"
               disabled={submitStatus === 'submitting'}
-              className="flex-1"
+              className="flex-1 w-full sm:w-auto"
             >
               {submitStatus === 'submitting' ? (
                 <span className="flex items-center justify-center gap-2">
@@ -193,16 +198,18 @@ export default function ConsultationModal() {
               size="lg"
               onClick={handleClose}
               disabled={submitStatus === 'submitting'}
+              className="w-full sm:w-auto"
             >
               Скасувати
             </Button>
           </div>
 
           {/* Privacy Notice */}
-          <p className="text-xs text-navy-600">
-            Натискаючи "Відправити заявку", ви погоджуєтесь на обробку ваших персональних даних
-            відповідно до нашої політики конфіденційності.
-          </p>
+          <div className="pt-4 border-t border-gold-200/30">
+            <p className="text-xs text-navy-600 leading-relaxed">
+              Натискаючи "Відправити заявку", ви погоджуєтесь на обробку ваших персональних даних відповідно до нашої <span className="text-gold-600 font-medium">політики конфіденційності</span>.
+            </p>
+          </div>
         </form>
       )}
     </Modal>

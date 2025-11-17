@@ -166,8 +166,8 @@ import { caseStudies } from '@/data/homePageContent';
     // Update button states based on scroll position
     const updateButtons = () => {
       const maxScroll = carousel.scrollWidth - carousel.clientWidth;
-      prevBtn.disabled = carousel.scrollLeft <= 0;
-      nextBtn.disabled = carousel.scrollLeft >= maxScroll - 1;
+      (prevBtn as HTMLButtonElement).disabled = carousel.scrollLeft <= 0;
+      (nextBtn as HTMLButtonElement).disabled = carousel.scrollLeft >= maxScroll - 1;
     };
 
     // Update active indicator

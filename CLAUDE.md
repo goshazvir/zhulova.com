@@ -85,7 +85,7 @@ Project utility scripts are located in `.claude/scripts/`:
   - Creates: favicon.ico, apple-touch-icon.png, icon-192.png, icon-512.png, favicon-16.png, favicon-32.png
   - Uses Sharp for SVG to PNG conversion
   - Usage: `npm run favicon:update` or `node .claude/scripts/generate-favicon-from-svg.js`
-  - Source: `public/favicon.svg` (square dark badge with white VZ)
+  - Source: `public/favicon.svg` (dark square with white VZ + gold corner accent)
 
 **When creating new scripts:**
 - Place all utility scripts in `.claude/scripts/` directory
@@ -601,6 +601,24 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 
 ## Recent Changes
 
+- **Logo & Branding** (2025-11-17): ✅ **COMPLETED**
+  - **Logo Design**: Minimalist "VZ" with gold dot accent
+    - Desktop: VZ + gold circle (90x50px, h-14)
+    - Mobile: Same logo (h-12 for consistency)
+    - Files: `/public/logo.svg`, `/public/logo-light.svg`
+  - **Favicon System**: VZ square badge retained
+    - Source: `/public/favicon.svg` (dark square with white VZ + gold corner)
+    - Generated: favicon.ico, favicon-16/32.png, apple-touch-icon.png, icon-192/512.png
+    - Script: `npm run favicon:update` (Sharp-based PNG generation)
+  - **Header Integration**: Logo integrated in Header.astro
+    - Responsive: Same VZ logo on all devices
+    - Hover effect: opacity-80 transition
+  - **Mobile Fixes**: Hero section padding adjustments
+    - Fixed header overlap on low-height screens
+    - Updated media queries: `padding-top: 7rem` (landscape), `6rem` (low height)
+    - Issue: CSS media queries were overriding Tailwind classes
+  - **Preview Page**: Created `/logo-preview` for all logo variants showcase
+
 - **002-home-page** (2025-11-16): ✅ **COMPLETED & DEPLOYED**
   - **Status**: 52/62 tasks (84%) - Production ready
   - **All 6 user stories implemented**:
@@ -618,4 +636,5 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
   - **Path aliases configured** in tsconfig.json and astro.config.mjs
   - **Analytics**: Vercel Analytics + Speed Insights integrated
   - **Remaining**: Image optimization, end-to-end testing (optional)
+
 - **001-base-infrastructure** (2025-01-14): Initial project setup with TypeScript 5.x (strict mode) + Astro 4.x (SSG framework), React 18.x (interactive islands), Tailwind CSS 3.x (styling), Zustand 4.x (state management)

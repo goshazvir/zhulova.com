@@ -7,6 +7,11 @@ interface Props {
 }
 
 const { variant = 'main' } = Astro.props;
+
+// Check current page for active state
+const currentPath = Astro.url.pathname;
+const isCoursesPage = currentPath.startsWith('/courses');
+const isContactsPage = currentPath.startsWith('/contacts');
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-navy-100">
@@ -37,22 +42,28 @@ const { variant = 'main' } = Astro.props;
       <!-- Desktop Navigation -->
       {variant === 'main' ? (
         <nav class="hidden md:flex items-center space-x-8" aria-label="Primary navigation">
-          <a href="#home" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="home">
+          <a href="/#home" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="home">
             Про мене
           </a>
-          <a href="#stories" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="stories">
+          <a href="/#stories" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="stories">
             Кейси
           </a>
-          <a href="#questions" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="questions">
+          <a href="/#questions" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="questions">
             Питання
           </a>
-          <a href="#testimonials" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="testimonials">
+          <a href="/#testimonials" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="testimonials">
             Відгуки
           </a>
-          <a href="#courses" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="courses">
+          <a
+            href="/courses"
+            class={`font-medium transition-colors ${isCoursesPage ? 'text-gold-600 font-semibold' : 'text-navy-700 hover:text-gold-600'}`}
+          >
             Курси
           </a>
-          <a href="#contacts" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="contacts">
+          <a
+            href="/contacts"
+            class={`font-medium transition-colors ${isContactsPage ? 'text-gold-600 font-semibold' : 'text-navy-700 hover:text-gold-600'}`}
+          >
             Контакти
           </a>
         </nav>
@@ -151,12 +162,20 @@ const { variant = 'main' } = Astro.props;
   const navLinks = document.querySelectorAll('.nav-link');
   navLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
-      e.preventDefault();
       const href = link.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        const sectionId = href.substring(1);
-        scrollToSection(sectionId);
-        useUIStore.getState().closeMobileMenu();
+      if (href && (href.startsWith('#') || href.includes('#'))) {
+        // Only prevent default if we're on the home page or the link contains a hash
+        const hashIndex = href.indexOf('#');
+        if (hashIndex !== -1) {
+          const sectionId = href.substring(hashIndex + 1);
+          // Only smooth scroll if we're on the home page
+          if (window.location.pathname === '/' || window.location.pathname === '') {
+            e.preventDefault();
+            scrollToSection(sectionId);
+            useUIStore.getState().closeMobileMenu();
+          }
+          // If we're on another page, let the browser navigate normally to /#section
+        }
       }
     });
   });

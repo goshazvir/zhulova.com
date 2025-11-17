@@ -1,7 +1,11 @@
 import { useUIStore } from '@/stores/uiStore';
 import { scrollToSection } from '@/utils/scrollAnimations';
 
-export default function MobileMenu() {
+interface Props {
+  variant?: 'main' | 'legal';
+}
+
+export default function MobileMenu({ variant = 'main' }: Props) {
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const activeSection = useUIStore((state) => state.activeSection);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
@@ -69,56 +73,85 @@ export default function MobileMenu() {
 
           {/* Navigation Links */}
           <nav className="flex-1 overflow-y-auto p-4" aria-label="Mobile navigation">
-            <ul className="space-y-2">
-              <li>
-                <button
-                  onClick={() => handleNavClick('home')}
-                  className={getNavItemClasses('home')}
-                >
-                  Про мене
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavClick('stories')}
-                  className={getNavItemClasses('stories')}
-                >
-                  Кейси
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavClick('questions')}
-                  className={getNavItemClasses('questions')}
-                >
-                  Питання
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavClick('testimonials')}
-                  className={getNavItemClasses('testimonials')}
-                >
-                  Відгуки
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavClick('courses')}
-                  className={getNavItemClasses('courses')}
-                >
-                  Курси
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNavClick('contacts')}
-                  className={getNavItemClasses('contacts')}
-                >
-                  Контакти
-                </button>
-              </li>
-            </ul>
+            {variant === 'main' ? (
+              <ul className="space-y-2">
+                <li>
+                  <button
+                    onClick={() => handleNavClick('home')}
+                    className={getNavItemClasses('home')}
+                  >
+                    Про мене
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleNavClick('stories')}
+                    className={getNavItemClasses('stories')}
+                  >
+                    Кейси
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleNavClick('questions')}
+                    className={getNavItemClasses('questions')}
+                  >
+                    Питання
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleNavClick('testimonials')}
+                    className={getNavItemClasses('testimonials')}
+                  >
+                    Відгуки
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleNavClick('courses')}
+                    className={getNavItemClasses('courses')}
+                  >
+                    Курси
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => handleNavClick('contacts')}
+                    className={getNavItemClasses('contacts')}
+                  >
+                    Контакти
+                  </button>
+                </li>
+              </ul>
+            ) : (
+              <ul className="space-y-2">
+                <li>
+                  <a
+                    href="/"
+                    className="block w-full text-left px-4 py-3 rounded-lg font-medium text-navy-700 hover:bg-navy-50 hover:text-gold-600 transition-colors"
+                  >
+                    Головна
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/privacy-policy"
+                    className="block w-full text-left px-4 py-3 rounded-lg font-medium text-navy-700 hover:bg-navy-50 hover:text-gold-600 transition-colors"
+                  >
+                    Конфіденційність
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/terms"
+                    className="block w-full text-left px-4 py-3 rounded-lg font-medium text-navy-700 hover:bg-navy-50 hover:text-gold-600 transition-colors"
+                  >
+                    Умови
+                  </a>
+                </li>
+              </ul>
+            )}
           </nav>
 
           {/* Social Media Links */}

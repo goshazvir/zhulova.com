@@ -1,6 +1,12 @@
 ---
 import { socialLinks } from '@/data/homePageContent';
 import MobileMenu from './MobileMenu';
+
+interface Props {
+  variant?: 'main' | 'legal';
+}
+
+const { variant = 'main' } = Astro.props;
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-navy-100">
@@ -29,26 +35,40 @@ import MobileMenu from './MobileMenu';
       </div>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden md:flex items-center space-x-8" aria-label="Primary navigation">
-        <a href="#home" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="home">
-          Про мене
-        </a>
-        <a href="#stories" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="stories">
-          Кейси
-        </a>
-        <a href="#questions" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="questions">
-          Питання
-        </a>
-        <a href="#testimonials" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="testimonials">
-          Відгуки
-        </a>
-        <a href="#courses" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="courses">
-          Курси
-        </a>
-        <a href="#contacts" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="contacts">
-          Контакти
-        </a>
-      </nav>
+      {variant === 'main' ? (
+        <nav class="hidden md:flex items-center space-x-8" aria-label="Primary navigation">
+          <a href="#home" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="home">
+            Про мене
+          </a>
+          <a href="#stories" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="stories">
+            Кейси
+          </a>
+          <a href="#questions" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="questions">
+            Питання
+          </a>
+          <a href="#testimonials" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="testimonials">
+            Відгуки
+          </a>
+          <a href="#courses" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="courses">
+            Курси
+          </a>
+          <a href="#contacts" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="contacts">
+            Контакти
+          </a>
+        </nav>
+      ) : (
+        <nav class="hidden md:flex items-center space-x-8" aria-label="Legal navigation">
+          <a href="/" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+            Головна
+          </a>
+          <a href="/privacy-policy" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+            Конфіденційність
+          </a>
+          <a href="/terms" class="text-navy-700 hover:text-gold-600 font-medium transition-colors">
+            Умови
+          </a>
+        </nav>
+      )}
 
       <!-- Social Media Icons (Desktop) -->
       <div class="hidden md:flex items-center space-x-4">
@@ -113,7 +133,7 @@ import MobileMenu from './MobileMenu';
 </header>
 
 <!-- Mobile Menu Component -->
-<MobileMenu client:load />
+<MobileMenu client:load variant={variant} />
 
 <script>
   import { useUIStore } from '@/stores/uiStore';

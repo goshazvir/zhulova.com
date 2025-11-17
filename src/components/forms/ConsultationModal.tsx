@@ -205,11 +205,19 @@ export default function ConsultationModal() {
           </div>
 
           {/* Privacy Notice */}
-          <div className="pt-4 border-t border-gold-200/30">
-            <p className="text-xs text-navy-600 leading-relaxed">
-              Натискаючи "Відправити заявку", ви погоджуєтесь на обробку ваших персональних даних відповідно до нашої <span className="text-gold-600 font-medium">політики конфіденційності</span>.
-            </p>
-          </div>
+          <p className="mt-4 mb-6 text-xs text-navy-600 text-center">
+            Натискаючи кнопку, ви погоджуєтесь з нашою{' '}
+            <a
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-600 hover:text-gold-400 underline transition-colors"
+              aria-label="Прочитати політику конфіденційності (відкривається в новій вкладці)"
+            >
+              політики конфіденційності
+            </a>
+            .
+          </p>
         </form>
       )}
     </Modal>

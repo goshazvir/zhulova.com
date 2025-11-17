@@ -588,6 +588,8 @@ For detailed technical specifications, see:
 For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 
 ## Active Technologies
+- TypeScript 5.x (strict mode), Astro 4.x + Astro (SSG framework), React 18.x (client-side modal updates only), Tailwind CSS 3.x (styling) (004-legal-pages)
+- Static content files in `src/pages/` directory (Astro file-based routing) (004-legal-pages)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

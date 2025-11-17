@@ -17,7 +17,7 @@
  * Expected after fix: ALL TESTS SHOULD PASS
  */
 
-const API_URL = 'http://localhost:3000/api/submit-lead';
+const API_URL = 'http://localhost:4321/api/submit-lead';
 
 // ANSI color codes for terminal output
 const colors = {

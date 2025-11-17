@@ -118,8 +118,8 @@ npm run astro        # Astro CLI access
 ```
 
 **Which command to use:**
-- **`npm run dev`** - Fast development, use for UI/styling work (NO serverless functions)
-- **`npm run dev:vercel`** - Full environment, use when testing forms/API routes (WITH serverless functions)
+- **`npm run dev`** - Standard development server (supports both static pages AND API routes via hybrid mode)
+- **`npm run dev:vercel`** - Vercel dev server (optional, for testing Vercel-specific features)
 
 **Build process:** `astro check` (TypeScript validation) runs before every build. Build fails on type errors.
 
@@ -127,7 +127,9 @@ npm run astro        # Astro CLI access
 
 ### Hybrid Static-First Philosophy
 
-Every **page** is pre-rendered at build time. Serverless functions handle non-SEO operations:
+**Configuration:** `output: 'hybrid'` in `astro.config.mjs` with Vercel adapter
+
+Every **page** is pre-rendered at build time (static). API endpoints are serverless functions:
 
 ```
 User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interactive
@@ -136,18 +138,31 @@ User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interacti
 ```
 
 **Static Layer (pages):**
-- All pages pre-rendered at build time
-- No SSR (`output: 'static'` in astro.config.mjs)
+- All pages pre-rendered at build time (default behavior in hybrid mode)
+- Pages are static unless `export const prerender = false` is added
 - Content from Astro Content Collections
 
-**Dynamic Layer (serverless functions):**
-- Form submissions → `/api/submit-lead`
+**Dynamic Layer (API endpoints):**
+- Location: `src/pages/api/**/*.ts`
+- Must have `export const prerender = false` to work as serverless functions
+- Form submissions → `/api/submit-lead` (POST)
 - Email notifications → Resend
 - Database writes → Supabase PostgreSQL
 
+**Example API endpoint:**
+```typescript
+// src/pages/api/submit-lead.ts
+export const prerender = false; // REQUIRED for serverless function
+
+export const POST: APIRoute = async ({ request }) => {
+  const body = await request.json();
+  // Process request, save to DB, send email
+};
+```
+
 **Never add:**
-- Server-side routes for page rendering (`output: 'server'` or `output: 'hybrid'`)
-- Database queries for page content (use Content Collections)
+- Server-side rendering for regular pages (keep pages static for performance)
+- Database queries for page content (use Content Collections instead)
 - Client-side data fetching for SEO-critical content
 
 ### Islands Architecture
@@ -451,8 +466,10 @@ SUPABASE_URL=https://project.supabase.co
 SUPABASE_ANON_KEY=eyJ...         # Public key (safe for client)
 SUPABASE_SERVICE_KEY=eyJ...      # Secret key (server only, NEVER expose)
 
-# Resend Configuration
+# Resend Configuration (Email Service)
 RESEND_API_KEY=re_...            # Secret key (server only)
+RESEND_FROM_EMAIL=onboarding@resend.dev  # Sender email (use verified domain in production)
+NOTIFICATION_EMAIL=your-email@example.com  # Where form submissions are sent
 
 # Site Configuration
 PUBLIC_SITE_URL=https://zhulova.com
@@ -466,16 +483,17 @@ PUBLIC_SITE_URL=https://zhulova.com
 
 **Security rules:**
 - ✅ `PUBLIC_*` variables → exposed to client-side
-- ❌ Non-public variables → serverless functions only
+- ❌ Non-public variables → serverless functions only (accessed via `import.meta.env`)
 - ❌ Never commit `.env` to Git (already in `.gitignore`)
+- ⚠️ **No fallback values** - API will fail-fast if required env vars are missing
 
 ## Deployment
 
 **Platform:** Vercel (primary)
 
 **Build output:**
-- Static files in `dist/`
-- Serverless functions in `api/`
+- Static pages in `dist/`
+- Serverless functions in `.vercel/output/functions/` (auto-generated from `src/pages/api/`)
 
 **Setup:**
 1. Connect GitHub repository to Vercel
@@ -483,12 +501,13 @@ PUBLIC_SITE_URL=https://zhulova.com
 3. Auto-deploy on push to main branch
 
 **Configuration:**
-- `vercel.json` - Vercel configuration (already configured)
+- `astro.config.mjs` - Astro config with Vercel adapter (`output: 'hybrid'`)
+- `vercel.json` - Vercel configuration (headers, regions)
 - `.vercel/` - Local Vercel settings (in .gitignore)
 
 **Build command:** `npm run build`
 **Output directory:** `dist`
-**Serverless functions:** `api/**/*.ts`
+**Serverless functions:** `src/pages/api/**/*.ts` (must have `export const prerender = false`)
 
 **Alternative platforms:**
 - Netlify (with Netlify Functions)
@@ -549,20 +568,25 @@ The project currently has the following pages:
 
 ### Adding a Serverless Function
 
-1. Create file in `api/function-name.ts`
-2. Import `APIRoute` from Astro
-3. Define Zod validation schema
-4. Export `POST` (or `GET`) handler
-5. Validate inputs with Zod
-6. Interact with Supabase/Resend using server-only env vars
-7. Return JSON response
-8. Test locally with `npm run dev:vercel`
+1. Create file in `src/pages/api/function-name.ts`
+2. Add `export const prerender = false;` (REQUIRED for serverless)
+3. Import `APIRoute` from Astro
+4. Define Zod validation schema
+5. Export `POST` (or `GET`) handler
+6. Validate inputs with Zod
+7. Access env vars via `import.meta.env.VARIABLE_NAME` (NO fallback values)
+8. Interact with Supabase/Resend using server-only env vars
+9. Return JSON response
+10. Test locally with `npm run dev`
 
 **Example structure:**
 ```typescript
-// api/submit-lead.ts
+// src/pages/api/submit-lead.ts
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
+
+// REQUIRED: Disable prerendering for serverless function
+export const prerender = false;
 
 const schema = z.object({
   name: z.string().min(2),
@@ -570,6 +594,10 @@ const schema = z.object({
 });
 
 export const POST: APIRoute = async ({ request }) => {
+  // Validate environment variables (fail-fast, no fallbacks)
+  const apiKey = import.meta.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error('RESEND_API_KEY is not set');
+
   const body = await request.json();
   const data = schema.parse(body);
 
@@ -584,7 +612,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 ## What NOT to Do
 
-- ❌ Add `output: 'server'` or `output: 'hybrid'` to `astro.config.mjs` (keep `output: 'static'`)
+- ❌ Change `output: 'hybrid'` to `output: 'server'` in `astro.config.mjs` (keep hybrid for static pages + API routes)
 - ❌ Use CSS-in-JS libraries (styled-components, emotion)
 - ❌ Add heavy npm packages without justification
 - ❌ Skip TypeScript types or use `any`

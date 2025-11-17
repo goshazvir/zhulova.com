@@ -129,7 +129,7 @@ export default function ConsultationModal() {
             label="Telegram"
             type="text"
             placeholder="@username"
-            helperText="Необов'язково. Формат: @username"
+            helperText="Необов'язково. Ваш нікнейм у Telegram"
             error={errors.telegram?.message}
             {...register('telegram')}
           />

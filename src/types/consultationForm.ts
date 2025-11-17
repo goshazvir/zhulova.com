@@ -15,10 +15,14 @@ export const consultationFormSchema = z.object({
     .trim(),
 
   telegram: z.string()
-    .regex(/^@[a-zA-Z0-9_]{5,32}$/, 'Telegram має формат @username')
+    .regex(/^@?[a-zA-Z0-9_]{5,32}$/, 'Telegram має містити 5-32 символи (літери, цифри, підкреслення)')
     .optional()
     .or(z.literal(''))
-    .transform(val => val === '' ? undefined : val),
+    .transform(val => {
+      if (!val || val === '') return undefined;
+      // Normalize: add @ if not present
+      return val.startsWith('@') ? val : `@${val}`;
+    }),
 
   email: z.string()
     .email('Введіть коректну email адресу')

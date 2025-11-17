@@ -75,7 +75,7 @@ export default function MobileMenu() {
                   onClick={() => handleNavClick('home')}
                   className={getNavItemClasses('home')}
                 >
-                  Головна
+                  Про мене
                 </button>
               </li>
               <li>

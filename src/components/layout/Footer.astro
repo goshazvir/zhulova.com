@@ -49,9 +49,13 @@ import { Image } from 'astro:assets';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Column 1: Brand -->
         <div>
-          <h3 class="text-2xl font-serif font-bold text-white mb-4">
-            Вікторія Жульова
-          </h3>
+          <img
+            src="/logo-light.svg"
+            alt="Viktoria Zhulova"
+            class="h-12 mb-4"
+            width="90"
+            height="50"
+          />
           <p class="text-navy-300">
             Сертифікований коуч з досвідом роботи понад 10 років. Допомагаю людям досягати їхніх цілей.
           </p>
@@ -62,16 +66,19 @@ import { Image } from 'astro:assets';
           <h4 class="text-lg font-semibold text-white mb-4">Навігація</h4>
           <nav class="space-y-2" aria-label="Footer navigation">
             <a href="#home" class="block text-navy-300 hover:text-gold-400 transition-colors">
-              Головна
-            </a>
-            <a href="#about" class="block text-navy-300 hover:text-gold-400 transition-colors">
               Про мене
             </a>
-            <a href="#courses" class="block text-navy-300 hover:text-gold-400 transition-colors">
-              Курси
+            <a href="#stories" class="block text-navy-300 hover:text-gold-400 transition-colors">
+              Кейси
+            </a>
+            <a href="#questions" class="block text-navy-300 hover:text-gold-400 transition-colors">
+              Питання
             </a>
             <a href="#testimonials" class="block text-navy-300 hover:text-gold-400 transition-colors">
               Відгуки
+            </a>
+            <a href="#courses" class="block text-navy-300 hover:text-gold-400 transition-colors">
+              Курси
             </a>
             <a href="#contacts" class="block text-navy-300 hover:text-gold-400 transition-colors">
               Контакти

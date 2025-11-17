@@ -169,6 +169,17 @@ PUBLIC_SITE_URL=https://zhulova.com
 - Fixed CSS media query conflicts
 - Improved low-height screen support
 
+### Footer & Navigation
+- **Footer Image**: Converted `viktoriia2.jpg` (16MB) → `footer-viktoria.webp` (103KB)
+  - Applied Soft Luxury styling (matching hero aesthetic)
+  - Script: `.claude/scripts/convert-footer-image.js`
+  - 154x compression ratio
+- **Footer Branding**: Replaced text with white logo (`/logo-light.svg`)
+- **Navigation Labels**: Updated "Головна" → "Про мене" in all menus
+  - Header (desktop)
+  - MobileMenu (mobile drawer)
+  - Footer links
+
 ## 📚 Documentation
 
 - **Main Guide**: `/CLAUDE.md`

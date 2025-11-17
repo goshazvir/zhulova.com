@@ -87,6 +87,19 @@ Project utility scripts are located in `.claude/scripts/`:
   - Usage: `npm run favicon:update` or `node .claude/scripts/generate-favicon-from-svg.js`
   - Source: `public/favicon.svg` (dark square with white VZ + gold corner accent)
 
+- **`convert-footer-image.js`** - Footer image converter with Soft Luxury styling
+  - Converts `viktoriia2.jpg` to optimized `footer-viktoria.webp`
+  - Applies **Soft Luxury** styling matching hero image aesthetic
+  - Effects: Subtle color grading (brightness 1.02, saturation 0.95), warm hue shift, soft contrast, gold gradient overlay, subtle vignette
+  - Output: 600x800px WebP (quality 92, ~100KB)
+  - Usage: `node .claude/scripts/convert-footer-image.js`
+  - Benefits: 154x compression, consistent brand styling across site
+
+- **`generate-hero-premium.js`** - Premium hero image style generator
+  - Creates 4 premium variants: Soft Luxury, Aurora, Editorial, Minimalist
+  - Currently used: **Soft Luxury** (`hero-viktoria-luxury.webp`)
+  - Source: `public/images/original.png`
+
 **When creating new scripts:**
 - Place all utility scripts in `.claude/scripts/` directory
 - Use descriptive names (e.g., `test-<feature>.js`, `migrate-<task>.js`)
@@ -618,6 +631,19 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
     - Updated media queries: `padding-top: 7rem` (landscape), `6rem` (low height)
     - Issue: CSS media queries were overriding Tailwind classes
   - **Preview Page**: Created `/logo-preview` for all logo variants showcase
+
+- **Footer & Navigation Updates** (2025-11-17): ✅ **COMPLETED**
+  - **Footer Image Optimization**:
+    - Converted `viktoriia2.jpg` (16MB) → `footer-viktoria.webp` (103KB) - **154x compression**
+    - Applied **Soft Luxury** styling (same as hero image)
+    - Script: `.claude/scripts/convert-footer-image.js` (Sharp-based with SVG overlays)
+    - Styling: Subtle color grading, warm tones, soft vignette, gold accent gradient
+  - **Footer Branding**: Replaced text "Вікторія Жульова" with white logo (`/logo-light.svg`)
+  - **Navigation Labels**: Changed "Головна" → "Про мене" across all components
+    - Header (desktop navigation)
+    - MobileMenu (mobile drawer)
+    - Footer (footer navigation)
+  - **Performance Impact**: Footer section now loads 154x faster with optimized WebP image
 
 - **002-home-page** (2025-11-16): ✅ **COMPLETED & DEPLOYED**
   - **Status**: 52/62 tasks (84%) - Production ready

@@ -19,7 +19,7 @@ export const consultationFormSchema = z.object({
     .optional()
     .or(z.literal(''))
     .transform(val => {
-      if (val === '') return undefined;
+      if (!val || val === '') return undefined;
       // Normalize: add @ if not present
       return val.startsWith('@') ? val : `@${val}`;
     }),

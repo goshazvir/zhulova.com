@@ -12,7 +12,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   site: 'https://zhulova.com',
   output: 'hybrid', // Hybrid: static pages + serverless API endpoints
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+  }),
 
   integrations: [
     react(), // React for interactive islands

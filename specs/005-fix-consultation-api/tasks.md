@@ -32,11 +32,11 @@
 
 **Checkpoint**: Confirm environment ready and frontend code is correct
 
-- [ ] T001 Verify environment variables in `.env` file (SUPABASE_URL, SUPABASE_SERVICE_KEY, RESEND_API_KEY, NOTIFICATION_EMAIL=goshazvir@gmail.com)
-- [ ] T002 [P] Verify Supabase database connectivity using `npm run test:supabase`
-- [ ] T003 [P] Verify frontend validation in `src/types/consultationForm.ts` has telegram normalization transform
-- [ ] T004 [P] Verify frontend UI in `src/components/forms/ConsultationModal.tsx` has updated helper text
-- [ ] T005 Review existing API code in `api/submit-lead.ts` to understand current broken state
+- [x] T001 Verify environment variables in `.env` file (SUPABASE_URL, SUPABASE_SERVICE_KEY, RESEND_API_KEY, NOTIFICATION_EMAIL=goshazvir@gmail.com)
+- [x] T002 [P] Verify Supabase database connectivity using `npm run test:supabase`
+- [x] T003 [P] Verify frontend validation in `src/types/consultationForm.ts` has telegram normalization transform
+- [x] T004 [P] Verify frontend UI in `src/components/forms/ConsultationModal.tsx` has updated helper text
+- [x] T005 Review existing API code in `api/submit-lead.ts` to understand current broken state
 
 **Expected Outcome**:
 - Environment variables configured

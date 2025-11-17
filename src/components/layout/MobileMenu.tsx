@@ -10,17 +10,34 @@ export default function MobileMenu({ variant = 'main' }: Props) {
   const activeSection = useUIStore((state) => state.activeSection);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
 
-  const handleNavClick = (sectionId: string) => {
-    scrollToSection(sectionId);
-    closeMobileMenu();
+  // Check current page for active state
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+  const isCoursesPage = currentPath.startsWith('/courses');
+  const isContactsPage = currentPath.startsWith('/contacts');
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    // Only smooth scroll if we're on the home page
+    if (window.location.pathname === '/' || window.location.pathname === '') {
+      e.preventDefault();
+      scrollToSection(sectionId);
+      closeMobileMenu();
+    } else {
+      // Let the browser navigate normally to /#section
+      closeMobileMenu();
+    }
   };
 
   const getNavItemClasses = (sectionId: string) => {
-    const baseClasses = "w-full text-left px-4 py-3 rounded-lg font-medium transition-colors";
+    const baseClasses = "block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors";
     const activeClasses = activeSection === sectionId
       ? "bg-gold-50 text-gold-600 font-semibold"
       : "text-navy-700 hover:bg-navy-50 hover:text-gold-600";
     return `${baseClasses} ${activeClasses}`;
+  };
+
+  const getPageNavItemClasses = (isActive: boolean) => {
+    const baseClasses = "block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors";
+    return `${baseClasses} ${isActive ? 'bg-gold-50 text-gold-600 font-semibold' : 'text-navy-700 hover:bg-navy-50 hover:text-gold-600'}`;
   };
 
   if (!isMobileMenuOpen) return null;
@@ -76,52 +93,58 @@ export default function MobileMenu({ variant = 'main' }: Props) {
             {variant === 'main' ? (
               <ul className="space-y-2">
                 <li>
-                  <button
-                    onClick={() => handleNavClick('home')}
+                  <a
+                    href="/#home"
+                    onClick={(e) => handleNavClick(e, 'home')}
                     className={getNavItemClasses('home')}
                   >
                     Про мене
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button
-                    onClick={() => handleNavClick('stories')}
+                  <a
+                    href="/#stories"
+                    onClick={(e) => handleNavClick(e, 'stories')}
                     className={getNavItemClasses('stories')}
                   >
                     Кейси
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button
-                    onClick={() => handleNavClick('questions')}
+                  <a
+                    href="/#questions"
+                    onClick={(e) => handleNavClick(e, 'questions')}
                     className={getNavItemClasses('questions')}
                   >
                     Питання
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button
-                    onClick={() => handleNavClick('testimonials')}
+                  <a
+                    href="/#testimonials"
+                    onClick={(e) => handleNavClick(e, 'testimonials')}
                     className={getNavItemClasses('testimonials')}
                   >
                     Відгуки
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button
-                    onClick={() => handleNavClick('courses')}
-                    className={getNavItemClasses('courses')}
+                  <a
+                    href="/courses"
+                    onClick={closeMobileMenu}
+                    className={getPageNavItemClasses(isCoursesPage)}
                   >
                     Курси
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button
-                    onClick={() => handleNavClick('contacts')}
-                    className={getNavItemClasses('contacts')}
+                  <a
+                    href="/contacts"
+                    onClick={closeMobileMenu}
+                    className={getPageNavItemClasses(isContactsPage)}
                   >
                     Контакти
-                  </button>
+                  </a>
                 </li>
               </ul>
             ) : (

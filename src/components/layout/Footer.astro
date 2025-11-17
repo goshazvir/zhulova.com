@@ -9,7 +9,7 @@ interface Props {
 const { variant = 'main' } = Astro.props;
 ---
 
-<footer id="contacts" class="bg-navy-900 text-white">
+<footer class="bg-navy-900 text-white">
   <!-- CTA Section (only for main pages) -->
   {variant === 'main' && (
   <div class="bg-sage-50 text-navy-900 py-8 md:py-10">
@@ -84,10 +84,10 @@ const { variant = 'main' } = Astro.props;
           <a href="/#testimonials" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Відгуки
           </a>
-          <a href="/#courses" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/courses" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Курси
           </a>
-          <a href="/#contacts" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/contacts" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Контакти
           </a>
         </nav>

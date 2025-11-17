@@ -47,7 +47,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       {/* Modal Container */}
       <div className="flex min-h-full items-center justify-center p-4">
         {/* Modal Panel - Soft Luxury Glass */}
-        <div className="relative bg-white/98 backdrop-blur-sm border border-gold-200/40 shadow-2xl shadow-gold-500/10 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+        <div className="relative bg-white border border-gold-300 shadow-2xl shadow-gold-500/20 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
           {/* Header - Gold Top Line + Gradient */}
           <div className="relative flex items-center justify-between p-6 border-b border-gold-200/30 border-t-4 border-t-gold-400 rounded-t-2xl bg-gradient-to-r from-transparent via-gold-50/30 to-transparent">
             <h2 id="modal-title" className="text-2xl font-serif font-bold text-navy-900">

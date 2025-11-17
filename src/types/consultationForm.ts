@@ -11,11 +11,16 @@ export const consultationFormSchema = z.object({
     .trim(),
 
   phone: z.string()
-    .regex(/^\+380\d{9}$/, 'Введіть номер у форматі +380XXXXXXXXX')
-    .trim(),
+    .min(7, 'Введіть номер телефону')
+    .max(20, 'Номер телефону занадто довгий')
+    .trim()
+    .refine(
+      val => /^[\d\s\-\+\(\)]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
+      'Введіть коректний номер телефону'
+    ),
 
   telegram: z.string()
-    .regex(/^@?[a-zA-Z0-9_]{5,32}$/, 'Telegram має містити 5-32 символи (літери, цифри, підкреслення)')
+    .regex(/^@?[a-zA-Z0-9_]{3,32}$/, 'Telegram: 3-32 символи (літери, цифри, _)')
     .optional()
     .or(z.literal(''))
     .transform(val => {

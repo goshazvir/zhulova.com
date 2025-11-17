@@ -45,22 +45,22 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       />
 
       {/* Modal Container */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4">
         {/* Modal Panel - Soft Luxury Glass */}
-        <div className="relative bg-gradient-to-br from-white to-sage-50 border border-gold-200 shadow-2xl shadow-gold-500/15 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+        <div className="relative bg-gradient-to-br from-white to-sage-50 border border-gold-200 shadow-2xl shadow-gold-500/15 rounded-xl sm:rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
           {/* Header - Gold Top Line + Gradient */}
-          <div className="relative flex items-center justify-between p-6 border-b border-gold-200/30 border-t-4 border-t-gold-400 rounded-t-2xl bg-gradient-to-r from-transparent via-gold-50/30 to-transparent">
-            <h2 id="modal-title" className="text-2xl font-serif font-bold text-navy-900">
+          <div className="relative flex items-center justify-between gap-3 p-4 sm:p-6 border-b border-gold-200/30 border-t-2 sm:border-t-4 border-t-gold-400 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-r from-transparent via-gold-50/30 to-transparent">
+            <h2 id="modal-title" className="text-lg sm:text-2xl font-serif font-bold text-navy-900 leading-tight">
               {title}
             </h2>
             <button
               type="button"
               onClick={onClose}
-              className="text-navy-400 hover:text-gold-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-full p-2 hover:bg-gold-50/50"
+              className="flex-shrink-0 text-navy-400 hover:text-gold-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-full p-2 hover:bg-gold-50/50 -mr-1"
               aria-label="Закрити модальне вікно"
             >
               <svg
-                className="w-5 h-5"
+                className="w-5 h-5 sm:w-6 sm:h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -77,7 +77,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {children}
           </div>
         </div>

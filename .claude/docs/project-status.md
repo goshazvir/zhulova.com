@@ -1,7 +1,7 @@
 # Project Status - Viktoria Zhulova Coaching Website
 
 **Last Updated**: 2025-11-17
-**Current Branch**: `002-home-page`
+**Current Branch**: `004-legal-pages`
 **Live URL**: https://zhulova.com
 
 ## 📊 Current Status
@@ -32,6 +32,19 @@
    - Responsive logo integration
    - Favicon system (PNG variants)
    - Mobile header fixes
+
+4. **Courses Pages** ✅ **COMPLETED (2025-11-17)**
+   - Courses catalog page (`/courses`)
+   - 3 course template pages with lorem ipsum content
+   - Interactive course cards with icons and gradients
+   - Navigation integration (Header, Footer, Mobile Menu)
+   - Active menu states for courses pages
+
+5. **Contacts Page** ✅ **COMPLETED (2025-11-17)**
+   - Social media hub page (`/contacts`)
+   - 5 social network cards (YouTube, Instagram, Telegram, Facebook, TikTok)
+   - Consultation booking CTA with modal integration
+   - Navigation integration with active states
 
 ## 🎨 Design System
 
@@ -83,8 +96,16 @@ src/
 ├── layouts/
 │   └── BaseLayout.astro
 ├── pages/
-│   ├── index.astro
-│   └── logo-preview.astro
+│   ├── index.astro              # Home page
+│   ├── logo-preview.astro       # Logo showcase
+│   ├── privacy-policy.astro     # Privacy policy
+│   ├── terms.astro              # Terms of use
+│   ├── courses.astro            # Courses catalog
+│   ├── contacts.astro           # Social media hub
+│   └── courses/
+│       ├── my-course.astro
+│       ├── mindset-mastery.astro
+│       └── goals-achievement.astro
 ├── stores/
 │   └── uiStore.ts     # Zustand global state
 ├── utils/
@@ -99,7 +120,8 @@ public/
 ├── favicon.svg        # Source for PNG generation
 └── images/
     ├── og-default.jpg
-    └── hero-photo.jpg
+    ├── hero-viktoria-luxury.webp
+    └── footer-viktoria.webp
 
 api/
 └── submit-lead.ts     # Serverless form handler
@@ -179,6 +201,39 @@ PUBLIC_SITE_URL=https://zhulova.com
   - Header (desktop)
   - MobileMenu (mobile drawer)
   - Footer links
+
+### Courses Pages (2025-11-17)
+- **Catalog Page** (`/courses`):
+  - Hero section with title and description
+  - Grid of 3 course cards (gold, sage, navy gradients)
+  - Each card: Icon, title, description, "Дізнатись більше" link
+  - Footer variant="legal" (no CTA block)
+- **Individual Course Pages**:
+  - `/courses/my-course` - "Мій Курс"
+  - `/courses/mindset-mastery` - "Майстерність Мислення"
+  - `/courses/goals-achievement` - "Досягнення Цілей"
+  - Each page: Hero, 7-8 paragraphs lorem ipsum, Footer legal variant
+- **Navigation Updates**:
+  - "Курси" link changed from `#courses` → `/courses`
+  - Active state highlighting on courses pages
+  - Fixed navigation scroll behavior (smooth scroll on home, redirect on other pages)
+
+### Contacts Page (2025-11-17)
+- **Social Media Hub** (`/contacts`):
+  - Hero: "Контакти" + "Стежте за мною в соціальних мережах"
+  - 5 interactive social cards in grid:
+    - YouTube (red) - Video content
+    - Instagram (gradient pink) - Daily tips
+    - Telegram (blue) - Direct communication
+    - Facebook (blue) - Community
+    - TikTok (black, full width) - Short videos
+  - Each card: Icon, title, description, hover effects
+  - CTA section: "Записатись на консультацію" button
+  - Consultation modal integration
+- **Navigation Updates**:
+  - Added "Контакти" link to Header, Footer, Mobile Menu
+  - Links to `/contacts` (not footer anchor)
+  - Active state highlighting on contacts page
 
 ## 📚 Documentation
 

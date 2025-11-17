@@ -1,0 +1,221 @@
+openapi: 3.0.0
+info:
+  title: Consultation Lead Submission API
+  description: API endpoint for submitting consultation booking requests from the homepage modal form
+  version: 1.0.0
+  contact:
+    name: Zhulova Website
+    url: https://zhulova.com
+
+servers:
+  - url: https://zhulova.com
+    description: Production
+  - url: http://localhost:3000
+    description: Local development (requires `npm run dev:vercel`)
+
+paths:
+  /api/submit-lead:
+    post:
+      summary: Submit consultation booking request
+      description: |
+        Accepts consultation form data, validates input, saves to Supabase database, and sends email notification.
+
+        **Transformations**:
+        - Telegram handles: Automatically prepends `@` if not present (e.g., `username` → `@username`)
+        - Metadata: Auto-populates `source`, `user_agent`, `referrer` from request
+
+        **Side Effects**:
+        1. Creates record in `leads` table (Supabase)
+        2. Sends email notification to configured address (Resend)
+      operationId: submitLead
+      tags:
+        - Leads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadSubmissionRequest'
+            examples:
+              allFields:
+                summary: Valid submission (all fields)
+                value:
+                  name: Олена Коваленко
+                  phone: "+380501234567"
+                  telegram: olena_coach
+                  email: olena@example.com
+              requiredOnly:
+                summary: Valid submission (required fields only)
+                value:
+                  name: Іван Петренко
+                  phone: "+380671234567"
+              telegramWithAt:
+                summary: Telegram with @ symbol
+                value:
+                  name: Test User
+                  phone: "+380501234567"
+                  telegram: "@testuser"
+      responses:
+        '200':
+          description: Success - Lead saved and email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: "Thank you! We'll contact you soon."
+                leadId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        '400':
+          description: Validation error - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                invalidPhone:
+                  summary: Invalid phone format
+                  value:
+                    success: false
+                    error: "Validation failed"
+                    details:
+                      - path: ["phone"]
+                        message: "Phone must be in format +380XXXXXXXXX"
+                missingName:
+                  summary: Missing required field
+                  value:
+                    success: false
+                    error: "Validation failed"
+                    details:
+                      - path: ["name"]
+                        message: "Name is required"
+        '500':
+          description: Server error - Database or email failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+              examples:
+                databaseError:
+                  summary: Database insert failed
+                  value:
+                    success: false
+                    error: "Failed to save your request"
+                emailError:
+                  summary: Email send failed (data saved)
+                  value:
+                    success: false
+                    error: "Your request was saved, but we couldn't send confirmation. We'll contact you soon."
+                unexpectedError:
+                  summary: Unexpected error
+                  value:
+                    success: false
+                    error: "An unexpected error occurred"
+
+components:
+  schemas:
+    LeadSubmissionRequest:
+      type: object
+      required:
+        - name
+        - phone
+      properties:
+        name:
+          type: string
+          description: Client's full name
+          minLength: 2
+          maxLength: 255
+          example: "Олена Коваленко"
+        phone:
+          type: string
+          description: Ukrainian phone number
+          pattern: '^\+380\d{9}$'
+          example: "+380501234567"
+        telegram:
+          type: string
+          description: |
+            Telegram username (with or without @ prefix).
+            API automatically normalizes to include @ before saving.
+          pattern: '^@?[a-zA-Z0-9_]{5,32}$'
+          minLength: 5
+          maxLength: 33  # 32 chars + optional @ at start
+          nullable: true
+          example: "olena_coach"
+        email:
+          type: string
+          format: email
+          description: Client's email address (optional)
+          maxLength: 255
+          nullable: true
+          example: "olena@example.com"
+
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - message
+        - leadId
+      properties:
+        success:
+          type: boolean
+          const: true
+          description: Indicates successful operation
+        message:
+          type: string
+          description: User-friendly success message
+          example: "Thank you! We'll contact you soon."
+        leadId:
+          type: string
+          format: uuid
+          description: UUID of the created lead record
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          const: false
+          description: Indicates failed operation
+        error:
+          type: string
+          description: Error category
+          example: "Validation failed"
+        details:
+          type: array
+          description: Detailed validation errors from Zod
+          items:
+            type: object
+            properties:
+              path:
+                type: array
+                items:
+                  type: string
+                description: Field path that failed validation
+                example: ["phone"]
+              message:
+                type: string
+                description: Validation error message
+                example: "Phone must be in format +380XXXXXXXXX"
+
+    ServerErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          const: false
+          description: Indicates failed operation
+        error:
+          type: string
+          description: User-friendly error message
+          example: "Failed to save your request"
+
+tags:
+  - name: Leads
+    description: Consultation lead submission endpoints

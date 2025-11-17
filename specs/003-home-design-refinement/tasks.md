@@ -52,7 +52,7 @@ This is a single Astro project with components in `src/components/`. All changes
 - [ ] T006 [P] [US1] Redesign QuestionsSection with underline tab indicators in src/components/sections/QuestionsSection.astro
 - [ ] T007 [P] [US1] Redesign CaseStudiesSection with border-left styling in src/components/sections/CaseStudiesSection.astro
 - [ ] T008 [P] [US1] Redesign TestimonialsSection with light background in src/components/sections/TestimonialsSection.astro
-- [ ] T009 [US1] Redesign Footer with reduced padding and horizontal layout in src/components/layout/Footer.astro
+- [x] T009 [US1] Redesign Footer with reduced padding and horizontal layout in src/components/layout/Footer.astro
 - [ ] T010 [US1] Verify all sections have improved white space and visual hierarchy on desktop
 - [ ] T011 [US1] Verify all sections are responsive on mobile (375px width)
 - [ ] T012 [US1] Verify all sections are responsive on tablet (768px width)

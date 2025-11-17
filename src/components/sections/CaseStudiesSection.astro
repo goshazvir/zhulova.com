@@ -13,85 +13,108 @@ import { caseStudies } from '@/data/homePageContent';
       </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {caseStudies.map((study) => (
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow" data-animate>
-          <div class="p-8">
-            {/* Header */}
-            <div class="mb-6">
-              <h3 class="text-2xl font-serif font-bold text-navy-900 mb-2">
-                {study.clientName}
-              </h3>
-              <p class="text-gold-600 font-medium mb-4">
-                {study.profession}
-              </p>
-              <div class="flex flex-wrap gap-4 text-sm text-navy-600">
-                <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-sage-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  <span>{study.timeInMentorship}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-sage-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                  </svg>
-                  <span>{study.sessionsCount} сесій</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <!-- Carousel Container -->
+    <div class="relative">
+      <!-- Navigation Buttons (Desktop only) -->
+      <button
+        id="case-studies-prev"
+        class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 items-center justify-center rounded-full bg-white border-2 border-gray-200 text-navy-600 hover:border-gold-400 hover:text-gold-600 transition-all shadow-lg disabled:opacity-30 disabled:cursor-not-allowed"
+        aria-label="Попередній кейс"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <button
+        id="case-studies-next"
+        class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 items-center justify-center rounded-full bg-white border-2 border-gray-200 text-navy-600 hover:border-gold-400 hover:text-gold-600 transition-all shadow-lg disabled:opacity-30 disabled:cursor-not-allowed"
+        aria-label="Наступний кейс"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+
+      <!-- Scrollable Cards Container -->
+      <div
+        id="case-studies-carousel"
+        class="flex overflow-x-auto gap-4 sm:gap-6 snap-x snap-mandatory scroll-smooth pb-4 -mx-2 px-2 sm:-mx-4 sm:px-4 lg:mx-0 lg:px-0"
+        style="scrollbar-width: thin; scrollbar-color: #D4AF37 #F5F5F5;"
+      >
+        {caseStudies.map((study, index) => (
+          <div
+            class="flex-shrink-0 w-[calc(100%-1rem)] sm:w-[70%] lg:w-[calc(40%-12px)] snap-start bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-gold-200 transition-all"
+            data-animate
+            style={`animation-delay: ${index * 100}ms`}
+          >
+            <div class="p-5 sm:p-6">
+              {/* Header */}
+              <div class="mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-gray-100">
+                <h3 class="text-xl font-serif font-bold text-navy-900 mb-1">
+                  {study.clientName}
+                </h3>
+                <p class="text-gold-600 font-medium text-sm mb-3">
+                  {study.profession}
+                </p>
+                {/* Key Result - Hero */}
+                <div class="flex items-center gap-2 bg-gold-50 rounded-lg px-3 py-2 border border-gold-200">
+                  <svg class="w-5 h-5 text-gold-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                   </svg>
-                  <span class="font-semibold text-gold-600">+{study.incomeGrowth} дохід</span>
+                  <span class="font-bold text-gold-700 text-sm">+{study.incomeGrowth} дохід за {study.timeInMentorship}</span>
                 </div>
               </div>
-            </div>
 
-            {/* Before */}
-            <div class="mb-6">
-              <h4 class="text-lg font-semibold text-navy-900 mb-3 flex items-center gap-2">
-                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                Було
-              </h4>
-              <div class="bg-red-50 rounded-lg p-4">
-                <p class="text-navy-700 font-medium mb-2">
-                  {study.before.employment}
-                </p>
-                <ul class="space-y-2">
-                  {study.before.challenges.map((challenge) => (
-                    <li class="flex items-start gap-2 text-navy-600">
-                      <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                      </svg>
-                      <span>{challenge}</span>
-                    </li>
-                  ))}
-                </ul>
+              {/* Results - Hero Section */}
+              <div class="mb-5 sm:mb-6">
+                <h4 class="text-lg font-serif font-bold text-navy-900 mb-3 sm:mb-4 flex items-center gap-2">
+                  <span class="text-xl">✨</span>
+                  Результати
+                </h4>
+                <div class="border-l-4 sm:border-l-[6px] border-gold-400 pl-3 sm:pl-4 sm:bg-gradient-to-r sm:from-gold-50/30 sm:to-transparent py-2">
+                  <ul class="space-y-2.5">
+                    {/* Show only 2 results on mobile, 3 on desktop */}
+                    {study.after.achievements.slice(0, 2).map((achievement) => (
+                      <li class="flex items-start gap-2.5 sm:hidden">
+                        <span class="text-gold-600 flex-shrink-0 font-bold leading-relaxed">•</span>
+                        <span class="text-navy-800 font-medium leading-relaxed">{achievement}</span>
+                      </li>
+                    ))}
+                    {study.after.achievements.slice(0, 3).map((achievement) => (
+                      <li class="hidden sm:flex items-start gap-2.5">
+                        <span class="text-gold-600 flex-shrink-0 font-bold leading-relaxed">•</span>
+                        <span class="text-navy-800 font-medium leading-relaxed">{achievement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
 
-            {/* After */}
-            <div>
-              <h4 class="text-lg font-semibold text-navy-900 mb-3 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                Стало
-              </h4>
-              <div class="bg-green-50 rounded-lg p-4">
-                <ul class="space-y-2">
-                  {study.after.achievements.map((achievement) => (
-                    <li class="flex items-start gap-2 text-navy-700">
-                      <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                      </svg>
-                      <span>{achievement}</span>
-                    </li>
-                  ))}
-                </ul>
+              {/* Before - Minimal Context */}
+              <div class="pt-4 border-t border-gray-100">
+                <p class="text-sm text-gray-600 leading-relaxed">
+                  <span class="font-semibold text-gray-700">Було:</span> {study.before.employment}
+                  <span class="hidden sm:inline">
+                    {study.before.challenges.length > 0 && ` — ${study.before.challenges[0].toLowerCase()}`}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+
+      <!-- Scroll Indicators (Mobile) -->
+      <div class="flex justify-center gap-2 mt-6 lg:hidden">
+        {caseStudies.map((_, index) => (
+          <button
+            class="case-study-indicator w-2 h-2 rounded-full bg-gray-300 transition-all"
+            data-index={index}
+            aria-label={`Перейти до кейсу ${index + 1}`}
+          ></button>
+        ))}
+      </div>
     </div>
 
     {/* CTA */}
@@ -113,10 +136,85 @@ import { caseStudies } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
+  // CTA Button
   const caseStudiesCTA = document.getElementById('case-studies-cta');
   if (caseStudiesCTA) {
     caseStudiesCTA.addEventListener('click', () => {
       useUIStore.getState().openConsultationModal();
     });
+  }
+
+  // Carousel Navigation
+  const carousel = document.getElementById('case-studies-carousel');
+  const prevBtn = document.getElementById('case-studies-prev');
+  const nextBtn = document.getElementById('case-studies-next');
+  const indicators = document.querySelectorAll('.case-study-indicator');
+
+  if (carousel && prevBtn && nextBtn) {
+    const scrollAmount = carousel.offsetWidth * 0.8;
+
+    // Previous button
+    prevBtn.addEventListener('click', () => {
+      carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    // Next button
+    nextBtn.addEventListener('click', () => {
+      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+
+    // Update button states based on scroll position
+    const updateButtons = () => {
+      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+      (prevBtn as HTMLButtonElement).disabled = carousel.scrollLeft <= 0;
+      (nextBtn as HTMLButtonElement).disabled = carousel.scrollLeft >= maxScroll - 1;
+    };
+
+    // Update active indicator
+    const updateIndicators = () => {
+      const cards = carousel.querySelectorAll('[data-animate]');
+      const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+
+      let activeIndex = 0;
+      cards.forEach((card, index) => {
+        const cardCenter = (card as HTMLElement).offsetLeft + (card as HTMLElement).offsetWidth / 2;
+        if (Math.abs(scrollCenter - cardCenter) < (card as HTMLElement).offsetWidth / 2) {
+          activeIndex = index;
+        }
+      });
+
+      indicators.forEach((indicator, index) => {
+        if (index === activeIndex) {
+          indicator.classList.add('bg-gold-500', 'w-6');
+          indicator.classList.remove('bg-gray-300', 'w-2');
+        } else {
+          indicator.classList.add('bg-gray-300', 'w-2');
+          indicator.classList.remove('bg-gold-500', 'w-6');
+        }
+      });
+    };
+
+    // Indicator click navigation
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        const cards = carousel.querySelectorAll('[data-animate]');
+        const targetCard = cards[index] as HTMLElement;
+        if (targetCard) {
+          carousel.scrollTo({
+            left: targetCard.offsetLeft - 16,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    carousel.addEventListener('scroll', () => {
+      updateButtons();
+      updateIndicators();
+    });
+
+    // Initial state
+    updateButtons();
+    updateIndicators();
   }
 </script>

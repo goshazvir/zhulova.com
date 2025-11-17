@@ -13,54 +13,27 @@ import { statistics } from '@/data/homePageContent';
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      {statistics.map((stat, index) => (
-        <div
-          class="text-center p-6 rounded-lg bg-sage-50 hover:bg-sage-100 transition-colors"
-          data-animate
-          style={`animation-delay: ${index * 100}ms`}
-        >
-          <div class="text-4xl md:text-5xl font-serif font-bold text-gold-600 mb-3">
-            {stat.value}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+      {statistics.map((stat, index) => {
+        const isFirstInRow = index === 0 || (index % 2 === 0);
+        return (
+          <div
+            class={`text-center py-8 px-6 lg:px-8 transition-all hover:bg-gray-50/50
+              ${index > 0 ? 'border-t md:border-t-0' : ''}
+              ${index > 0 && !isFirstInRow ? 'md:border-l' : ''}
+              ${index > 0 ? 'lg:border-t-0 lg:border-l' : ''}`}
+            data-animate
+            style={`animation-delay: ${index * 100}ms`}
+          >
+            <div class="text-5xl md:text-6xl font-serif font-bold text-gold-600 mb-4 leading-none">
+              {stat.value}
+            </div>
+            <div class="text-navy-700 font-medium text-sm md:text-base max-w-[200px] mx-auto leading-relaxed">
+              {stat.label}
+            </div>
           </div>
-          <div class="text-navy-700 font-medium">
-            {stat.label}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <!-- Additional trust signals -->
-    <div class="mt-16 text-center">
-      <p class="text-navy-600 mb-6">
-        Працюю з підприємцями, IT-спеціалістами та лідерами, які хочуть досягти більшого
-      </p>
-      <div class="flex flex-wrap justify-center gap-8">
-        <div class="flex items-center gap-2 text-navy-700">
-          <svg class="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <span>Коучинг</span>
-        </div>
-        <div class="flex items-center gap-2 text-navy-700">
-          <svg class="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <span>Медитації</span>
-        </div>
-        <div class="flex items-center gap-2 text-navy-700">
-          <svg class="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <span>НЛП</span>
-        </div>
-        <div class="flex items-center gap-2 text-navy-700">
-          <svg class="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <span>Перепрограмування патернів</span>
-        </div>
-      </div>
+        );
+      })}
     </div>
   </div>
 </section>

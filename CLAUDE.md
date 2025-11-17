@@ -494,6 +494,35 @@ PUBLIC_SITE_URL=https://zhulova.com
 - Netlify (with Netlify Functions)
 - Cloudflare Pages (with Workers)
 
+## Existing Pages
+
+The project currently has the following pages:
+
+### Main Pages
+- **`/` (index.astro)** - Home page with hero, trust indicators, case studies, testimonials, consultation form
+- **`/courses` (courses.astro)** - Courses catalog with 3 course cards, Footer legal variant
+- **`/contacts` (contacts.astro)** - Social media hub with 5 social network cards, consultation CTA
+
+### Course Detail Pages
+- **`/courses/my-course`** - "Мій Курс" template (lorem ipsum)
+- **`/courses/mindset-mastery`** - "Майстерність Мислення" template (lorem ipsum)
+- **`/courses/goals-achievement`** - "Досягнення Цілей" template (lorem ipsum)
+
+### Legal Pages
+- **`/privacy-policy`** - Privacy policy (Footer legal variant)
+- **`/terms`** - Terms of use (Footer legal variant)
+
+### Utility Pages
+- **`/logo-preview`** - Logo showcase (all variants)
+
+### API Routes
+- **`/api/submit-lead`** - Serverless function for consultation form (Supabase + Resend)
+
+**Navigation Structure:**
+- **Header/MobileMenu**: Про мене, Кейси, Питання, Відгуки, Курси, Контакти
+- **Footer**: Same as header
+- **Active States**: Menu items highlighted on `/courses/*` and `/contacts` pages
+
 ## Common Patterns
 
 ### Adding a New Page
@@ -617,6 +646,23 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Vercel - Hosting + Serverless Functions + Edge Network + Analytics
 
 ## Recent Changes
+
+- **View Transitions API** (2025-11-17): ✅ **ENABLED**
+  - Added Astro View Transitions for SPA-like navigation
+  - Pages no longer reload completely when navigating
+  - Smooth fade transitions between pages
+  - ~2-3KB JavaScript overhead
+  - **How it works**: Pages are pre-rendered (MPA), but navigation feels like SPA
+  - **Benefits**: Fast first load + smooth navigation without full page reloads
+
+- **Courses & Contacts Pages** (2025-11-17): ✅ **COMPLETED**
+  - **Courses Catalog** (`/courses`): Grid of 3 course cards with icons, descriptions, and links
+  - **Course Detail Pages**: 3 template pages (`my-course`, `mindset-mastery`, `goals-achievement`) with lorem ipsum
+  - **Contacts Page** (`/contacts`): Social media hub with 5 interactive cards (YouTube, Instagram, Telegram, Facebook, TikTok)
+  - **Navigation**: Added "Курси" and "Контакти" links to Header, Footer, MobileMenu
+  - **Active States**: Menu items highlighted on `/courses/*` and `/contacts` pages
+  - **Modal Integration**: Consultation modal works on contacts page
+  - **Scroll Behavior**: Fixed navigation - smooth scroll on home page, normal navigation on other pages
 
 - **Logo & Branding** (2025-11-17): ✅ **COMPLETED**
   - **Logo Design**: Minimalist "VZ" with gold dot accent

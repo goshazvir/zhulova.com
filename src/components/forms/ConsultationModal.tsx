@@ -117,9 +117,9 @@ export default function ConsultationModal() {
           <Input
             label="Телефон"
             type="tel"
-            placeholder="+380501234567"
+            placeholder="+380 50 123 45 67"
             required
-            helperText="Формат: +380XXXXXXXXX"
+            helperText="Наприклад: +380 50 123 45 67"
             error={errors.phone?.message}
             {...register('phone')}
           />

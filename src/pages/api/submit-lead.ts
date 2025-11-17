@@ -8,10 +8,18 @@ export const prerender = false;
 // Validation schema for consultation form
 const leadSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  phone: z.string().regex(/^\+380\d{9}$/, 'Phone must be in format +380XXXXXXXXX'),
+  phone: z
+    .string()
+    .min(7, 'Phone number is required')
+    .max(20, 'Phone number is too long')
+    .trim()
+    .refine(
+      (val) => /^[\d\s\-\+\(\)]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
+      'Please enter a valid phone number'
+    ),
   telegram: z
     .string()
-    .regex(/^@?[a-zA-Z0-9_]{5,32}$/, 'Telegram handle must be 5-32 characters')
+    .regex(/^@?[a-zA-Z0-9_]{3,32}$/, 'Telegram handle must be 3-32 characters')
     .optional()
     .or(z.literal(''))
     .transform((val) => {

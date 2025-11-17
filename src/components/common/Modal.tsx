@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -8,43 +8,63 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  const scrollbarWidthRef = useRef<number>(0);
+
   // Handle escape key press and prevent background scroll
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+    // Calculate scrollbar width before hiding
+    scrollbarWidthRef.current = window.innerWidth - document.documentElement.clientWidth;
 
-      // Prevent body scroll when modal is open
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      // Compensate for scrollbar width to prevent layout shift
-      if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-      }
+    // Get original overflow values
+    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
+    const originalHtmlOverflow = htmlElement.style.overflow;
+    const originalBodyOverflow = bodyElement.style.overflow;
+    const originalBodyPaddingRight = bodyElement.style.paddingRight;
+
+    // Prevent body scroll when modal is open
+    htmlElement.style.overflow = 'hidden';
+    bodyElement.style.overflow = 'hidden';
+
+    // Compensate for scrollbar width to prevent layout shift
+    if (scrollbarWidthRef.current > 0) {
+      bodyElement.style.paddingRight = `${scrollbarWidthRef.current}px`;
     }
+
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+
+      // Restore original overflow values
+      htmlElement.style.overflow = originalHtmlOverflow;
+      bodyElement.style.overflow = originalBodyOverflow;
+      bodyElement.style.paddingRight = originalBodyPaddingRight;
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
+  // Prevent scroll propagation on overlay
+  const handleOverlayWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto"
+      className="fixed inset-0 z-50 overflow-y-auto overscroll-contain"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
+      onWheel={handleOverlayWheel}
     >
       {/* Backdrop - Soft Luxury Glass */}
       <div

@@ -8,7 +8,7 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  // Handle escape key press
+  // Handle escape key press and prevent background scroll
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -18,13 +18,22 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
+
       // Prevent body scroll when modal is open
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      // Compensate for scrollbar width to prevent layout shift
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [isOpen, onClose]);
 

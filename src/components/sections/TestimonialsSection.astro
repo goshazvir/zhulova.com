@@ -2,13 +2,13 @@
 import { testimonials } from '@/data/homePageContent';
 ---
 
-<section id="testimonials" class="py-20 bg-gradient-to-br from-navy-900 to-navy-800 text-white" data-animate>
+<section id="testimonials" class="py-20 bg-gradient-to-br from-white to-sage-50" data-animate>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">
-      <h2 class="text-4xl md:text-5xl font-serif font-bold mb-4">
+      <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy-900 mb-4">
         Що кажуть мої клієнти
       </h2>
-      <p class="text-lg text-navy-300 max-w-3xl mx-auto">
+      <p class="text-lg text-navy-700 max-w-3xl mx-auto">
         Реальні відгуки від людей, які довірили мені свій розвиток
       </p>
     </div>
@@ -16,31 +16,31 @@ import { testimonials } from '@/data/homePageContent';
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {testimonials.map((testimonial, index) => (
         <div
-          class="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/15 transition-all"
+          class="bg-white border border-gray-200 rounded-lg p-8 hover:border-gold-200 transition-all"
           data-animate
           style={`animation-delay: ${index * 150}ms`}
         >
           {/* Quote Icon */}
           <div class="mb-6">
-            <svg class="w-12 h-12 text-gold-400 opacity-50" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="w-8 h-8 text-gold-400 opacity-30" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
             </svg>
           </div>
 
           {/* Quote */}
           <blockquote class="mb-6">
-            <p class="text-lg text-white leading-relaxed">
+            <p class="text-lg text-navy-800 leading-relaxed">
               {testimonial.quote}
             </p>
           </blockquote>
 
           {/* Author */}
-          <div class="pt-6 border-t border-white/20">
+          <div class="pt-6 border-t border-gray-100">
             <cite class="not-italic">
-              <div class="font-semibold text-gold-400 mb-1">
+              <div class="font-semibold text-navy-900 mb-1">
                 {testimonial.clientName}
               </div>
-              <div class="text-sm text-navy-300">
+              <div class="text-sm text-navy-600">
                 {testimonial.role}
               </div>
             </cite>
@@ -58,7 +58,7 @@ import { testimonials } from '@/data/homePageContent';
           </svg>
         ))}
       </div>
-      <p class="text-navy-300 text-sm">
+      <p class="text-navy-600 text-sm">
         Середня оцінка клієнтів: 5.0 / 5.0
       </p>
     </div>

@@ -1,10 +1,17 @@
 ---
 import { footerContent, socialLinks } from '@/data/homePageContent';
 import { Image } from 'astro:assets';
+
+interface Props {
+  variant?: 'main' | 'legal';
+}
+
+const { variant = 'main' } = Astro.props;
 ---
 
 <footer id="contacts" class="bg-navy-900 text-white">
-  <!-- CTA Section -->
+  <!-- CTA Section (only for main pages) -->
+  {variant === 'main' && (
   <div class="bg-sage-50 text-navy-900 py-8 md:py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -42,6 +49,7 @@ import { Image } from 'astro:assets';
       </div>
     </div>
   </div>
+  )}
 
   <!-- Footer Content -->
   <div class="py-6 bg-navy-900">
@@ -64,22 +72,22 @@ import { Image } from 'astro:assets';
 
         <!-- Center: Navigation -->
         <nav class="flex flex-wrap gap-x-6 gap-y-2 lg:justify-center" aria-label="Footer navigation">
-          <a href="#home" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/#home" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Про мене
           </a>
-          <a href="#stories" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/#stories" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Кейси
           </a>
-          <a href="#questions" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/#questions" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Питання
           </a>
-          <a href="#testimonials" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/#testimonials" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Відгуки
           </a>
-          <a href="#courses" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/#courses" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Курси
           </a>
-          <a href="#contacts" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
+          <a href="/#contacts" class="text-navy-300 hover:text-gold-400 transition-colors text-sm">
             Контакти
           </a>
         </nav>
@@ -154,9 +162,32 @@ import { Image } from 'astro:assets';
         </div>
       </div>
 
-      <!-- Copyright - Integrated into Footer -->
-      <div class="mt-6 pt-6 border-t border-navy-800 text-center">
-        <p class="text-navy-400 text-sm">{footerContent.copyright}</p>
+      <!-- Copyright + Legal Links -->
+      <div class="mt-6 pt-6 border-t border-navy-800">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <!-- Copyright (left on desktop, center on mobile) -->
+          <p class="text-sm text-navy-400 text-center sm:text-left">
+            {footerContent.copyright}
+          </p>
+
+          <!-- Legal Links (right on desktop, center on mobile) -->
+          <nav class="flex flex-col sm:flex-row gap-2 sm:gap-6 text-center sm:text-right" aria-label="Legal navigation">
+            <a
+              href="/privacy-policy"
+              class="text-sm text-navy-300 hover:text-gold-400 transition-colors"
+              aria-label="Перейти до політики конфіденційності"
+            >
+              Політика конфіденційності
+            </a>
+            <a
+              href="/terms"
+              class="text-sm text-navy-300 hover:text-gold-400 transition-colors"
+              aria-label="Перейти до умов використання"
+            >
+              Умови використання
+            </a>
+          </nav>
+        </div>
       </div>
     </div>
   </div>

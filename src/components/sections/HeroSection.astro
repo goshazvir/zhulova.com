@@ -3,7 +3,7 @@ import { heroContent } from '@/data/homePageContent';
 import { Image } from 'astro:assets';
 ---
 
-<section id="home" class="relative hero-section aurora-background flex items-center pt-20 md:pt-24 lg:pt-12 overflow-hidden" data-animate>
+<section id="home" class="relative hero-section aurora-background pt-28 md:pt-32 lg:pt-28 overflow-hidden" data-animate>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 lg:py-16 w-full">
     <div class="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-8 md:gap-8 lg:gap-16 items-center w-full max-w-full">
       <!-- Left Column: Text Content -->
@@ -162,7 +162,7 @@ import { Image } from 'astro:assets';
   @media (max-width: 768px) and (orientation: landscape) {
     .hero-section {
       min-height: auto;
-      padding-top: 1.5rem;
+      padding-top: 7rem; /* 112px - accommodate fixed header */
       padding-bottom: 1.5rem;
     }
   }
@@ -171,7 +171,7 @@ import { Image } from 'astro:assets';
   @media (max-height: 600px) {
     .hero-section {
       min-height: auto;
-      padding-top: 0.75rem;
+      padding-top: 6rem; /* 96px - accommodate fixed header */
       padding-bottom: 1rem;
     }
   }

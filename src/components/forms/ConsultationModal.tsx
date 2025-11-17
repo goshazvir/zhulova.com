@@ -128,7 +128,7 @@ export default function ConsultationModal() {
           <Input
             label="Telegram"
             type="text"
-            placeholder="username або @username"
+            placeholder="@username"
             helperText="Необов'язково. Ваш нікнейм у Telegram"
             error={errors.telegram?.message}
             {...register('telegram')}

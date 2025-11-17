@@ -8,8 +8,23 @@ import MobileMenu from './MobileMenu';
     <div class="flex items-center justify-between h-20">
       <!-- Logo / Brand -->
       <div class="flex-shrink-0">
-        <a href="/" class="text-2xl font-serif font-bold text-navy-900 hover:text-gold-600 transition-colors">
-          Вікторія Жульова
+        <a href="/" class="flex items-center hover:opacity-80 transition-opacity" aria-label="Вікторія Жульова - Головна">
+          <!-- Mobile: VZ with gold dot (same as desktop) -->
+          <img
+            src="/logo.svg"
+            alt="VZ"
+            class="h-12 md:hidden"
+            width="90"
+            height="50"
+          />
+          <!-- Desktop: VZ with gold dot -->
+          <img
+            src="/logo.svg"
+            alt="Viktoria Zhulova"
+            class="hidden md:block h-14"
+            width="90"
+            height="50"
+          />
         </a>
       </div>
 
@@ -18,14 +33,17 @@ import MobileMenu from './MobileMenu';
         <a href="#home" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="home">
           Головна
         </a>
-        <a href="#about" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="about">
-          Про мене
+        <a href="#stories" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="stories">
+          Кейси
         </a>
-        <a href="#courses" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="courses">
-          Курси
+        <a href="#questions" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="questions">
+          Питання
         </a>
         <a href="#testimonials" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="testimonials">
           Відгуки
+        </a>
+        <a href="#courses" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="courses">
+          Курси
         </a>
         <a href="#contacts" class="nav-link text-navy-700 hover:text-gold-600 font-medium transition-colors" data-section="contacts">
           Контакти

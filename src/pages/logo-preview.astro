@@ -1,0 +1,391 @@
+---
+// Logo Preview Page - для перегляду всіх варіантів логотипу
+---
+
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logo Variants - Viktoria Zhulova</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f5f5f5;
+        padding: 2rem;
+        color: #1a1a2e;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: #1a1a2e;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 3rem;
+        font-size: 1.1rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .logo-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      .logo-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        color: #1a1a2e;
+      }
+
+      .logo-subtitle {
+        color: #666;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .logo-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 2rem;
+        border-radius: 8px;
+        min-height: 180px;
+        transition: all 0.3s ease;
+      }
+
+      .logo-display.light {
+        background: white;
+        border: 2px solid #e5e5e5;
+      }
+
+      .logo-display.dark {
+        background: #1a1a2e;
+        border: 2px solid #2a2a3e;
+      }
+
+      .logo-display img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .logo-details {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f8f8;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #666;
+      }
+
+      .logo-details dt {
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-top: 0.5rem;
+      }
+
+      .logo-details dd {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+      }
+
+      .favicon-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .favicon-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      .favicon-display {
+        background: #f8f8f8;
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .favicon-display img {
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+      }
+
+      .favicon-info {
+        font-size: 0.875rem;
+        color: #666;
+      }
+
+      .favicon-size {
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 0.25rem;
+      }
+
+      .section {
+        margin-bottom: 4rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #1a1a2e;
+        border-bottom: 2px solid #d4af37;
+        padding-bottom: 0.5rem;
+      }
+
+      code {
+        background: #2a2a3e;
+        color: #d4af37;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-family: 'Monaco', 'Courier New', monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Logo Variants - Viktoria Zhulova</h1>
+      <p class="subtitle">Перегляд всіх варіантів логотипу та фавіконів</p>
+
+      <!-- Main Logo Variants -->
+      <div class="section">
+        <h2 class="section-title">Основні варіанти логотипу</h2>
+
+        <div class="grid">
+          <!-- Main Logo -->
+          <div class="logo-card">
+            <div class="logo-title">VZ Badge (Main Logo)</div>
+            <div class="logo-subtitle">Квадратний бейдж з VZ - універсальний для всіх фонів</div>
+            <div class="logo-display light">
+              <img src="/logo.svg" alt="VZ" style="height: 120px; width: 120px;">
+            </div>
+            <dl class="logo-details">
+              <dt>Файл:</dt>
+              <dd><code>/logo.svg</code></dd>
+              <dt>Використання:</dt>
+              <dd>Header, footer, всі розміри екранів</dd>
+              <dt>Розміри:</dt>
+              <dd>100x100px (viewBox)</dd>
+              <dt>Фон:</dt>
+              <dd>Navy квадрат #1a1a2e (rx=8)</dd>
+              <dt>Текст VZ:</dt>
+              <dd>White #ffffff, Georgia serif, 900 weight</dd>
+              <dt>Акцент:</dt>
+              <dd>Gold corner 20x20px #D4AF37</dd>
+            </dl>
+          </div>
+
+          <!-- Same for Light Backgrounds -->
+          <div class="logo-card">
+            <div class="logo-title">VZ Badge (Light Backgrounds)</div>
+            <div class="logo-subtitle">Той самий дизайн - універсальний</div>
+            <div class="logo-display light">
+              <img src="/logo-light.svg" alt="VZ" style="height: 120px; width: 120px;">
+            </div>
+            <dl class="logo-details">
+              <dt>Файл:</dt>
+              <dd><code>/logo-light.svg</code></dd>
+              <dt>Використання:</dt>
+              <dd>Ідентичний до logo.svg</dd>
+              <dt>Особливості:</dt>
+              <dd>Темний фон робить логотип видимим на будь-якому бекграунді</dd>
+            </dl>
+          </div>
+
+          <!-- Monogram Version -->
+          <div class="logo-card">
+            <div class="logo-title">VZ Badge (Monogram)</div>
+            <div class="logo-subtitle">Компактна версія (ідентична головному)</div>
+            <div class="logo-display light">
+              <img src="/logo-monogram.svg" alt="VZ" style="height: 120px; width: 120px;">
+            </div>
+            <dl class="logo-details">
+              <dt>Файл:</dt>
+              <dd><code>/logo-monogram.svg</code></dd>
+              <dt>Використання:</dt>
+              <dd>Mobile/tablet header, соц. мережі, аватари</dd>
+              <dt>Особливості:</dt>
+              <dd>Ідентичний основному логотипу</dd>
+            </dl>
+          </div>
+
+          <!-- Favicon -->
+          <div class="logo-card">
+            <div class="logo-title">Favicon (Source)</div>
+            <div class="logo-subtitle">Джерело для всіх favicon форматів</div>
+            <div class="logo-display light">
+              <img src="/favicon.svg" alt="Favicon" style="height: 120px; width: 120px;">
+            </div>
+            <dl class="logo-details">
+              <dt>Файл:</dt>
+              <dd><code>/favicon.svg</code></dd>
+              <dt>Використання:</dt>
+              <dd>Browser tabs, PWA icons</dd>
+              <dt>Особливості:</dt>
+              <dd>Ідентичний logo.svg - єдиний консистентний дизайн</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Favicon Variants -->
+      <div class="section">
+        <h2 class="section-title">Фавікони (Favicon)</h2>
+
+        <div class="favicon-grid">
+          <!-- Favicon SVG -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/favicon.svg" alt="Favicon SVG" style="width: 64px; height: 64px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">favicon.svg</div>
+              <div>Векторний (SVG)</div>
+              <div>100x100px viewBox</div>
+            </div>
+          </div>
+
+          <!-- Favicon 16x16 -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/favicon-16.png" alt="Favicon 16x16" style="width: 32px; height: 32px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">favicon-16.png</div>
+              <div>16x16 пікселів</div>
+              <div>Показано 2x для видимості</div>
+            </div>
+          </div>
+
+          <!-- Favicon 32x32 -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/favicon-32.png" alt="Favicon 32x32" style="width: 48px; height: 48px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">favicon-32.png</div>
+              <div>32x32 пікселів</div>
+              <div>Показано 1.5x</div>
+            </div>
+          </div>
+
+          <!-- Favicon ICO -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/favicon.ico" alt="Favicon ICO" style="width: 48px; height: 48px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">favicon.ico</div>
+              <div>32x32 пікселів</div>
+              <div>IE/старі браузери</div>
+            </div>
+          </div>
+
+          <!-- Apple Touch Icon -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/apple-touch-icon.png" alt="Apple Touch Icon" style="width: 90px; height: 90px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">apple-touch-icon.png</div>
+              <div>180x180 пікселів</div>
+              <div>iOS/iPadOS</div>
+            </div>
+          </div>
+
+          <!-- Icon 192x192 -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/icon-192.png" alt="Icon 192" style="width: 96px; height: 96px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">icon-192.png</div>
+              <div>192x192 пікселів</div>
+              <div>Android, PWA</div>
+            </div>
+          </div>
+
+          <!-- Icon 512x512 -->
+          <div class="favicon-card">
+            <div class="favicon-display">
+              <img src="/icon-512.png" alt="Icon 512" style="width: 128px; height: 128px;">
+            </div>
+            <div class="favicon-info">
+              <div class="favicon-size">icon-512.png</div>
+              <div>512x512 пікселів</div>
+              <div>PWA, splash screens</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usage Guide -->
+      <div class="section">
+        <h2 class="section-title">Інструкція використання</h2>
+
+        <div class="logo-card">
+          <h3 style="margin-bottom: 1rem; color: #1a1a2e;">Де використовувати кожен варіант:</h3>
+
+          <dl class="logo-details" style="background: white; border: 1px solid #e5e5e5;">
+            <dt>🖥️ Header (Desktop & Mobile)</dt>
+            <dd><code>/logo.svg</code> - VZ квадратний бейдж (48x48px desktop, 40x40px mobile)</dd>
+
+            <dt>🌐 Соціальні мережі (профіль)</dt>
+            <dd><code>/icon-512.png</code> або <code>/logo.svg</code></dd>
+
+            <dt>📄 Open Graph (Facebook, LinkedIn)</dt>
+            <dd>Використати <code>/icon-512.png</code> або створити OG image з <code>/logo.svg</code></dd>
+
+            <dt>🍎 iOS Bookmark</dt>
+            <dd><code>/apple-touch-icon.png</code> (180x180) - згенеровано з favicon.svg</dd>
+
+            <dt>🤖 Android PWA</dt>
+            <dd><code>/icon-192.png</code> та <code>/icon-512.png</code></dd>
+
+            <dt>🌐 Browser Tab</dt>
+            <dd><code>/favicon.svg</code> (сучасні браузери), <code>/favicon.ico</code> (старі браузери)</dd>
+
+            <dt>🎨 Презентації / Друк / Аватари</dt>
+            <dd><code>/logo.svg</code> - універсальний, темний фон видно на будь-якому бекграунді</dd>
+
+            <dt>✨ Переваги дизайну:</dt>
+            <dd>Єдиний консистентний дизайн для всіх платформ і розмірів. Темний квадрат забезпечує видимість на світлих і темних фонах.</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

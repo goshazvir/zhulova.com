@@ -43,19 +43,20 @@ export function initScrollAnimations() {
  * Update active navigation section based on scroll position
  */
 export function initSectionTracking(callback: (sectionId: string) => void) {
-  const sections = document.querySelectorAll('section[id]');
+  // Track both sections and footer
+  const sections = document.querySelectorAll('section[id], footer[id]');
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
           callback(entry.target.id);
         }
       });
     },
     {
-      threshold: [0.5],
-      rootMargin: '-20% 0px -20% 0px',
+      threshold: [0.3, 0.5, 0.7],
+      rootMargin: '-15% 0px -15% 0px',
     }
   );
 

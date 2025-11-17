@@ -1,0 +1,30 @@
+<svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Minimalist VZ logo for dark backgrounds - larger version -->
+
+  <!-- V letter -->
+  <text
+    x="0"
+    y="40"
+    font-family="Playfair Display, Georgia, serif"
+    font-size="42"
+    font-weight="600"
+    fill="#ffffff"
+    letter-spacing="-0.02em">
+    V
+  </text>
+
+  <!-- Z letter -->
+  <text
+    x="28"
+    y="40"
+    font-family="Playfair Display, Georgia, serif"
+    font-size="42"
+    font-weight="600"
+    fill="#ffffff"
+    letter-spacing="-0.02em">
+    Z
+  </text>
+
+  <!-- Small gold dot accent -->
+  <circle cx="80" cy="25" r="5" fill="#d4af37"/>
+</svg>

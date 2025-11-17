@@ -69,33 +69,38 @@ export default function ConsultationModal() {
     <Modal isOpen={isOpen} onClose={handleClose} title="Записатись на консультацію">
       {submitStatus === 'success' ? (
         <div className="text-center py-8">
-          <div className="mb-4">
-            <svg
-              className="w-16 h-16 text-green-500 mx-auto"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div className="mb-6 flex justify-center">
+            <div className="relative">
+              {/* Gold gradient circle background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gold-400 to-gold-500 rounded-full blur-xl opacity-20 animate-pulse" />
+              {/* Icon */}
+              <svg
+                className="relative w-20 h-20 text-gold-500 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
           </div>
-          <h3 className="text-xl font-semibold text-navy-900 mb-2">
+          <h3 className="text-2xl font-serif font-bold text-navy-900 mb-3">
             Дякуємо за вашу заявку!
           </h3>
-          <p className="text-navy-700">
+          <p className="text-lg text-navy-700 leading-relaxed">
             Ми зв'яжемося з вами найближчим часом для підтвердження консультації.
           </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <p className="text-navy-700">
-            Заповніть форму нижче, і я зв'яжуся з вами для призначення безкоштовної діагностичної сесії.
+          <p className="text-navy-700 leading-relaxed">
+            Заповніть форму нижче, і я зв'яжуся з вами для призначення <span className="font-semibold text-navy-900">безкоштовної діагностичної сесії</span>.
           </p>
 
           {/* Name Field */}
@@ -199,10 +204,11 @@ export default function ConsultationModal() {
           </div>
 
           {/* Privacy Notice */}
-          <p className="text-xs text-navy-600">
-            Натискаючи "Відправити заявку", ви погоджуєтесь на обробку ваших персональних даних
-            відповідно до нашої політики конфіденційності.
-          </p>
+          <div className="pt-4 border-t border-gold-200/30">
+            <p className="text-xs text-navy-600 leading-relaxed">
+              Натискаючи "Відправити заявку", ви погоджуєтесь на обробку ваших персональних даних відповідно до нашої <span className="text-gold-600 font-medium">політики конфіденційності</span>.
+            </p>
+          </div>
         </form>
       )}
     </Modal>

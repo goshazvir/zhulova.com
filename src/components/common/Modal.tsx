@@ -37,30 +37,30 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       role="dialog"
       aria-modal="true"
     >
-      {/* Backdrop */}
+      {/* Backdrop - Soft Luxury Glass */}
       <div
-        className="fixed inset-0 bg-navy-900 bg-opacity-75 transition-opacity"
+        className="fixed inset-0 bg-navy-900/80 backdrop-blur-sm transition-opacity duration-300"
         aria-hidden="true"
         onClick={onClose}
       />
 
       {/* Modal Container */}
       <div className="flex min-h-full items-center justify-center p-4">
-        {/* Modal Panel */}
-        <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-navy-100">
+        {/* Modal Panel - Soft Luxury Glass */}
+        <div className="relative bg-gradient-to-br from-white via-sage-50/30 to-white border border-gold-200/30 shadow-2xl shadow-gold-500/10 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+          {/* Header - Gold Top Line + Gradient */}
+          <div className="relative flex items-center justify-between p-6 border-b border-gold-200/30 border-t-4 border-t-gold-400 rounded-t-2xl bg-gradient-to-r from-transparent via-gold-50/30 to-transparent">
             <h2 id="modal-title" className="text-2xl font-serif font-bold text-navy-900">
               {title}
             </h2>
             <button
               type="button"
               onClick={onClose}
-              className="text-navy-400 hover:text-navy-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-500 rounded-lg p-1"
+              className="text-navy-400 hover:text-gold-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-full p-2 hover:bg-gold-50/50"
               aria-label="Закрити модальне вікно"
             >
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

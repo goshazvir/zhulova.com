@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -10,7 +11,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://astro.build/config
 export default defineConfig({
   site: 'https://zhulova.com',
-  output: 'static', // Static output only - no SSR
+  output: 'server', // Server mode with prerendering for static pages
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+  }),
 
   integrations: [
     react(), // React for interactive islands

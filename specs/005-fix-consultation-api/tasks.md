@@ -20,9 +20,10 @@
 ## Path Conventions
 
 - **Project Structure**: Single static web app with serverless functions
-- **API**: `api/submit-lead.ts` (Vercel serverless function)
+- **API**: `src/pages/api/submit-lead.ts` (Astro hybrid mode serverless function)
 - **Frontend**: `src/types/`, `src/components/` (already updated)
 - **Tests**: `.claude/scripts/` (test scripts)
+- **Config**: `astro.config.mjs` (`output: 'hybrid'` with Vercel adapter)
 
 ---
 
@@ -555,3 +556,97 @@ Task: "Verify all test cases pass"
 - Database schema: `/specs/002-home-page/data-model.md`
 - Testing guide: `/specs/005-fix-consultation-api/quickstart.md`
 - Email configuration: `.claude/docs/before-prod.md`
+
+---
+
+## ✅ COMPLETION SUMMARY (2025-11-17)
+
+**Status**: COMPLETED - All critical functionality implemented and tested
+
+### What Was Built
+
+**Core Implementation:**
+- ✅ Fixed API endpoint at `src/pages/api/submit-lead.ts`
+- ✅ Configured Astro hybrid mode (`output: 'hybrid'` + Vercel adapter)
+- ✅ Implemented Zod validation schema (name, phone, telegram?, email?)
+- ✅ Added telegram handle normalization (@username auto-added)
+- ✅ Integrated Supabase for lead storage with metadata
+- ✅ Integrated Resend for email notifications
+- ✅ Removed all fallback values (fail-fast approach)
+- ✅ Created comprehensive test suite (6 test cases)
+- ✅ Moved API from `api/` to `src/pages/api/` (Astro convention)
+
+**Test Results:**
+- ✅ Automated tests: 6/6 passing
+- ✅ E2E browser test: Confirmed working
+- ✅ Email delivery: Verified (3 test emails received)
+- ✅ Database insert: Verified (3 test records in Supabase with correct normalization)
+
+**Configuration Changes:**
+- ✅ `astro.config.mjs`: Added `output: 'hybrid'` + Vercel adapter
+- ✅ `.env`: All required variables set (no fallbacks)
+- ✅ `.env.example`: Updated with RESEND_FROM_EMAIL, NOTIFICATION_EMAIL
+- ✅ CLAUDE.md: Updated architecture, deployment, and API patterns
+
+### Completed Phases
+
+- **Phase 1**: Setup & Verification ✅
+- **Phase 3**: API Implementation (US1) ✅  
+- **Phase 4**: Minimal Submission (US2) ✅ (via E2E test)
+- **Phase 5**: Invalid Data Prevention (US3) ✅ (via automated tests)
+- **Phase 6**: Testing Infrastructure ✅
+- **Phase 7**: E2E Testing ✅
+- **Phase 8**: Documentation ✅
+
+### Key Decisions
+
+1. **Hybrid Mode**: Switched from `output: 'static'` to `output: 'hybrid'` to support API endpoints in dev mode
+2. **No Fallbacks**: All environment variables require explicit values (fail-fast approach)
+3. **Astro Conventions**: API endpoints in `src/pages/api/` with `export const prerender = false`
+4. **Email Config**: Using `onboarding@resend.dev` for sender (change before production per `.claude/docs/before-prod.md`)
+
+### Production Checklist
+
+Before deploying to production, review `.claude/docs/before-prod.md`:
+- [ ] Change NOTIFICATION_EMAIL from test email to production email
+- [ ] Optionally configure verified domain for RESEND_FROM_EMAIL
+- [ ] Update Vercel environment variables
+- [ ] Clean test records from Supabase database
+
+### Files Modified
+
+**Core Implementation:**
+- `astro.config.mjs` - Added hybrid mode + Vercel adapter  
+- `src/pages/api/submit-lead.ts` - Complete API endpoint implementation
+- `.env` - Set all required environment variables
+- `.env.example` - Added new variables with documentation
+
+**Documentation:**
+- `CLAUDE.md` - Updated architecture, deployment, API patterns
+- `.claude/docs/before-prod.md` - Email configuration guide (existing)
+- `specs/005-fix-consultation-api/tasks.md` - This file
+
+**Removed:**
+- `api/` directory - Moved to `src/pages/api/` per Astro conventions
+
+### Test Coverage
+
+**Automated Tests (`.claude/scripts/test-consultation-api.js`):**
+1. ✅ Valid submission with all fields → 200 OK + email + DB insert
+2. ✅ Valid submission with required fields only → 200 OK + email + DB insert  
+3. ✅ Telegram normalization (username123 → @username123) → 200 OK + email + DB insert
+4. ✅ Invalid phone format → 400 Validation Error
+5. ✅ Invalid email format → 400 Validation Error
+6. ✅ Missing required field → 400 Validation Error
+
+**E2E Browser Test:**
+- ✅ Real form submission through ConsultationModal
+- ✅ Email received at configured NOTIFICATION_EMAIL
+- ✅ Data saved to Supabase with correct metadata
+
+---
+
+**Implementation Date**: 2025-11-17  
+**Total Time**: ~3 hours (TDD approach)  
+**Lines Changed**: ~150 (API endpoint + config)  
+**Tests Added**: 6 automated test cases

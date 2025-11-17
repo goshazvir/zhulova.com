@@ -2,6 +2,9 @@
   "name": "zhulova",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20.x"
+  },
   "scripts": {
     "dev": "astro dev",
     "dev:vercel": "vercel dev",
@@ -15,14 +18,15 @@
     "hero:update": "node .claude/scripts/generate-hero-image.js"
   },
   "dependencies": {
-    "@astrojs/react": "^3.6.2",
-    "@astrojs/sitemap": "^3.2.1",
-    "@astrojs/tailwind": "^5.1.2",
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.6.0",
+    "@astrojs/tailwind": "^6.0.2",
+    "@astrojs/vercel": "^9.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@supabase/supabase-js": "^2.81.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
-    "astro": "^4.16.18",
+    "astro": "^5.15.9",
     "dotenv": "^17.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

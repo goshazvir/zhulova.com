@@ -686,6 +686,18 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 
 ## Recent Changes
 
+- **010-align-home-design-docs** (2025-11-23): Documentation alignment for feature 003-home-design-refinement completed 2025-11-17
+  - **Purpose**: Align specs/003-home-design-refinement documentation with implementation from PRs #9, #10, #11
+  - **Changes**:
+    - Updated spec.md status from "Draft" to "Completed (2025-11-17)"
+    - Added code references to 30 functional requirements (StatsSection, Footer, CaseStudiesSection, QuestionsSection, TestimonialsSection)
+    - Converted 6 edge case questions to Q&A format with Answer, Code, Behavior, User Impact fields
+    - Added "Monitoring & Verification" section with measurement methods for 10 success criteria
+    - Integrated 3+ user feedback quotes from PROGRESS.md: "отлично мне очень нравится" (StatsSection), "отпад" (Footer), "да сейчас супер" (CaseStudies)
+    - Added "Design Decisions" section to plan.md (D1: Results-First, D2: Gold Lines, D3: Compact Footer 45% reduction, D4: Carousel Navigation)
+    - Marked tasks T005-T009 completed with commit SHAs, documented T010-T012 verification status
+  - **Pattern**: Following GitHub Spec-Kit methodology from features 008-align-base-infra-docs and 009-align-home-page-docs
+
 - **View Transitions API** (2025-11-17): ✅ **ENABLED**
   - Added Astro View Transitions for SPA-like navigation
   - Pages no longer reload completely when navigating

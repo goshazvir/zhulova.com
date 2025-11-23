@@ -149,18 +149,18 @@
 
 **Checkpoint**: All validation checks pass, all changes committed to git
 
-- [ ] T039 Create validation script `.specify/scripts/validate-010.sh` based on quickstart.md validation checklist (9 checks)
-- [ ] T040 Run validation script to check: status updated, code references added, edge cases answered, monitoring section exists, user feedback integrated, design decisions documented
-- [ ] T041 [P] Manual spot-check validation: verify FR-001 code reference by opening `src/components/sections/StatsSection.astro` and checking line numbers match implementation
-- [ ] T042 [P] Manual spot-check validation: verify FR-010 code reference by opening `src/components/sections/Footer.astro` and checking line numbers match implementation
-- [ ] T043 [P] Manual spot-check validation: verify FR-020 code reference by opening `src/components/sections/CaseStudiesSection.astro` and checking line numbers match implementation
-- [ ] T044 Review all changes in `specs/003-home-design-refinement/spec.md` using `git diff` to verify no typos, correct formatting, code references valid
-- [ ] T045 Review all changes in `specs/003-home-design-refinement/plan.md` using `git diff` to verify Design Decisions section properly formatted
-- [ ] T046 Review all changes in `specs/003-home-design-refinement/tasks.md` using `git diff` to verify task status correctly updated
-- [ ] T047 Verify zero changes to `src/` directory using `git status` and `git diff --name-only` (documentation-only feature)
-- [ ] T048 Stage all updated files: `git add specs/003-home-design-refinement/spec.md plan.md tasks.md`
-- [ ] T049 Commit changes with descriptive message following quickstart.md commit template (includes "docs: align 003-home-design-refinement spec with implementation" subject line)
-- [ ] T050 Final verification: view updated spec.md in markdown preview, check status shows "Completed (2025-11-17)", FR-001 has code reference, edge case Q1 has 5-field Q&A
+- [X] T039 Create validation script `.specify/scripts/validate-010.sh` based on quickstart.md validation checklist (9 checks)
+- [X] T040 Run validation script to check: status updated, code references added, edge cases answered, monitoring section exists, user feedback integrated, design decisions documented
+- [X] T041 [P] Manual spot-check validation: verify FR-005 code reference by opening `src/components/sections/StatsSection.astro` and checking line numbers match implementation
+- [X] T042 [P] Manual spot-check validation: verify FR-002 code reference by opening `src/components/layout/Footer.astro` and checking line numbers match implementation
+- [X] T043 [P] Manual spot-check validation: verify FR-001 code reference by opening `src/components/sections/CaseStudiesSection.astro` and checking line numbers match implementation
+- [X] T044 Review all changes in `specs/003-home-design-refinement/spec.md` using `git diff` to verify no typos, correct formatting, code references valid
+- [X] T045 Review all changes in `specs/003-home-design-refinement/plan.md` using `git diff` to verify Design Decisions section properly formatted
+- [X] T046 Review all changes in `specs/003-home-design-refinement/tasks.md` using `git diff` to verify task status correctly updated
+- [X] T047 Verify zero changes to `src/` directory using `git status` and `git diff --name-only` (documentation-only feature)
+- [X] T048 Stage all updated files: `git add specs/003-home-design-refinement/spec.md plan.md tasks.md specs/010-align-home-design-docs/tasks.md`
+- [X] T049 Commit changes with descriptive message following quickstart.md commit template (includes "docs: align 003-home-design-refinement spec with implementation" subject line) ✅ `1fdbf45`
+- [X] T050 Final verification: view updated spec.md in markdown preview, check status shows "Completed (2025-11-17)", FR-001 has code reference, edge case Q1 has 5-field Q&A
 
 **Checkpoint**: All tasks complete - documentation alignment finished, changes committed to git, ready for PR creation
 

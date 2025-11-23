@@ -2,7 +2,7 @@
 
 **Feature Branch**: `008-align-base-infra-docs`
 **Created**: 2025-11-23
-**Status**: Draft
+**Status**: Completed (2025-11-23)
 **Input**: User description: "Align 001-base-infrastructure specification with actual implementation completed 2025-11-16. Fix 11 inconsistencies: (CRITICAL) Status shows 'Draft' but feature completed and deployed; Constitution violation - plan claims output:'static' but codebase uses 'hybrid' mode for API routes; 6 edge cases have no answers (BaseLayout without required props, header navigation on tablets, custom fonts fail to load, mobile menu long labels, footer without social links, browsers without modern CSS); Incorrect creation date in CLAUDE.md (shows 2025-01-14 instead of 2025-11-14). (HIGH) Success criteria SC-001 to SC-010 lack measurement methods; FR-011 claims breakpoint 768px but implementation may differ; No code references in functional requirements. (MEDIUM) Duplicate accessibility requirements FR-016/FR-017/FR-018; Ambiguous success criteria without measurement tools; Missing tasks.md file in spec directory; Assumptions don't reflect actual domain setup timeline (zhulova.com connected later). Goal: Update spec.md, plan.md to accurately document what was built (BaseLayout with SEO, Header with responsive menu, Footer with social links, Tailwind design system with Navy/Gold/Sage colors) OR identify missing implementation. Documentation-only feature, no code changes to src/ files."
 
 ## User Scenarios & Testing *(mandatory)*

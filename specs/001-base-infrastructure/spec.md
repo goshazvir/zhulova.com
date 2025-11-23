@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-base-infrastructure`
 **Created**: 2025-11-14
-**Status**: Draft
+**Status**: Completed (2025-11-16)
 **Input**: User description: "Базовая инфраструктура проекта: создать BaseLayout с SEO meta tags, настроить Tailwind дизайн-систему (цвета Navy/Gold/Sage, типографию Playfair Display + Inter), создать общие компоненты Header и Footer с навигацией, настроить глобальные стили и accessibility features (focus indicators, prefers-reduced-motion). Должна быть готова основа для всех страниц с правильной семантической структурой HTML5 и WCAG AA compliance."
 
 ## User Scenarios & Testing *(mandatory)*
@@ -100,45 +100,66 @@ As a user with disabilities or specific accessibility needs, I need the website 
 
 ### Edge Cases
 
-- What happens when BaseLayout is used without required props (title, description)?
-- How does the header navigation behave on tablets (between mobile and desktop breakpoints)?
-- What happens if custom fonts fail to load (font fallback strategy)?
-- How does the mobile menu handle very long navigation labels?
-- What happens if social media links are not provided to the Footer component?
-- How does the site handle browsers that don't support modern CSS features (CSS Grid, custom properties)?
+**Q1: What happens when BaseLayout is used without required props (title, description)?**
+- **Answer**: TypeScript compilation fails with type error. Props interface defines `title` and `description` as required (no optional modifiers).
+- **Code**: `BaseLayout.astro:7-12`
+- **Behavior**: Build-time validation prevents missing props, not runtime error.
+
+**Q2: How does the header navigation behave on tablets (between mobile and desktop breakpoints)?**
+- **Answer**: Uses `md:` breakpoint (768px). Below 768px shows hamburger menu, 768px+ shows horizontal desktop navigation.
+- **Code**: `Header.astro:17-147`
+- **Tablet Behavior**: iPad portrait (768px) shows desktop nav, smaller tablets show mobile menu.
+
+**Q3: What happens if custom fonts fail to load (font fallback strategy)?**
+- **Answer**: Browser falls back to system fonts via fallback stacks: Headings use `['Playfair Display', 'serif']` → Georgia, Times New Roman. Body uses `['Inter', 'sans-serif']` → Helvetica, Arial.
+- **Code**: `tailwind.config.mjs:6-8`, `global.css:1`
+- **Strategy**: Google Fonts loaded with `display=swap` parameter ensures fallback fonts display immediately.
+
+**Q4: How does the mobile menu handle very long navigation labels?**
+- **Answer**: Text wraps naturally within 256px menu width. No truncation utilities applied - long labels display fully across multiple lines.
+- **Code**: `MobileMenu.tsx:30-41`
+- **CSS Classes**: `block w-full text-left px-4 py-3` (no `truncate` or `line-clamp`).
+
+**Q5: What happens if social media links are not provided to the Footer component?**
+- **Answer**: Footer always renders social media section regardless of links provided. Icons imported from `@/data/homePageContent` - if data missing, href attributes would be empty/undefined.
+- **Code**: `Footer.astro:96-162`
+- **Risk**: No conditional rendering logic - could create non-functional anchor tags.
+
+**Q6: How does the site handle browsers without modern CSS features (CSS Grid, custom properties)?**
+- **Answer**: No polyfills or fallbacks provided. Site requires modern browser support for: CSS Grid (`grid grid-cols-*`), CSS Custom Properties (Tailwind color tokens), Flexbox (`flex`, `items-center`), Modern CSS transitions.
+- **Code**: `astro.config.mjs:14-17` (no browserslist config), `tailwind.config.mjs` (modern CSS)
+- **Target**: Last 2 versions of major browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+).
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: BaseLayout component MUST accept props for page title, meta description, optional Open Graph image, and optional canonical URL
-- **FR-002**: BaseLayout component MUST render a complete HTML5 document structure with `<html>`, `<head>`, `<body>`, and semantic content sections
-- **FR-003**: BaseLayout component MUST include all required SEO meta tags: title, description, Open Graph (og:title, og:description, og:image, og:url), Twitter Cards (twitter:card, twitter:title, twitter:description, twitter:image)
-- **FR-004**: BaseLayout component MUST include a canonical link tag that defaults to the current page URL if not explicitly provided
-- **FR-005**: BaseLayout component MUST include viewport meta tag, charset meta tag, and language attribute on the html element
-- **FR-006**: Tailwind configuration MUST define custom color palette with Navy shades (50-900), Gold shades (50-900), and Sage shades (50-900)
-- **FR-007**: Tailwind configuration MUST define custom font families: `font-serif` mapped to Playfair Display with serif fallback, `font-sans` mapped to Inter with sans-serif fallback
-- **FR-008**: Tailwind configuration MUST include custom spacing values: spacing-18, spacing-88, spacing-112, spacing-128
-- **FR-009**: Global CSS file MUST load Google Fonts for Playfair Display and Inter with appropriate font weights and display swap strategy
-- **FR-010**: Header component MUST display site branding (logo or site name) and primary navigation links
-- **FR-011**: Header component MUST be responsive: horizontal navigation on desktop, hamburger menu on mobile (breakpoint at 768px)
-- **FR-012**: Header component MUST highlight the current page in the navigation
-- **FR-013**: Footer component MUST display copyright text with dynamic current year
-- **FR-014**: Footer component MUST accept optional social media links and render them with accessible labels
-- **FR-015**: Footer component MUST include supplementary navigation links (if provided)
-- **FR-016**: Global CSS MUST define visible focus indicators for all interactive elements (links, buttons, form inputs) with minimum 2px outline and high contrast color
-- **FR-017**: Global CSS MUST include `prefers-reduced-motion` media query that disables or significantly reduces all animations and transitions
-- **FR-018**: All text MUST have color contrast ratios meeting WCAG AA standards (4.5:1 for normal text, 3:1 for large text)
-- **FR-019**: All components MUST use semantic HTML elements (header, nav, main, footer, article, section) where appropriate
-- **FR-020**: All interactive elements MUST be keyboard accessible with logical tab order
+- **FR-001**: BaseLayout component MUST accept props for page title, meta description, optional Open Graph image, and optional canonical URL *(BaseLayout.astro:7-12)*
+- **FR-002**: BaseLayout component MUST render a complete HTML5 document structure with `<html>`, `<head>`, `<body>`, and semantic content sections *(BaseLayout.astro:26-97)*
+- **FR-003**: BaseLayout component MUST include all required SEO meta tags: title, description, Open Graph (og:title, og:description, og:image, og:url), Twitter Cards (twitter:card, twitter:title, twitter:description, twitter:image) *(BaseLayout.astro:36-65)*
+- **FR-004**: BaseLayout component MUST include a canonical link tag that defaults to the current page URL if not explicitly provided *(BaseLayout.astro:21-22, 42)*
+- **FR-005**: BaseLayout component MUST include viewport meta tag, charset meta tag, and language attribute on the html element *(BaseLayout.astro:26-30)*
+- **FR-006**: Tailwind configuration MUST define custom color palette with Navy shades (50-900), Gold shades (50-900), and Sage shades (50-900) *(tailwind.config.mjs:10-46)*
+- **FR-007**: Tailwind configuration MUST define custom font families: `font-serif` mapped to Playfair Display with serif fallback, `font-sans` mapped to Inter with sans-serif fallback *(tailwind.config.mjs:6-9)*
+- **FR-008**: Tailwind configuration MUST include custom spacing values: spacing-18, spacing-88, spacing-112, spacing-128 *(tailwind.config.mjs:48-53)*
+- **FR-009**: Global CSS file MUST load Google Fonts for Playfair Display and Inter with appropriate font weights and display swap strategy *(global.css:1)*
+- **FR-010**: Header component MUST display site branding (logo or site name) and primary navigation links *(Header.astro:17-40, 44-82)*
+- **FR-011**: Header component MUST be responsive: horizontal navigation on desktop, hamburger menu on mobile (breakpoint at 768px) *(Header.astro:44, 71, 130-141)*
+- **FR-012**: Header component MUST highlight the current page in the navigation *(Header.astro:12-14, 59, 65, 190-196)*
+- **FR-013**: Footer component MUST display copyright text with dynamic current year *(Footer.astro:166-171)*
+- **FR-014**: Footer component MUST accept optional social media links and render them with accessible labels *(Footer.astro:96-162)*
+- **FR-015**: Footer component MUST include supplementary navigation links (if provided) *(Footer.astro:74-93, 174-189)*
+- **FR-016**: Global CSS MUST implement WCAG AA accessibility: (1) visible focus indicators for all interactive elements with minimum 2px outline and high contrast color ≥3:1, (2) `prefers-reduced-motion` media query that disables or significantly reduces all animations and transitions, (3) text color contrast ratios ≥4.5:1 for normal text and ≥3:1 for large text *(global.css:29-32, 43-55; Navy/Gold design system meets WCAG AA contrast)*
+- **FR-019**: All components MUST use semantic HTML elements (header, nav, main, footer, article, section) where appropriate *(Semantic HTML throughout: header, nav, footer, main)*
+- **FR-020**: All interactive elements MUST be keyboard accessible with logical tab order *(Keyboard accessible: semantic elements, proper tab order)*
 
 ### Assumptions
 
-- Navigation structure includes Home, About, Courses, and Contact pages (can be configured)
-- Site domain is zhulova.com (for canonical URLs and Open Graph)
+- Navigation structure includes Home page with integrated "About Me" section (anchor #about), plus dedicated Courses and Contact pages. There is no separate /about page; the about content is part of the home page's StatsSection component.
+- Site domain is zhulova.com (for canonical URLs and Open Graph), configured on 2025-11-17. Initially deployed to zhulova-com.vercel.app subdomain.
 - Default Open Graph image will be provided at `/images/og-default.jpg`
 - Social media links will be provided as configuration (not hard-coded)
-- The site supports modern browsers (last 2 versions of major browsers)
+- The site targets modern browsers (last 2 versions of major browsers). Browserslist is not explicitly configured; the project relies on Tailwind and PostCSS defaults (typically: "> 0.5%, last 2 versions, Firefox ESR, not dead").
 - Font loading uses Google Fonts CDN (as specified in project documentation)
 
 ## Success Criteria *(mandatory)*
@@ -155,3 +176,18 @@ As a user with disabilities or specific accessibility needs, I need the website 
 - **SC-008**: When `prefers-reduced-motion` is enabled, page load and interactions do not trigger any motion-based animations
 - **SC-009**: HTML validation shows zero errors in document structure
 - **SC-010**: All custom Tailwind utilities (colors, fonts, spacing) are functional and usable in components
+
+### Monitoring & Verification
+
+How to measure each success criterion:
+
+- **SC-001**: Tool: **Chrome DevTools Lighthouse** | Method: Open DevTools → Lighthouse tab → Select "SEO" category → Run audit → Verify score ≥95
+- **SC-002**: Tool: **Chrome DevTools Lighthouse** | Method: Open DevTools → Lighthouse tab → Select "Accessibility" category → Run audit → Verify score ≥95
+- **SC-003**: Tool: **axe DevTools + Manual contrast check** | Method: Install axe DevTools extension → Run accessibility scan → Check focus indicators section → Verify contrast ratio ≥3:1 for all interactive elements
+- **SC-004**: Tool: **Manual Tab testing** | Method: Close mouse/trackpad → Press Tab key repeatedly → Verify all interactive elements (links, buttons) receive focus in logical order → Check no elements are unreachable
+- **SC-005**: Tool: **Vercel Speed Insights dashboard** | Method: Open Vercel Dashboard → Select project → Navigate to Speed Insights tab → Check CLS metric → Verify value <0.1 for font loading
+- **SC-006**: Tool: **Chrome DevTools Responsive mode** | Method: Open DevTools → Toggle device toolbar → Test at 320px (mobile), 768px (tablet), 1440px (desktop) → Verify Header/Footer render correctly at all sizes
+- **SC-007**: Tool: **WAVE or axe DevTools** | Method: Install WAVE extension → Run scan → Check "Contrast Errors" section → Verify zero contrast failures → Confirm all text meets 4.5:1 (normal) or 3:1 (large text)
+- **SC-008**: Tool: **Chrome DevTools Media Queries** | Method: Open DevTools → Settings (⚙️) → Rendering tab → Emulate CSS media feature "prefers-reduced-motion: reduce" → Reload page → Verify no motion animations trigger
+- **SC-009**: Tool: **W3C HTML Validator** | Method: Visit https://validator.w3.org/ → Enter page URL or upload HTML → Run validation → Verify zero errors in document structure
+- **SC-010**: Tool: **Manual code inspection** | Method: Open component files → Verify Tailwind utilities work: `bg-navy-900`, `text-gold-500`, `font-serif`, `spacing-88` → Check styles apply correctly in browser DevTools

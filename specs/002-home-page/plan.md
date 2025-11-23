@@ -42,14 +42,14 @@ Build a high-performance static homepage for Viktoria Zhulova's coaching website
 
 ### I. Static-First Delivery ✅ **PASS**
 
-- ✅ All content pre-rendered at build time via Astro SSG
-- ✅ No server-side rendering or hybrid output modes
-- ✅ Serverless functions used only for non-SEO-critical operations (form submission)
-- ✅ React hydration limited to interactive islands (modal, menu)
+- ✅ All homepage content pre-rendered at build time via Astro SSG
+- ✅ Server mode permitted exclusively for /api/submit-lead serverless function; homepage and all content pages remain pre-rendered static at build time
+- ✅ Serverless functions used only for non-SEO-critical operations (form submission to Supabase + Resend email)
+- ✅ React hydration limited to interactive islands (consultation modal, mobile menu)
 - ✅ Progressive enhancement: Core content usable without JavaScript (navigation, hero, stats, questions viewable without JS)
-- ✅ Security: No secrets in client code (API keys in serverless environment variables only)
+- ✅ Security: No secrets in client code (API keys stored in serverless environment variables: RESEND_API_KEY, SUPABASE_SERVICE_KEY)
 
-**Rationale**: Homepage content is static, only consultation form requires runtime interaction handled via serverless function.
+**Rationale**: Homepage content is fully static for optimal SEO and performance. Consultation form submission requires server-side logic (database write, email sending) handled via /api/submit-lead serverless endpoint (`export const prerender = false`). This aligns with Static-First principle when server mode scoped exclusively to API routes (see feature 005-fix-consultation-api for architecture justification).
 
 ### II. Performance-First Development ✅ **PASS**
 

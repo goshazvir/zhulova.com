@@ -47,10 +47,11 @@ Fix critical bug in consultation form submission: API validation schema doesn't 
 
 ### I. Static-First Delivery ✅ PASS
 
-- ✅ No SSR or hybrid modes introduced
+- ✅ Hybrid mode (`output: 'hybrid'`) used for API endpoints only - pages remain static
 - ✅ Fix applies only to serverless API endpoint (not static pages)
 - ✅ Frontend remains fully static (no changes required)
 - ✅ No client-side secrets (service keys server-only)
+- ✅ Static pages pre-rendered at build time, API endpoints run as serverless functions
 
 ### II. Performance-First Development ✅ PASS
 

@@ -128,16 +128,17 @@ components:
           example: "Олена Коваленко"
         phone:
           type: string
-          description: Ukrainian phone number
-          pattern: '^\+380\d{9}$'
+          description: International phone number (minimum 7 digits, supports various formats)
+          minLength: 7
+          maxLength: 20
           example: "+380501234567"
         telegram:
           type: string
           description: |
             Telegram username (with or without @ prefix).
             API automatically normalizes to include @ before saving.
-          pattern: '^@?[a-zA-Z0-9_]{5,32}$'
-          minLength: 5
+          pattern: '^@?[a-zA-Z0-9_]{3,32}$'
+          minLength: 3
           maxLength: 33  # 32 chars + optional @ at start
           nullable: true
           example: "olena_coach"

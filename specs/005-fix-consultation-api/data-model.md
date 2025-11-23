@@ -32,8 +32,8 @@ CREATE TABLE leads (
 ```
 
 **Constraints** (from existing schema):
-- `phone`: Must match `^\+380\d{9}$`
-- `telegram`: If provided, must match `^@[a-zA-Z0-9_]{5,32}$`
+- `phone`: Must contain minimum 7 digits, maximum 20 characters, accepts international formats with digits, spaces, hyphens, plus signs, and parentheses
+- `telegram`: If provided, must match `^@[a-zA-Z0-9_]{3,32}$` (stored with @ prefix)
 - `email`: If provided, must be valid email format
 - `name`: 2-255 characters
 
@@ -51,15 +51,19 @@ import { z } from 'zod';
 const leadSchema = z.object({
   name: z.string()
     .min(2, 'Name must be at least 2 characters')
-    .max(255, 'Name is too long')
     .trim(),
 
   phone: z.string()
-    .regex(/^\+380\d{9}$/, 'Phone must be in format +380XXXXXXXXX')
-    .trim(),
+    .min(7, 'Phone number is required')
+    .max(20, 'Phone number is too long')
+    .trim()
+    .refine(
+      (val) => /^[\d\s\-\+\(\)]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
+      'Please enter a valid phone number'
+    ),
 
   telegram: z.string()
-    .regex(/^@?[a-zA-Z0-9_]{5,32}$/, 'Telegram must be 5-32 alphanumeric characters')
+    .regex(/^@?[a-zA-Z0-9_]{3,32}$/, 'Telegram handle must be 3-32 characters')
     .optional()
     .or(z.literal(''))
     .transform(val => {
@@ -69,10 +73,8 @@ const leadSchema = z.object({
 
   email: z.string()
     .email('Invalid email address')
-    .max(255, 'Email is too long')
     .optional()
-    .or(z.literal(''))
-    .transform(val => val === '' ? undefined : val),
+    .or(z.literal('')),
 });
 
 type LeadInput = z.infer<typeof leadSchema>;
@@ -276,8 +278,8 @@ updated_at                           | 2025-11-17 19:30:45.123456+00
 | Field | Required | Format | Min | Max | Transform |
 |-------|----------|--------|-----|-----|-----------|
 | `name` | ✅ Yes | String | 2 chars | 255 chars | Trim whitespace |
-| `phone` | ✅ Yes | `+380XXXXXXXXX` | - | - | Trim whitespace |
-| `telegram` | ❌ No | `@?[a-zA-Z0-9_]{5,32}` | 5 chars | 32 chars | Add `@` if missing |
+| `phone` | ✅ Yes | International phone | 7 digits | 20 chars | Trim whitespace, validate digits |
+| `telegram` | ❌ No | `@?[a-zA-Z0-9_]{3,32}` | 3 chars | 32 chars | Add `@` if missing |
 | `email` | ❌ No | Email format | - | 255 chars | Empty string → `undefined` |
 | `source` | Auto | - | - | - | Set to `consultation_modal` |
 | `user_agent` | Auto | - | - | - | From HTTP header |

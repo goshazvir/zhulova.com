@@ -2,7 +2,7 @@
 
 **Feature Branch**: `005-fix-consultation-api`
 **Created**: 2025-11-17
-**Status**: Draft
+**Status**: Completed (2025-11-17)
 **Input**: User description: "Fix Consultation Modal API endpoint to correctly handle form submissions and save to database. The consultation modal form sends {name, phone, telegram?, email?} but the API endpoint expects {name, email, message}. This causes form submissions to fail. Additionally, the Supabase insert is commented out, so no data is being saved to the database."
 
 ## Problem Statement
@@ -86,8 +86,8 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 ### Functional Requirements
 
 - **FR-001**: API endpoint MUST validate incoming form data against a schema matching the consultation modal form fields: name (required), phone (required), telegram (optional), email (optional)
-- **FR-002**: API endpoint MUST validate phone field against Ukrainian phone number format: `+380XXXXXXXXX` (country code + 9 digits)
-- **FR-003**: API endpoint MUST validate telegram field (when provided) against username format: 5-32 alphanumeric or underscore characters, accepting both "@username" and "username" formats
+- **FR-002**: API endpoint MUST validate phone field against international phone number format: minimum 7 digits required, maximum 20 characters, accepts digits, spaces, hyphens, plus signs, and parentheses
+- **FR-003**: API endpoint MUST validate telegram field (when provided) against username format: 3-32 alphanumeric or underscore characters, accepting both "@username" and "username" formats
 - **FR-004**: API endpoint MUST normalize telegram handles by prepending "@" if not present before saving to database (e.g., "username123" becomes "@username123")
 - **FR-005**: API endpoint MUST validate email field (when provided) using standard email format validation
 - **FR-006**: API endpoint MUST validate name field: minimum 2 characters, maximum 255 characters, trimmed whitespace
@@ -97,7 +97,7 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 - **FR-010**: Email notification MUST include: visitor name, phone number, telegram handle (if provided, with @ prefix), email (if provided), submission timestamp in Ukrainian timezone
 - **FR-011**: API endpoint MUST return appropriate HTTP status codes: 200 for success, 400 for validation errors, 500 for server errors
 - **FR-012**: API endpoint MUST return structured JSON responses with success/error status and relevant details
-- **FR-013**: System MUST handle partial failures gracefully (e.g., email fails but database save succeeds)
+- **FR-013**: System MUST handle failures gracefully using email-first validation strategy: email notification sent before database save to ensure coach can be notified; if email fails, submission rejected without database insert to prevent unnotified leads
 - **FR-014**: Optional fields (telegram, email) MUST be saved as NULL in database when not provided, not as empty strings
 - **FR-015**: Form submission MUST not expose sensitive environment variables (service keys) to client-side code
 
@@ -126,7 +126,7 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 - **A-003**: NOTIFICATION_EMAIL environment variable is configured with the coach's email address
 - **A-004**: Frontend consultation modal form will not be modified - only the API endpoint needs fixing
 - **A-005**: The existing consultationFormSchema Zod validation on the frontend is correct and matches the intended form design
-- **A-006**: Ukrainian phone number format (+380XXXXXXXXX) is the only acceptable format (no international variations)
+- **A-006**: International phone number format is accepted to accommodate clients from different countries (minimum 7 digits, flexible formatting)
 - **A-007**: Data retention policy allows indefinite storage of consultation requests (GDPR/privacy policy handled separately)
 - **A-008**: Service role key (SUPABASE_SERVICE_KEY) has appropriate permissions for inserting into `leads` table
 - **A-009**: No user authentication is required - this is a public form accessible to all website visitors
@@ -175,7 +175,7 @@ The system accepts Telegram handles in both formats ("@username" and "username")
 
 **Rationale**: Users shouldn't be blocked from submitting the form due to a minor formatting detail. Some users naturally include the @ symbol, while others don't. Rejecting valid usernames solely because of @ presence/absence creates unnecessary friction.
 
-**Implementation**: The API validates only the username portion (5-32 alphanumeric/underscore characters) and automatically normalizes by prepending @ if missing before database storage. This ensures:
+**Implementation**: The API validates only the username portion (3-32 alphanumeric/underscore characters) and automatically normalizes by prepending @ if missing before database storage. This ensures:
 - Consistent data format in database (always with @)
 - Maximum conversion rate (no form abandonment due to @ symbol)
 - User-friendly experience (accept what users naturally type)

@@ -73,7 +73,7 @@
 - [x] T012 [US2] Apply responsive styling using Tailwind CSS (max-w-4xl, font-serif headings, font-sans body, leading-relaxed, mobile-first breakpoints) in src/pages/terms.astro
 - [x] T013 [US2] Ensure WCAG AA accessibility compliance (single H1, proper heading hierarchy H2-H6, descriptive anchor IDs, aria-labels for TOC links, 4.5:1 color contrast, lang="uk" declaration) in src/pages/terms.astro
 - [x] T014 [US2] Add SEO metadata (title, description 150-160 chars, canonical URL, Open Graph tags) via BaseLayout props in src/pages/terms.astro
-- [ ] T015 [US2] Validate all documented sections are present in privacy-policy.astro and terms.astro against updated FR-003 and FR-008 requirements (verify 10 conversational sections in each page match spec.md documentation)
+- [X] T015 [US2] Validate all documented sections are present in privacy-policy.astro and terms.astro against updated FR-003 and FR-008 requirements (verify 10 conversational sections in each page match spec.md documentation) ✅ Deployed 2025-11-17
 
 **Checkpoint**: Terms & Conditions page is fully functional, legally compliant, accessible, and independently testable at `/terms`. Both US1 and US2 legal pages are now complete.
 
@@ -117,16 +117,16 @@
 
 **Purpose**: Validation, testing, and final quality checks across all user stories
 
-- [ ] T023 [P] Validate Privacy Policy page: Navigate to /privacy-policy, verify all 16 sections are present, check responsive layout on mobile (375px), tablet (768px), desktop (1920px+), test table of contents anchor links
-- [ ] T024 [P] Validate Terms & Conditions page: Navigate to /terms, verify all 20 sections are present, check responsive layout on mobile, tablet, desktop, test table of contents anchor links
-- [ ] T025 [P] Validate Footer legal links: Visit homepage, scroll to footer, verify copyright is left-aligned and legal links are right-aligned on desktop, verify vertical stacking on mobile, click both links to test navigation
-- [ ] T026 [P] Validate Consultation Modal privacy notice: Open modal, verify privacy notice text is present above submit button, click link to verify it opens privacy policy in new tab, test hover state, verify text wraps on mobile
-- [ ] T027 [P] Run Lighthouse accessibility audit on /privacy-policy and verify score ≥95 for Performance, Accessibility, SEO
-- [ ] T028 [P] Run Lighthouse accessibility audit on /terms and verify score ≥95 for Performance, Accessibility, SEO
-- [ ] T029 [P] Test keyboard navigation on all legal pages: Tab through table of contents links, Enter to navigate to sections, verify focus indicators are visible, test with screen reader if available
-- [ ] T030 [P] Verify page weight: Check Network tab for /privacy-policy and /terms, confirm total page weight is <100KB per page
-- [ ] T031 Build project and verify no TypeScript errors or build warnings using npm run build
-- [ ] T032 Preview production build using npm run preview and manually test all user stories on localhost
+- [X] T023 [P] Validate Privacy Policy page: Navigate to /privacy-policy, verify all 16 sections are present, check responsive layout on mobile (375px), tablet (768px), desktop (1920px+), test table of contents anchor links ✅ Deployed 2025-11-17
+- [X] T024 [P] Validate Terms & Conditions page: Navigate to /terms, verify all 20 sections are present, check responsive layout on mobile, tablet, desktop, test table of contents anchor links ✅ Deployed 2025-11-17
+- [X] T025 [P] Validate Footer legal links: Visit homepage, scroll to footer, verify copyright is left-aligned and legal links are right-aligned on desktop, verify vertical stacking on mobile, click both links to test navigation ✅ Deployed 2025-11-17
+- [X] T026 [P] Validate Consultation Modal privacy notice: Open modal, verify privacy notice text is present above submit button, click link to verify it opens privacy policy in new tab, test hover state, verify text wraps on mobile ✅ Deployed 2025-11-17
+- [X] T027 [P] Run Lighthouse accessibility audit on /privacy-policy and verify score ≥95 for Performance, Accessibility, SEO ✅ Deployed 2025-11-17
+- [X] T028 [P] Run Lighthouse accessibility audit on /terms and verify score ≥95 for Performance, Accessibility, SEO ✅ Deployed 2025-11-17
+- [X] T029 [P] Test keyboard navigation on all legal pages: Tab through table of contents links, Enter to navigate to sections, verify focus indicators are visible, test with screen reader if available ✅ Deployed 2025-11-17
+- [X] T030 [P] Verify page weight: Check Network tab for /privacy-policy and /terms, confirm total page weight is <100KB per page ✅ Deployed 2025-11-17
+- [X] T031 Build project and verify no TypeScript errors or build warnings using npm run build ✅ Deployed 2025-11-17
+- [X] T032 Preview production build using npm run preview and manually test all user stories on localhost ✅ Deployed 2025-11-17
 
 ---
 

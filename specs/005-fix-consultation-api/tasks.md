@@ -78,17 +78,17 @@ All scenarios are handled by the same validation schema and logic.
 
 ### Implementation Tasks
 
-- [ ] T006 [US1] Update Zod validation schema in `api/submit-lead.ts` to match form fields (name, phone, telegram?, email?)
-- [ ] T007 [US1] Remove old schema fields (message) from `api/submit-lead.ts`
-- [ ] T008 [US1] Add telegram normalization transform in API validation schema (prepend @ if missing)
-- [ ] T009 [US1] Add metadata population in `api/submit-lead.ts` (source='consultation_modal', user_agent, referrer)
-- [ ] T010 [US1] Uncomment Supabase insert code in `api/submit-lead.ts` (currently lines 49-54 are commented)
-- [ ] T011 [US1] Update Supabase insert to use correct data variable (leadData with metadata, not just validatedData)
-- [ ] T012 [US1] Update email template in `api/submit-lead.ts` to match new form fields (phone, telegram, no message)
-- [ ] T013 [US1] Add conditional rendering for optional fields in email template (telegram?, email?)
-- [ ] T014 [US1] Update success response to include leadId from database insert
-- [ ] T015 [US1] Add error handling for partial failures (DB success but email fails)
-- [ ] T016 [US1] Add console logging for debugging (DB errors, email errors, successful submissions)
+- [X] T006 [US1] Update Zod validation schema in `api/submit-lead.ts` to match form fields (name, phone, telegram?, email?) ✅ Deployed 2025-11-17
+- [X] T007 [US1] Remove old schema fields (message) from `api/submit-lead.ts` ✅ Deployed 2025-11-17
+- [X] T008 [US1] Add telegram normalization transform in API validation schema (prepend @ if missing) ✅ Deployed 2025-11-17
+- [X] T009 [US1] Add metadata population in `api/submit-lead.ts` (source='consultation_modal', user_agent, referrer) ✅ Deployed 2025-11-17
+- [X] T010 [US1] Uncomment Supabase insert code in `api/submit-lead.ts` (currently lines 49-54 are commented) ✅ Deployed 2025-11-17
+- [X] T011 [US1] Update Supabase insert to use correct data variable (leadData with metadata, not just validatedData) ✅ Deployed 2025-11-17
+- [X] T012 [US1] Update email template in `api/submit-lead.ts` to match new form fields (phone, telegram, no message) ✅ Deployed 2025-11-17
+- [X] T013 [US1] Add conditional rendering for optional fields in email template (telegram?, email?) ✅ Deployed 2025-11-17
+- [X] T014 [US1] Update success response to include leadId from database insert ✅ Deployed 2025-11-17
+- [X] T015 [US1] Add error handling for partial failures (DB success but email fails) ✅ Deployed 2025-11-17
+- [X] T016 [US1] Add console logging for debugging (DB errors, email errors, successful submissions) ✅ Deployed 2025-11-17
 
 **File Modified**: `api/submit-lead.ts` (all tasks target same file - must be done sequentially)
 
@@ -222,11 +222,11 @@ if (emailError) {
 
 ### Verification Tasks
 
-- [ ] T017 [US2] Test minimal submission locally using `npm run dev:vercel`
-- [ ] T018 [US2] Submit form with only name="Test User" and phone="+380501234567"
-- [ ] T019 [US2] Verify success message appears in browser
-- [ ] T020 [US2] Verify database record in Supabase has telegram=NULL and email=NULL
-- [ ] T021 [US2] Verify email notification shows only name and phone (no empty field lines)
+- [X] T017 [US2] Test minimal submission locally using `npm run dev:vercel` ✅ Deployed 2025-11-17
+- [X] T018 [US2] Submit form with only name="Test User" and phone="+380501234567" ✅ Deployed 2025-11-17
+- [X] T019 [US2] Verify success message appears in browser ✅ Deployed 2025-11-17
+- [X] T020 [US2] Verify database record in Supabase has telegram=NULL and email=NULL ✅ Deployed 2025-11-17
+- [X] T021 [US2] Verify email notification shows only name and phone (no empty field lines) ✅ Deployed 2025-11-17
 
 **Checkpoint**: Minimal field submissions work correctly (required fields only)
 
@@ -244,12 +244,12 @@ if (emailError) {
 
 ### Verification Tasks
 
-- [ ] T022 [US3] Test invalid phone format ("+38050") → verify 400 validation error
-- [ ] T023 [US3] Test telegram without @ ("username123") → verify submission succeeds and database stores "@username123"
-- [ ] T024 [US3] Test telegram with @ ("@username123") → verify submission succeeds and database stores "@username123" unchanged
-- [ ] T025 [US3] Test invalid email ("notanemail") → verify 400 validation error
-- [ ] T026 [US3] Test name too short ("A") → verify 400 validation error
-- [ ] T027 [US3] Verify no partial records in database after validation failures
+- [X] T022 [US3] Test invalid phone format ("+38050") → verify 400 validation error ✅ Deployed 2025-11-17
+- [X] T023 [US3] Test telegram without @ ("username123") → verify submission succeeds and database stores "@username123" ✅ Deployed 2025-11-17
+- [X] T024 [US3] Test telegram with @ ("@username123") → verify submission succeeds and database stores "@username123" unchanged ✅ Deployed 2025-11-17
+- [X] T025 [US3] Test invalid email ("notanemail") → verify 400 validation error ✅ Deployed 2025-11-17
+- [X] T026 [US3] Test name too short ("A") → verify 400 validation error ✅ Deployed 2025-11-17
+- [X] T027 [US3] Verify no partial records in database after validation failures ✅ Deployed 2025-11-17
 
 **Checkpoint**: All validation rules working, telegram normalization functional, invalid data blocked
 
@@ -261,15 +261,15 @@ if (emailError) {
 
 **Checkpoint**: Automated tests pass, ready for deployment
 
-- [ ] T028 [P] Create test script at `.claude/scripts/test-consultation-api.js`
-- [ ] T029 [P] Add test case: valid submission (all fields)
-- [ ] T030 [P] Add test case: valid submission (required only)
-- [ ] T031 [P] Add test case: telegram normalization (without @)
-- [ ] T032 [P] Add test case: invalid phone format
-- [ ] T033 [P] Add test case: invalid email format
-- [ ] T034 [P] Add test case: missing required field
-- [ ] T035 Run test script: `node .claude/scripts/test-consultation-api.js`
-- [ ] T036 Verify all test cases pass
+- [X] T028 [P] Create test script at `.claude/scripts/test-consultation-api.js` ✅ Deployed 2025-11-17
+- [X] T029 [P] Add test case: valid submission (all fields) ✅ Deployed 2025-11-17
+- [X] T030 [P] Add test case: valid submission (required only) ✅ Deployed 2025-11-17
+- [X] T031 [P] Add test case: telegram normalization (without @) ✅ Deployed 2025-11-17
+- [X] T032 [P] Add test case: invalid phone format ✅ Deployed 2025-11-17
+- [X] T033 [P] Add test case: invalid email format ✅ Deployed 2025-11-17
+- [X] T034 [P] Add test case: missing required field ✅ Deployed 2025-11-17
+- [X] T035 Run test script: `node .claude/scripts/test-consultation-api.js` ✅ Deployed 2025-11-17
+- [X] T036 Verify all test cases pass ✅ Deployed 2025-11-17
 
 **Test Script Template** (`.claude/scripts/test-consultation-api.js`):
 ```javascript
@@ -362,16 +362,16 @@ runTests().catch(console.error);
 
 **Checkpoint**: All tests pass, ready for production deployment
 
-- [ ] T037 Follow quickstart.md Step 1: Run database test (`npm run test:supabase`)
-- [ ] T038 Follow quickstart.md Step 2: Start dev server (`npm run dev:vercel`)
-- [ ] T039 Follow quickstart.md Step 2: Run API test script
-- [ ] T040 Follow quickstart.md Step 3: Manual browser test (all fields)
-- [ ] T041 Follow quickstart.md Step 3: Verify database record in Supabase
-- [ ] T042 Follow quickstart.md Step 3: Verify email received at goshazvir@gmail.com
-- [ ] T043 Follow quickstart.md Step 3: Manual browser test (required fields only)
-- [ ] T044 Follow quickstart.md Step 3: Test validation errors
-- [ ] T045 Delete all test records from Supabase database
-- [ ] T046 Verify Vercel environment variables match local `.env` (NOTIFICATION_EMAIL, etc.)
+- [X] T037 Follow quickstart.md Step 1: Run database test (`npm run test:supabase`) ✅ Deployed 2025-11-17
+- [X] T038 Follow quickstart.md Step 2: Start dev server (`npm run dev:vercel`) ✅ Deployed 2025-11-17
+- [X] T039 Follow quickstart.md Step 2: Run API test script ✅ Deployed 2025-11-17
+- [X] T040 Follow quickstart.md Step 3: Manual browser test (all fields) ✅ Deployed 2025-11-17
+- [X] T041 Follow quickstart.md Step 3: Verify database record in Supabase ✅ Deployed 2025-11-17
+- [X] T042 Follow quickstart.md Step 3: Verify email received at goshazvir@gmail.com ✅ Deployed 2025-11-17
+- [X] T043 Follow quickstart.md Step 3: Manual browser test (required fields only) ✅ Deployed 2025-11-17
+- [X] T044 Follow quickstart.md Step 3: Test validation errors ✅ Deployed 2025-11-17
+- [X] T045 Delete all test records from Supabase database ✅ Deployed 2025-11-17
+- [X] T046 Verify Vercel environment variables match local `.env` (NOTIFICATION_EMAIL, etc.) ✅ Deployed 2025-11-17
 
 **Reference**: Follow `/specs/005-fix-consultation-api/quickstart.md` for detailed testing steps
 
@@ -381,11 +381,11 @@ runTests().catch(console.error);
 
 **Purpose**: Update documentation and prepare for handoff
 
-- [ ] T047 [P] Update CLAUDE.md Recent Changes section with this fix
-- [ ] T048 [P] Add note to `.claude/docs/before-prod.md` reminder to change email before production
-- [ ] T049 [P] Verify all spec documents are accurate (spec.md, plan.md, data-model.md)
-- [ ] T050 Create git commit with clear message explaining the fix
-- [ ] T051 Push to branch 005-fix-consultation-api (do NOT push to main without approval)
+- [X] T047 [P] Update CLAUDE.md Recent Changes section with this fix ✅ Deployed 2025-11-17
+- [X] T048 [P] Add note to `.claude/docs/before-prod.md` reminder to change email before production ✅ Deployed 2025-11-17
+- [X] T049 [P] Verify all spec documents are accurate (spec.md, plan.md, data-model.md) ✅ Deployed 2025-11-17
+- [X] T050 Create git commit with clear message explaining the fix ✅ Deployed 2025-11-17
+- [X] T051 Push to branch 005-fix-consultation-api (do NOT push to main without approval) ✅ Deployed 2025-11-17
 
 **Commit Message Template**:
 ```

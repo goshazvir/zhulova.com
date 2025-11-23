@@ -29,11 +29,11 @@
 
 **Checkpoint**: Understand baseline before making changes
 
-- [ ] T001 Verify git branch is 006-complete-spec-alignment or 005-fix-consultation-api
-- [ ] T002 [P] Verify access to all target files in specs/005-fix-consultation-api/
-- [ ] T003 [P] Run baseline grep search: `grep -r "consultation request" specs/005-fix-consultation-api/` and count matches (expected: multiple)
-- [ ] T004 [P] Verify src/pages/api/submit-lead.ts exists and is readable for code reference lookups
-- [ ] T005 Create backup of specs/005-fix-consultation-api/ directory (optional safety measure)
+- [X] T001 Verify git branch is 006-complete-spec-alignment or 005-fix-consultation-api ✅ Deployed 2025-11-23
+- [X] T002 [P] Verify access to all target files in specs/005-fix-consultation-api/ ✅ Deployed 2025-11-23
+- [X] T003 [P] Run baseline grep search: `grep -r "consultation request" specs/005-fix-consultation-api/` and count matches (expected: multiple) ✅ Deployed 2025-11-23
+- [X] T004 [P] Verify src/pages/api/submit-lead.ts exists and is readable for code reference lookups ✅ Deployed 2025-11-23
+- [X] T005 Create backup of specs/005-fix-consultation-api/ directory (optional safety measure) ✅ Deployed 2025-11-23
 
 **Expected Outcome**:
 - Branch confirmed
@@ -62,14 +62,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 1 (duplicate submissions) with documented behavior from 006 spec.md lines 89-96
-- [ ] T007 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 2 (network failures) with documented behavior from 006 spec.md lines 98-103
-- [ ] T008 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 3 (Supabase down) with documented behavior from 006 spec.md lines 105-111
-- [ ] T009 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 4 (email fails) with documented behavior from 006 spec.md lines 113-118
-- [ ] T010 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 5 (special characters) with documented behavior from 006 spec.md lines 120-125
-- [ ] T011 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 6 (missing metadata) with documented behavior from 006 spec.md lines 127-131
-- [ ] T012 [US1] Add code line references to each edge case answer (e.g., "Implementation: lines 59-83 in src/pages/api/submit-lead.ts")
-- [ ] T013 [US1] Verify edge cases section formatting - use bold for edge case titles, consistent structure across all 6
+- [X] T006 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 1 (duplicate submissions) with documented behavior from 006 spec.md lines 89-96 ✅ Deployed 2025-11-23
+- [X] T007 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 2 (network failures) with documented behavior from 006 spec.md lines 98-103 ✅ Deployed 2025-11-23
+- [X] T008 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 3 (Supabase down) with documented behavior from 006 spec.md lines 105-111 ✅ Deployed 2025-11-23
+- [X] T009 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 4 (email fails) with documented behavior from 006 spec.md lines 113-118 ✅ Deployed 2025-11-23
+- [X] T010 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 5 (special characters) with documented behavior from 006 spec.md lines 120-125 ✅ Deployed 2025-11-23
+- [X] T011 [US1] Update specs/005-fix-consultation-api/spec.md edge cases section - replace question 6 (missing metadata) with documented behavior from 006 spec.md lines 127-131 ✅ Deployed 2025-11-23
+- [X] T012 [US1] Add code line references to each edge case answer (e.g., "Implementation: lines 59-83 in src/pages/api/submit-lead.ts") ✅ Deployed 2025-11-23
+- [X] T013 [US1] Verify edge cases section formatting - use bold for edge case titles, consistent structure across all 6 ✅ Deployed 2025-11-23
 
 **Verification**:
 ```bash
@@ -89,12 +89,12 @@ grep -A 10 "### Edge Cases" specs/005-fix-consultation-api/spec.md
 
 ### Implementation for User Story 2
 
-- [ ] T014 [P] [US2] Check src/pages/api/submit-lead.ts lines 64-71 (email template) - confirm NO timestamp in HTML
-- [ ] T015 [US2] Update specs/005-fix-consultation-api/spec.md FR-010 - remove timestamp claim OR change to "Email notification MUST include: visitor name, phone, telegram (if provided), email (if provided), source" (no timestamp mention)
-- [ ] T016 [US2] Search src/pages/api/submit-lead.ts for "duplicate" - confirm zero results
-- [ ] T017 [US2] Update specs/005-fix-consultation-api/spec.md SC-006 - remove "Duplicate submissions tracked" criterion entirely OR move to "Future Enhancements" section
-- [ ] T018 [US2] Add "Future Enhancements" section to specs/005-fix-consultation-api/spec.md after "Out of Scope" section (if not exists)
-- [ ] T019 [US2] Move removed features (timestamp, duplicate tracking) to Future Enhancements section with rationale (if keeping for reference)
+- [X] T014 [P] [US2] Check src/pages/api/submit-lead.ts lines 64-71 (email template) - confirm NO timestamp in HTML ✅ Deployed 2025-11-23
+- [X] T015 [US2] Update specs/005-fix-consultation-api/spec.md FR-010 - remove timestamp claim OR change to "Email notification MUST include: visitor name, phone, telegram (if provided), email (if provided), source" (no timestamp mention) ✅ Deployed 2025-11-23
+- [X] T016 [US2] Search src/pages/api/submit-lead.ts for "duplicate" - confirm zero results ✅ Deployed 2025-11-23
+- [X] T017 [US2] Update specs/005-fix-consultation-api/spec.md SC-006 - remove "Duplicate submissions tracked" criterion entirely OR move to "Future Enhancements" section ✅ Deployed 2025-11-23
+- [X] T018 [US2] Add "Future Enhancements" section to specs/005-fix-consultation-api/spec.md after "Out of Scope" section (if not exists) ✅ Deployed 2025-11-23
+- [X] T019 [US2] Move removed features (timestamp, duplicate tracking) to Future Enhancements section with rationale (if keeping for reference) ✅ Deployed 2025-11-23
 
 **Verification**:
 ```bash
@@ -117,13 +117,13 @@ grep "SC-006" specs/005-fix-consultation-api/spec.md
 
 ### Implementation for User Story 3
 
-- [ ] T020 [P] [US3] Create "Monitoring & Verification" section in specs/005-fix-consultation-api/spec.md after "Success Criteria" section
-- [ ] T021 [P] [US3] Add verification table to new section with columns: Criterion, How to Measure, Tool/Location
-- [ ] T022 [US3] Document SC-001 verification: "Check Vercel function logs for errors → Vercel Dashboard → Functions → submit-lead logs"
-- [ ] T023 [US3] Document SC-002 verification: "Check Resend email delivery times → Resend Dashboard → Emails → filter by date"
-- [ ] T024 [US3] Document SC-003 verification: "Monitor 400 validation errors → Vercel Logs → filter status:400"
-- [ ] T025 [US3] Document SC-004 verification: "Audit Supabase leads table count vs Vercel function success count → Compare via SQL + logs"
-- [ ] T026 [US3] Document SC-005 verification: "Check API p95 response time → Vercel Speed Insights → Functions → submit-lead"
+- [X] T020 [P] [US3] Create "Monitoring & Verification" section in specs/005-fix-consultation-api/spec.md after "Success Criteria" section ✅ Deployed 2025-11-23
+- [X] T021 [P] [US3] Add verification table to new section with columns: Criterion, How to Measure, Tool/Location ✅ Deployed 2025-11-23
+- [X] T022 [US3] Document SC-001 verification: "Check Vercel function logs for errors → Vercel Dashboard → Functions → submit-lead logs" ✅ Deployed 2025-11-23
+- [X] T023 [US3] Document SC-002 verification: "Check Resend email delivery times → Resend Dashboard → Emails → filter by date" ✅ Deployed 2025-11-23
+- [X] T024 [US3] Document SC-003 verification: "Monitor 400 validation errors → Vercel Logs → filter status:400" ✅ Deployed 2025-11-23
+- [X] T025 [US3] Document SC-004 verification: "Audit Supabase leads table count vs Vercel function success count → Compare via SQL + logs" ✅ Deployed 2025-11-23
+- [X] T026 [US3] Document SC-005 verification: "Check API p95 response time → Vercel Speed Insights → Functions → submit-lead" ✅ Deployed 2025-11-23
 
 **Verification**:
 ```bash
@@ -143,13 +143,13 @@ grep -A 15 "Monitoring" specs/005-fix-consultation-api/spec.md
 
 ### Implementation for User Story 4
 
-- [ ] T027 [US4] Review specs/005-fix-consultation-api/spec.md FR-001 to FR-006 - identify which ones duplicate validation details from data-model.md
-- [ ] T028 [US4] Replace FR-002 (phone validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate phone field per international format defined in [data-model.md](./data-model.md#validation-rules-summary)"
-- [ ] T029 [US4] Replace FR-003 (telegram validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate telegram field per pattern defined in [data-model.md](./data-model.md#validation-rules-summary)"
-- [ ] T030 [US4] Replace FR-005 (email validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate email field per standard format defined in [data-model.md](./data-model.md#validation-rules-summary)"
-- [ ] T031 [US4] Replace FR-006 (name validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate name field per length requirements defined in [data-model.md](./data-model.md#validation-rules-summary)"
-- [ ] T032 [US4] Verify data-model.md validation rules summary table exists at lines 278-286 (single source of truth)
-- [ ] T033 [US4] Test markdown link: Open specs/005-fix-consultation-api/spec.md in GitHub preview and click data-model.md links - should jump to validation table
+- [X] T027 [US4] Review specs/005-fix-consultation-api/spec.md FR-001 to FR-006 - identify which ones duplicate validation details from data-model.md ✅ Deployed 2025-11-23
+- [X] T028 [US4] Replace FR-002 (phone validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate phone field per international format defined in [data-model.md](./data-model.md#validation-rules-summary)" ✅ Deployed 2025-11-23
+- [X] T029 [US4] Replace FR-003 (telegram validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate telegram field per pattern defined in [data-model.md](./data-model.md#validation-rules-summary)" ✅ Deployed 2025-11-23
+- [X] T030 [US4] Replace FR-005 (email validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate email field per standard format defined in [data-model.md](./data-model.md#validation-rules-summary)" ✅ Deployed 2025-11-23
+- [X] T031 [US4] Replace FR-006 (name validation) in specs/005-fix-consultation-api/spec.md with: "API endpoint MUST validate name field per length requirements defined in [data-model.md](./data-model.md#validation-rules-summary)" ✅ Deployed 2025-11-23
+- [X] T032 [US4] Verify data-model.md validation rules summary table exists at lines 278-286 (single source of truth) ✅ Deployed 2025-11-23
+- [X] T033 [US4] Test markdown link: Open specs/005-fix-consultation-api/spec.md in GitHub preview and click data-model.md links - should jump to validation table ✅ Deployed 2025-11-23
 
 **Verification**:
 ```bash
@@ -169,13 +169,13 @@ grep -A 1 "FR-00[2-6]" specs/005-fix-consultation-api/spec.md
 
 ### Implementation for User Story 5
 
-- [ ] T034 [P] [US5] Global find/replace in specs/005-fix-consultation-api/spec.md: "consultation request" → "lead"
-- [ ] T035 [P] [US5] Global find/replace in specs/005-fix-consultation-api/tasks.md: "consultation request" → "lead" (note: tasks.md might have completion summary)
-- [ ] T036 [P] [US5] Global find/replace in specs/005-fix-consultation-api/quickstart.md: "consultation request" → "lead"
-- [ ] T037 [P] [US5] Review specs/005-fix-consultation-api/data-model.md for "consultation request" - replace if found (likely already uses "lead")
-- [ ] T038 [P] [US5] Review specs/005-fix-consultation-api/plan.md for "consultation request" - replace if found
-- [ ] T039 [US5] Final search verification: `grep -ri "consultation request" specs/005-fix-consultation-api/*.md` - should return zero results
-- [ ] T040 [US5] Check entity naming consistency: database uses "leads" table, code uses "leadData" variable - ensure all docs match
+- [X] T034 [P] [US5] Global find/replace in specs/005-fix-consultation-api/spec.md: "consultation request" → "lead" ✅ Deployed 2025-11-23
+- [X] T035 [P] [US5] Global find/replace in specs/005-fix-consultation-api/tasks.md: "consultation request" → "lead" (note: tasks.md might have completion summary) ✅ Deployed 2025-11-23
+- [X] T036 [P] [US5] Global find/replace in specs/005-fix-consultation-api/quickstart.md: "consultation request" → "lead" ✅ Deployed 2025-11-23
+- [X] T037 [P] [US5] Review specs/005-fix-consultation-api/data-model.md for "consultation request" - replace if found (likely already uses "lead") ✅ Deployed 2025-11-23
+- [X] T038 [P] [US5] Review specs/005-fix-consultation-api/plan.md for "consultation request" - replace if found ✅ Deployed 2025-11-23
+- [X] T039 [US5] Final search verification: `grep -ri "consultation request" specs/005-fix-consultation-api/*.md` - should return zero results ✅ Deployed 2025-11-23
+- [X] T040 [US5] Check entity naming consistency: database uses "leads" table, code uses "leadData" variable - ensure all docs match ✅ Deployed 2025-11-23
 
 **Verification**:
 ```bash
@@ -194,12 +194,12 @@ grep -c "lead" specs/005-fix-consultation-api/spec.md
 
 **Purpose**: Fix configuration documentation and final validation
 
-- [ ] T041 [P] Update specs/005-fix-consultation-api/quickstart.md environment variables section - find RESEND_FROM_EMAIL line
-- [ ] T042 Update specs/005-fix-consultation-api/quickstart.md - change RESEND_FROM_EMAIL comment from "# Optional" to "# Required for email notifications"
-- [ ] T043 [P] Run all verification commands from specs/006-complete-spec-alignment/quickstart.md Step 1-8
-- [ ] T044 [P] Validate markdown links - open specs/005-fix-consultation-api/spec.md in GitHub preview, click all [link](./file.md) references
-- [ ] T045 Create final verification report: count edge cases (should be 6 with answers), grep "consultation request" (should be 0), check FR-010/SC-006 (removed/updated)
-- [ ] T046 Review all changes against specs/006-complete-spec-alignment/spec.md success criteria SC-001 to SC-007
+- [X] T041 [P] Update specs/005-fix-consultation-api/quickstart.md environment variables section - find RESEND_FROM_EMAIL line ✅ Deployed 2025-11-23
+- [X] T042 Update specs/005-fix-consultation-api/quickstart.md - change RESEND_FROM_EMAIL comment from "# Optional" to "# Required for email notifications" ✅ Deployed 2025-11-23
+- [X] T043 [P] Run all verification commands from specs/006-complete-spec-alignment/quickstart.md Step 1-8 ✅ Deployed 2025-11-23
+- [X] T044 [P] Validate markdown links - open specs/005-fix-consultation-api/spec.md in GitHub preview, click all [link](./file.md) references ✅ Deployed 2025-11-23
+- [X] T045 Create final verification report: count edge cases (should be 6 with answers), grep "consultation request" (should be 0), check FR-010/SC-006 (removed/updated) ✅ Deployed 2025-11-23
+- [X] T046 Review all changes against specs/006-complete-spec-alignment/spec.md success criteria SC-001 to SC-007 ✅ Deployed 2025-11-23
 
 ---
 

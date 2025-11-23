@@ -657,6 +657,7 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Markdown (GitHub-flavored), English language + None (plain text editing) (006-complete-spec-alignment)
 - Git version control (files in `specs/005-fix-consultation-api/`) (006-complete-spec-alignment)
 - Git version control (files in `specs/004-legal-pages/`) (007-fix-legal-pages-docs)
+- Git version control (files in `specs/001-base-infrastructure/`) (008-align-base-infra-docs)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

@@ -1003,7 +1003,134 @@ export async function sendConsultationNotification(lead: Lead) {
 
 ---
 
-## 13. Success Criteria
+## 13. Logging & Monitoring
+
+### 13.1 Server-Side Error Logging
+
+**Purpose**: Structured error logging for serverless functions to enable rapid debugging of production issues.
+
+**Architecture**:
+- **Logger Utility**: `src/utils/logger.ts` - Centralized logging with automatic PII sanitization
+- **Log Destination**: stdout/stderr → Vercel Dashboard → Logs tab
+- **Zero Dependencies**: Native console API only (no winston, pino, or bunyan)
+- **Performance Budget**: <5ms per log call (within API response time budget)
+
+**Log Levels** (OWASP-compliant):
+```typescript
+ERROR - Operation failed completely, requires immediate attention
+  Examples: Database connection timeout, missing env vars, unhandled exceptions
+
+WARN  - Degraded functionality with fallback, transient failures
+  Examples: Email rate limits (will retry), validation errors, timeouts
+
+INFO  - Critical operational events (use sparingly to avoid noise)
+  Examples: Cold start env validation, configuration changes
+```
+
+**Structured Log Format**:
+```json
+{
+  "timestamp": "2025-11-23T14:30:00.000Z",
+  "endpoint": "/api/submit-lead",
+  "environment": "production",
+  "requestId": "a1b2c3d4-...",
+  "level": "ERROR",
+  "message": "Database insert failed: connection timeout",
+  "error_type": "db_error",
+  "context": {
+    "action": "submit_lead",
+    "duration": 10500,
+    "errorCode": "ETIMEDOUT",
+    "affectedResource": "leads",
+    "httpStatus": 500
+  }
+}
+```
+
+**What to Log**:
+- ✅ API endpoint errors (database, validation, auth failures)
+- ✅ Email service failures (rate limits, invalid config, timeouts)
+- ✅ Missing/invalid environment variables on cold start
+- ✅ Unhandled exceptions in serverless functions
+- ❌ Successful operations (avoid log noise)
+- ❌ Client-side errors (use Vercel Analytics instead)
+- ❌ Static page renders (no server interaction)
+
+**Security & Privacy** (GDPR/OWASP compliant):
+- **Automatic PII Sanitization**: Emails → `[EMAIL]`, API keys → `[REDACTED]`, phones → `[PHONE]`
+- **Context Truncation**: Max 1KB per log entry to prevent oversized logs
+- **Message Truncation**: Max 500 characters per message
+- **Anonymization**: User IDs hashed, recipients shown as `[ADMIN]`/`[USER]`
+- **No Sensitive Data**: Never log passwords, tokens, full PII, request bodies with sensitive fields
+
+**Usage Example**:
+```typescript
+import { logError, logWarn, logInfo } from '@utils/logger';
+
+// Database error
+logError('Database insert failed: connection timeout', {
+  action: 'submit_lead',
+  duration: 10500,
+  errorCode: 'ETIMEDOUT',
+  affectedResource: 'leads'
+}, '/api/submit-lead');
+
+// Validation error
+logWarn('Request validation failed', {
+  action: 'validate_request',
+  validationErrors: ['email: Invalid format', 'phone: Too short'],
+  httpStatus: 400
+}, '/api/submit-lead');
+
+// Cold start success
+logInfo('Cold start: validated 5 environment variables', {
+  action: 'validate_env',
+  duration: 1
+}, '/api/submit-lead');
+```
+
+**Viewing Logs**:
+1. **Vercel Dashboard** → Select project → **Logs** tab
+2. **Filter by**: Error level, function name, HTTP status, time range
+3. **Search by**: JSON fields like `"error_type":"db_error"` or `"action":"submit_lead"`
+4. **Logs appear**: Within 5-30 seconds of event (near real-time)
+
+**Critical Reliability Rules**:
+- ⚠️ **Always await async operations** before returning response (prevents log loss)
+- ⚠️ **No logging inside loops** (O(n) performance overhead)
+- ⚠️ **Limit to 3-5 log calls per request** (avoid excessive console output)
+- ⚠️ **Never log in hot paths** (removes INFO logs for frequently-called functions)
+
+**Error Type Categories** (for filtering/aggregation):
+- `db_error` - Database connection failures, query errors, RLS violations
+- `email_error` - Email service API failures, rate limits, config errors
+- `validation_error` - User input validation failures (Zod schema errors)
+- `config_error` - Missing environment variables, invalid configuration
+- `system_error` - Unhandled exceptions, circular references, unexpected errors
+- `cold_start` - Function initialization events
+
+**Integration Points**:
+- **Primary**: `/api/submit-lead` endpoint (consultation form)
+- **Future**: All `/api/*` endpoints as they're added
+- **Excluded**: Static pages (no server context), client-side code
+
+### 13.2 Real User Monitoring (RUM)
+
+**Vercel Analytics** (`@vercel/analytics`):
+- User behavior tracking (page views, unique visitors, top pages)
+- Privacy-friendly (no cookies, GDPR compliant)
+- Bundle impact: ~2.5KB gzipped
+
+**Vercel Speed Insights** (`@vercel/speed-insights`):
+- Core Web Vitals: LCP, FID, CLS, FCP, TTFB, INP
+- Performance by region, device, browser
+- Bundle impact: ~0.7KB gzipped
+
+**Access**: Vercel Dashboard → zhulova-com → Analytics / Speed Insights
+
+---
+
+## 14. Success Criteria
 
 ### Pre-Launch Checklist:
 
@@ -1036,11 +1163,12 @@ export async function sendConsultationNotification(lead: Lead) {
 
 ---
 
-**Document Version:** 1.2
-**Last Updated:** 2025-01-16
+**Document Version:** 1.3
+**Last Updated:** 2025-11-23
 **Priority:** CRITICAL - This spec overrides all other considerations. Performance and accessibility are non-negotiable.
 
 **Changelog:**
+- v1.3 (2025-11-23): Added comprehensive Logging & Monitoring section (feature 011-server-error-logging) - structured error logging for serverless functions, OWASP-compliant log levels, PII sanitization, error type categorization
 - v1.2 (2025-01-16): Added Vercel Analytics and Speed Insights for Real User Monitoring (RUM), performance tracking
 - v1.1 (2025-01-16): Added hybrid architecture with serverless functions, Supabase integration, Resend integration, environment variables, security patterns
 - v1.0 (2025-01-14): Initial specification

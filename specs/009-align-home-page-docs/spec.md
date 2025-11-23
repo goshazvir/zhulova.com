@@ -2,7 +2,7 @@
 
 **Feature Branch**: `009-align-home-page-docs`
 **Created**: 2025-11-23
-**Status**: Draft
+**Status**: Completed (2025-11-23)
 **Input**: User description: "Align 002-home-page specification with actual implementation completed 2025-11-16. Fix 13 inconsistencies: (CRITICAL) Status shows 'Draft' but feature completed and deployed; Wrong creation date (2025-01-16 vs actual 2025-11-16); Missing Edge Cases section documenting form validation, API error handling, database connection failures, concurrent submissions, email delivery failures, rate limiting behavior. (HIGH) Functional requirements lack code references to implementation files (ConsultationModal.tsx, submit-lead.ts API endpoint, Supabase schema, Resend email config); Success criteria SC-001 to SC-010 lack measurement methods and monitoring tools; Duplicate validation rules in data-model.md (Lead entity validation appears twice); Missing tasks.md file; CLAUDE.md shows incorrect completion status. (MEDIUM) plan.md constitution check needs server mode clarification for /api/submit-lead endpoint; Assumptions don't reflect actual form fields implemented (name, email, phone, message vs spec claims); Missing quickstart verification steps. Goal: Update spec.md, plan.md, data-model.md to accurately document what was built (consultation modal with Zod validation, serverless API endpoint, Supabase + Resend integration, error handling, rate limiting) OR identify missing implementation. Documentation-only feature, no code changes to src/ files."
 
 ## User Scenarios & Testing *(mandatory)*

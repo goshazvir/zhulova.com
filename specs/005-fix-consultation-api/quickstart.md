@@ -22,7 +22,7 @@ RESEND_API_KEY=re_...
 
 # Email Configuration
 NOTIFICATION_EMAIL=your-email@example.com
-RESEND_FROM_EMAIL=noreply@zhulova.com  # Optional
+RESEND_FROM_EMAIL=noreply@zhulova.com  # Required for email notifications
 ```
 
 **Get values**:
@@ -178,10 +178,10 @@ Check inbox for `NOTIFICATION_EMAIL` address
 
 **Expected Email**:
 ```
-Subject: New Consultation Request from Test User
+Subject: New Lead from Test User
 
 Body:
-  New Consultation Request
+  New Lead
 
   Name: Test User
   Phone: +380501234567

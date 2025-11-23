@@ -225,9 +225,9 @@ const { error } = await resend.emails.send({
   from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
   to: process.env.NOTIFICATION_EMAIL || 'admin@example.com',
   replyTo: validatedData.email || undefined,  // Only set if provided
-  subject: `New Consultation Request from ${validatedData.name}`,
+  subject: `New Lead from ${validatedData.name}`,
   html: `
-    <h2>New Consultation Request</h2>
+    <h2>New Lead</h2>
     <p><strong>Name:</strong> ${validatedData.name}</p>
     <p><strong>Phone:</strong> ${validatedData.phone}</p>
     ${validatedData.telegram ? `<p><strong>Telegram:</strong> ${validatedData.telegram}</p>` : ''}

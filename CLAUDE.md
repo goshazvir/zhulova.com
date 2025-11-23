@@ -660,6 +660,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Git version control (files in `specs/001-base-infrastructure/`) (008-align-base-infra-docs)
 - Markdown (GitHub-flavored), English language + None (plain text editing) + Git version control (files in `specs/002-home-page/`) (009-align-home-page-docs)
 - N/A (documentation files only, no code changes) (009-align-home-page-docs)
+- TypeScript 5.x (strict mode enabled) + None (native console API only per FR-015) (011-server-error-logging)
+- N/A (logs written to stdout/stderr, captured by Vercel infrastructure) (011-server-error-logging)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

@@ -31,10 +31,11 @@ Create two static legal pages (Privacy Policy and Terms & Conditions) with Ukrai
 - **Analysis**:
   - Legal pages will be created as static Astro pages (`src/pages/privacy-policy.astro`, `src/pages/terms.astro`)
   - Content pre-rendered at build time via Astro SSG
-  - No server-side rendering, no runtime database queries
+  - No server-side rendering, no runtime database queries for legal pages
   - Footer and modal updates are static HTML/React components (already using Islands Architecture)
   - No dynamic data fetching for legal content
-- **Evidence**: Using `output: 'static'` in astro.config.mjs (existing configuration)
+- **Evidence**: Using `output: 'hybrid'` in astro.config.mjs - **hybrid mode permitted exclusively for `/api/*` serverless functions**; all pages including legal pages remain pre-rendered static at build time
+- **Note**: Feature 005-fix-consultation-api uses `/api/submit-lead` endpoint (serverless function) requiring hybrid mode. Legal pages unaffected - they remain fully static.
 
 ### II. Performance-First Development ✅ PASS
 

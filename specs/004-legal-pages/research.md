@@ -14,7 +14,9 @@ This document consolidates research findings for implementing legally compliant 
 
 ### Decision: Privacy Policy Structure
 
-The privacy policy will include 16 mandatory sections to comply with Ukrainian Law № 2297-VI "On Personal Data Protection" and GDPR transparency requirements.
+The privacy policy includes 10 conversational sections combining related topics for readability, while maintaining full compliance with Ukrainian Law № 2297-VI "On Personal Data Protection" and GDPR transparency requirements.
+
+**Rationale**: Conversational format combines Ukrainian Law 2297-VI + GDPR requirements into 10 readable sections instead of formal 16-section structure. This approach improves user experience while covering all mandatory disclosure requirements.
 
 ### Required Sections
 
@@ -52,7 +54,9 @@ Ukraine is aligning with EU data protection standards as an EU candidate country
 
 ### Decision: Terms & Conditions Structure
 
-The terms & conditions will include 20 mandatory sections to comply with Ukrainian consumer protection law (Law 1023-XII and new Law 3153-IX effective July 2024) and EU Directives 2011/83/EU and 93/13/EEC.
+The terms & conditions include 10 conversational sections covering all required legal topics, complying with Ukrainian consumer protection law (Law 1023-XII and new Law 3153-IX effective July 2024) and EU Directives 2011/83/EU and 93/13/EEC.
+
+**Rationale**: User-friendly format combines Ukrainian consumer protection law requirements into 10 accessible sections instead of formal 20-section structure. This approach maintains full legal compliance while improving readability and user comprehension.
 
 ### Required Sections
 
@@ -226,8 +230,8 @@ Standard pattern across professional websites. Flexbox provides clean responsive
 
 All "NEEDS CLARIFICATION" items from Technical Context have been resolved:
 
-✅ **Privacy Policy Sections** - 16 mandatory sections identified (Ukrainian Law + GDPR)
-✅ **Terms & Conditions Sections** - 20 mandatory sections identified (Ukrainian consumer law)
+✅ **Privacy Policy Sections** - 10 conversational sections combining Ukrainian Law + GDPR requirements
+✅ **Terms & Conditions Sections** - 10 conversational sections covering Ukrainian consumer law requirements
 ✅ **Accessibility Requirements** - WCAG AA checklist with long-form content best practices
 ✅ **Footer Layout Pattern** - Flexbox responsive design confirmed
 

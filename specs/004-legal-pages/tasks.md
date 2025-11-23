@@ -47,8 +47,8 @@
 ### Implementation for User Story 1
 
 - [x] T001 [US1] Create Privacy Policy page with BaseLayout wrapper in src/pages/privacy-policy.astro
-- [x] T002 [US1] Add Ukrainian privacy policy content with 16 mandatory sections (Data Controller, Purpose, Legal Basis, Data Categories, Retention Period, Third-Party Recipients, Right to Access, Right to Rectification, Right to Erasure, Right to Withdraw Consent, Right to Complaint, Data Security, Contact for Inquiries, Policy Updates, Data Transfer if applicable, Automated Decisions if applicable) in src/pages/privacy-policy.astro
-- [x] T003 [US1] Implement table of contents with anchor links to all 16 sections in src/pages/privacy-policy.astro
+- [x] T002 [US1] Add Ukrainian privacy policy content with 10 conversational sections per updated research.md in src/pages/privacy-policy.astro
+- [x] T003 [US1] ~~Implement table of contents with anchor links to all 16 sections~~ **DESCOPED** - Simple scroll navigation used instead; pages are short enough (~10 sections) that TOC anchor links are unnecessary (see spec.md Out of Scope section) in src/pages/privacy-policy.astro
 - [x] T004 [US1] Add "Last Updated" date display at top of page in src/pages/privacy-policy.astro
 - [x] T005 [US1] Apply responsive styling using Tailwind CSS (max-w-4xl, font-serif headings, font-sans body, leading-relaxed, mobile-first breakpoints) in src/pages/privacy-policy.astro
 - [x] T006 [US1] Ensure WCAG AA accessibility compliance (single H1, proper heading hierarchy H2-H6, descriptive anchor IDs, aria-labels for TOC links, 4.5:1 color contrast, lang="uk" declaration) in src/pages/privacy-policy.astro
@@ -67,12 +67,13 @@
 ### Implementation for User Story 2
 
 - [x] T008 [P] [US2] Create Terms & Conditions page with BaseLayout wrapper in src/pages/terms.astro
-- [x] T009 [US2] Add Ukrainian terms & conditions content with 20 mandatory sections (Service Provider Identity, Service Description, Price & Payment, Duration & Timeline, Withdrawal & Cancellation, Liability Limitations, Service Quality, Intellectual Property, Personal Data Protection, Prohibition of Unfair Terms, Health Disclaimers, Force Majeure, Dispute Resolution, Refund Procedures, Modification & Termination, Professional Qualifications, Session Cancellation, Client Responsibility, Clear Language, Consumer Rights Summary) in src/pages/terms.astro
-- [x] T010 [US2] Implement table of contents with anchor links to all 20 sections in src/pages/terms.astro
+- [x] T009 [US2] Add Ukrainian terms & conditions content with 10 conversational sections per updated research.md in src/pages/terms.astro
+- [x] T010 [US2] ~~Implement table of contents with anchor links to all 20 sections~~ **DESCOPED** - Simple scroll navigation used instead; pages are short enough (~10 sections) that TOC anchor links are unnecessary (see spec.md Out of Scope section) in src/pages/terms.astro
 - [x] T011 [US2] Add "Last Updated" date display at top of page in src/pages/terms.astro
 - [x] T012 [US2] Apply responsive styling using Tailwind CSS (max-w-4xl, font-serif headings, font-sans body, leading-relaxed, mobile-first breakpoints) in src/pages/terms.astro
 - [x] T013 [US2] Ensure WCAG AA accessibility compliance (single H1, proper heading hierarchy H2-H6, descriptive anchor IDs, aria-labels for TOC links, 4.5:1 color contrast, lang="uk" declaration) in src/pages/terms.astro
 - [x] T014 [US2] Add SEO metadata (title, description 150-160 chars, canonical URL, Open Graph tags) via BaseLayout props in src/pages/terms.astro
+- [ ] T015 [US2] Validate all documented sections are present in privacy-policy.astro and terms.astro against updated FR-003 and FR-008 requirements (verify 10 conversational sections in each page match spec.md documentation)
 
 **Checkpoint**: Terms & Conditions page is fully functional, legally compliant, accessible, and independently testable at `/terms`. Both US1 and US2 legal pages are now complete.
 

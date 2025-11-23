@@ -649,6 +649,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Static content files in `src/pages/` directory (Astro file-based routing) (004-legal-pages)
 - TypeScript 5.x (strict mode), Node.js runtime (Vercel serverless) (005-fix-consultation-api)
 - Supabase PostgreSQL with RLS policies (existing `leads` table, schema documented in `specs/002-home-page/data-model.md`) (005-fix-consultation-api)
+- Markdown (GitHub-flavored), English language + None (plain text editing) (006-complete-spec-alignment)
+- Git version control (files in `specs/005-fix-consultation-api/`) (006-complete-spec-alignment)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

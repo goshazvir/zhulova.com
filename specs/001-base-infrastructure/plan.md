@@ -25,7 +25,7 @@ Create a comprehensive foundation for the Zhulova website including a reusable B
 
 ### Pre-Phase 0 Validation ✅
 
-- ✅ **Static-First Architecture**: All components will be pre-rendered at build time, no SSR
+- ✅ **Static-First Architecture**: Server mode permitted exclusively for future /api/* serverless functions (feature 005-fix-consultation-api); all pages including home/courses/contacts/privacy/terms remain pre-rendered static at build time (astro.config.mjs: `output: 'server'` with prerendering for all pages)
 - ✅ **Performance Budgets**: Targets align with constitution (Lighthouse 95+, bundle limits)
 - ✅ **Accessibility Requirements**: WCAG AA compliance is core requirement (User Story 5)
 - ✅ **TypeScript Strict Mode**: Specified in technical context

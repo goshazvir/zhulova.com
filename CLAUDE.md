@@ -750,4 +750,4 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
   - **Analytics**: Vercel Analytics + Speed Insights integrated
   - **Remaining**: Image optimization, end-to-end testing (optional)
 
-- **001-base-infrastructure** (2025-01-14): Initial project setup with TypeScript 5.x (strict mode) + Astro 4.x (SSG framework), React 18.x (interactive islands), Tailwind CSS 3.x (styling), Zustand 4.x (state management)
+- **001-base-infrastructure** (2025-11-14 to 2025-11-16): Initial project setup with TypeScript 5.x (strict mode) + Astro 4.x (SSG framework), React 18.x (interactive islands), Tailwind CSS 3.x (styling), Zustand 4.x (state management)

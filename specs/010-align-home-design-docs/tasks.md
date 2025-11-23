@@ -27,11 +27,11 @@
 
 **Checkpoint**: All reference materials accessible, git branch verified
 
-- [ ] T001 Verify git branch is `010-align-home-design-docs` and working directory is clean
-- [ ] T002 [P] Verify all target files exist: `specs/003-home-design-refinement/spec.md`, `plan.md`, `tasks.md`
-- [ ] T003 [P] Verify all implementation files accessible: `src/components/sections/StatsSection.astro`, `Footer.astro`, `CaseStudiesSection.astro`, `QuestionsSection.astro`, `TestimonialsSection.astro`
-- [ ] T004 [P] Open reference materials: `specs/003-home-design-refinement/PROGRESS.md`, `specs/010-align-home-design-docs/research.md`, `quickstart.md`
-- [ ] T005 Extract git commit SHAs for T005-T009 using `git log --oneline --merges | grep -E "#9|#10|#11"` and save mapping to `/tmp/commits-003.txt`
+- [X] T001 Verify git branch is `010-align-home-design-docs` and working directory is clean
+- [X] T002 [P] Verify all target files exist: `specs/003-home-design-refinement/spec.md`, `plan.md`, `tasks.md`
+- [X] T003 [P] Verify all implementation files accessible: `src/components/sections/StatsSection.astro`, `Footer.astro`, `CaseStudiesSection.astro`, `QuestionsSection.astro`, `TestimonialsSection.astro`
+- [X] T004 [P] Open reference materials: `specs/003-home-design-refinement/PROGRESS.md`, `specs/010-align-home-design-docs/research.md`, `quickstart.md`
+- [X] T005 Extract git commit SHAs for T005-T009 using `git log --oneline --merges | grep -E "#9|#10|#11"` and save mapping to `/tmp/commits-003.txt`
 
 ---
 
@@ -45,17 +45,17 @@
 
 ### Implementation for User Story 1
 
-- [ ] T006 [P] [US1] Add code references to FR-001 to FR-005 (StatsSection requirements) in `specs/003-home-design-refinement/spec.md` with format `*(StatsSection.astro:line-range description)*`
-- [ ] T007 [P] [US1] Add code references to FR-006 to FR-010 (Footer requirements) in `specs/003-home-design-refinement/spec.md` with format `*(Footer.astro:line-range description)*`
-- [ ] T008 [P] [US1] Add code references to FR-011 to FR-015 (CaseStudiesSection requirements) in `specs/003-home-design-refinement/spec.md` with format `*(CaseStudiesSection.astro:line-range description)*`
-- [ ] T009 [P] [US1] Add code references to FR-016 to FR-022 (QuestionsSection requirements) in `specs/003-home-design-refinement/spec.md` with format `*(QuestionsSection.astro:line-range description)*`
-- [ ] T010 [P] [US1] Add code references to FR-023 to FR-030 (TestimonialsSection and general requirements) in `specs/003-home-design-refinement/spec.md` with format `*(TestimonialsSection.astro:line-range description)*`
-- [ ] T011 [US1] Replace edge case Q1 (carousel navigation boundaries) with 5-field Q&A format (Question, Answer, Code, Behavior, User Impact) in `specs/003-home-design-refinement/spec.md`
-- [ ] T012 [US1] Replace edge case Q2 (responsive breakpoint at 768px) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
-- [ ] T013 [US1] Replace edge case Q3 (tab switching mid-scroll) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
-- [ ] T014 [US1] Replace edge case Q4 (white space calculations) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
-- [ ] T015 [US1] Replace edge case Q5 (footer height on small viewports) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
-- [ ] T016 [US1] Replace edge case Q6 (JavaScript fallback behavior) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
+- [X] T006 [P] [US1] Add code references to FR-001 to FR-005 (StatsSection requirements) in `specs/003-home-design-refinement/spec.md` with format `*(StatsSection.astro:line-range description)*`
+- [X] T007 [P] [US1] Add code references to FR-006 to FR-010 (Footer requirements) in `specs/003-home-design-refinement/spec.md` with format `*(Footer.astro:line-range description)*`
+- [X] T008 [P] [US1] Add code references to FR-011 to FR-015 (CaseStudiesSection requirements) in `specs/003-home-design-refinement/spec.md` with format `*(CaseStudiesSection.astro:line-range description)*`
+- [X] T009 [P] [US1] Add code references to FR-016 to FR-022 (QuestionsSection requirements) in `specs/003-home-design-refinement/spec.md` with format `*(QuestionsSection.astro:line-range description)*`
+- [X] T010 [P] [US1] Add code references to FR-023 to FR-030 (TestimonialsSection and general requirements) in `specs/003-home-design-refinement/spec.md` with format `*(TestimonialsSection.astro:line-range description)*`
+- [X] T011 [US1] Replace edge case Q1 (carousel navigation boundaries) with 5-field Q&A format (Question, Answer, Code, Behavior, User Impact) in `specs/003-home-design-refinement/spec.md`
+- [X] T012 [US1] Replace edge case Q2 (responsive breakpoint at 768px) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
+- [X] T013 [US1] Replace edge case Q3 (tab switching mid-scroll) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
+- [X] T014 [US1] Replace edge case Q4 (white space calculations) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
+- [X] T015 [US1] Replace edge case Q5 (footer height on small viewports) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
+- [X] T016 [US1] Replace edge case Q6 (JavaScript fallback behavior) with 5-field Q&A format in `specs/003-home-design-refinement/spec.md`
 
 **Checkpoint**: User Story 1 complete - all 30 FRs have code references, all 6 edge cases documented. Developer can now navigate from spec to implementation independently.
 
@@ -71,10 +71,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Add "Monitoring & Verification" section after Success Criteria in `specs/003-home-design-refinement/spec.md`
-- [ ] T018 [P] [US2] Document measurement methods for SC-001 to SC-003 (Lighthouse Performance, Accessibility, SEO) with Tool, Metric, Method, Threshold format in `specs/003-home-design-refinement/spec.md`
-- [ ] T019 [P] [US2] Document measurement methods for SC-004 to SC-006 (Core Web Vitals, Visual Hierarchy, Responsive Layout) with Tool, Metric, Method, Threshold format in `specs/003-home-design-refinement/spec.md`
-- [ ] T020 [P] [US2] Document measurement methods for SC-007 to SC-010 (Component Consistency, Carousel Usability, Footer CTA Visibility, Testimonials Display) with Tool, Metric, Method, Threshold format in `specs/003-home-design-refinement/spec.md`
+- [X] T017 [US2] Add "Monitoring & Verification" section after Success Criteria in `specs/003-home-design-refinement/spec.md`
+- [X] T018 [P] [US2] Document measurement methods for SC-001 to SC-003 (Lighthouse Performance, Accessibility, SEO) with Tool, Metric, Method, Threshold format in `specs/003-home-design-refinement/spec.md`
+- [X] T019 [P] [US2] Document measurement methods for SC-004 to SC-006 (Core Web Vitals, Visual Hierarchy, Responsive Layout) with Tool, Metric, Method, Threshold format in `specs/003-home-design-refinement/spec.md`
+- [X] T020 [P] [US2] Document measurement methods for SC-007 to SC-010 (Component Consistency, Carousel Usability, Footer CTA Visibility, Testimonials Display) with Tool, Metric, Method, Threshold format in `specs/003-home-design-refinement/spec.md`
 
 **Checkpoint**: User Story 2 complete - all 10 success criteria have actionable measurement methods. QA can create comprehensive test plan independently.
 
@@ -90,13 +90,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T021 [P] [US3] Update spec.md status from "Draft" to "Completed (2025-11-17)" in `specs/003-home-design-refinement/spec.md:5`
-- [ ] T022 [P] [US3] Extract minimum 3 user feedback quotes from `specs/003-home-design-refinement/PROGRESS.md` ("отлично мне очень нравится", "отпад", "да сейчас супер")
-- [ ] T023 [US3] Integrate user feedback quote for StatsSection as blockquote after FR-001 to FR-005 group in `specs/003-home-design-refinement/spec.md`
-- [ ] T024 [US3] Integrate user feedback quote for Footer as blockquote after FR-006 to FR-010 group with 45% height reduction metric in `specs/003-home-design-refinement/spec.md`
-- [ ] T025 [US3] Integrate user feedback quote for CaseStudiesSection as blockquote after FR-011 to FR-015 group in `specs/003-home-design-refinement/spec.md`
-- [ ] T026 [US3] Mark T005-T009 as completed (✅) with commit SHAs from `/tmp/commits-003.txt` in `specs/003-home-design-refinement/tasks.md` Phase 2 section
-- [ ] T027 [US3] Document T010-T012 verification status (⏳ pending or ✅ completed) with criteria, evidence needed, blockers in `specs/003-home-design-refinement/tasks.md` Phase 3 section
+- [X] T021 [P] [US3] Update spec.md status from "Draft" to "Completed (2025-11-17)" in `specs/003-home-design-refinement/spec.md:5`
+- [X] T022 [P] [US3] Extract minimum 3 user feedback quotes from `specs/003-home-design-refinement/PROGRESS.md` ("отлично мне очень нравится", "отпад", "да сейчас супер")
+- [X] T023 [US3] Integrate user feedback quote for StatsSection as blockquote after FR-005 in `specs/003-home-design-refinement/spec.md`
+- [X] T024 [US3] Integrate user feedback quote for Footer as blockquote after FR-002 with 45% height reduction metric in `specs/003-home-design-refinement/spec.md`
+- [X] T025 [US3] Integrate user feedback quote for CaseStudiesSection as blockquote after FR-001 in `specs/003-home-design-refinement/spec.md`
+- [X] T026 [US3] Mark T005-T009 as completed (✅) with commit SHAs from `/tmp/commits-003.txt` in `specs/003-home-design-refinement/tasks.md` Phase 3 section
+- [X] T027 [US3] Document T010-T012 verification status (⏳ pending or ✅ completed) with criteria, evidence needed, blockers in `specs/003-home-design-refinement/tasks.md` Phase 3 section
 
 **Checkpoint**: User Story 3 complete - spec status accurate, user feedback integrated, task completion documented. PM can generate accurate status report.
 
@@ -112,11 +112,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T028 [US4] Add "Design Decisions" section after "Project Structure" in `specs/003-home-design-refinement/plan.md`
-- [ ] T029 [P] [US4] Document D1: Results-First Approach (StatsSection placement) with Decision, Rationale, User Feedback, Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
-- [ ] T030 [P] [US4] Document D2: Gold Vertical Line Pattern (minimal luxury aesthetic) with Decision, Rationale, User Feedback, Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
-- [ ] T031 [P] [US4] Document D3: Compact Footer Redesign (45% height reduction) with Decision, Rationale, User Feedback ("отпад"), Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
-- [ ] T032 [P] [US4] Document D4: Carousel vs Grid Navigation (CaseStudiesSection) with Decision, Rationale, User Feedback ("да сейчас супер"), Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
+- [X] T028 [US4] Add "Design Decisions" section after "Project Structure" in `specs/003-home-design-refinement/plan.md`
+- [X] T029 [P] [US4] Document D1: Minimalist Grid with Vertical Dividers (StatsSection) with Decision, Rationale, User Feedback, Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
+- [X] T030 [P] [US4] Document D2: Gold Vertical Line Pattern (QuestionsSection) with Decision, Rationale, User Feedback, Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
+- [X] T031 [P] [US4] Document D3: Compact Footer Redesign (45% height reduction) with Decision, Rationale, User Feedback ("отпад"), Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
+- [X] T032 [P] [US4] Document D4: Carousel vs Grid Navigation (CaseStudiesSection) with Decision, Rationale, User Feedback ("да сейчас супер"), Alternatives, Impact in `specs/003-home-design-refinement/plan.md`
 
 **Checkpoint**: User Story 4 complete - all 4 design decisions documented with rationale. Architects can make consistent decisions for future features.
 
@@ -132,12 +132,12 @@
 
 ### Implementation for User Story 5
 
-- [ ] T033 [P] [US5] Update assumptions section to document user rejection of asymmetric grid design in `specs/003-home-design-refinement/spec.md` Assumptions section
-- [ ] T034 [P] [US5] Update assumptions section to document AI-template feedback leading to minimalist aesthetic choice in `specs/003-home-design-refinement/spec.md` Assumptions section
-- [ ] T035 [P] [US5] Update assumptions section to document design iteration count (3 attempts to final approval) in `specs/003-home-design-refinement/spec.md` Assumptions section
-- [ ] T036 [P] [US5] Update assumptions section to clarify responsive breakpoint strategy (Tailwind defaults: 640px sm, 768px md) in `specs/003-home-design-refinement/spec.md` Assumptions section
-- [ ] T037 [P] [US5] Update assumptions section to document gold accent usage pattern (CTAs, indicators, accents only - never large backgrounds) in `specs/003-home-design-refinement/spec.md` Assumptions section
-- [ ] T038 [P] [US5] Update assumptions section to state white space philosophy (breathing room over content density, 80px between sections) in `specs/003-home-design-refinement/spec.md` Assumptions section
+- [X] T033 [P] [US5] Update assumptions section to document user rejection of asymmetric grid design in `specs/003-home-design-refinement/spec.md` Assumptions section
+- [X] T034 [P] [US5] Update assumptions section to document AI-template feedback leading to minimalist aesthetic choice in `specs/003-home-design-refinement/spec.md` Assumptions section
+- [X] T035 [P] [US5] Update assumptions section to document design iteration count (3 attempts to final approval) in `specs/003-home-design-refinement/spec.md` Assumptions section
+- [X] T036 [P] [US5] Update assumptions section to clarify responsive breakpoint strategy (Tailwind defaults: 640px sm, 768px md) in `specs/003-home-design-refinement/spec.md` Assumptions section
+- [X] T037 [P] [US5] Update assumptions section to document gold accent usage pattern (CTAs, indicators, accents only - never large backgrounds) in `specs/003-home-design-refinement/spec.md` Assumptions section
+- [X] T038 [P] [US5] Update assumptions section to state white space philosophy (breathing room over content density, 80px between sections) in `specs/003-home-design-refinement/spec.md` Assumptions section
 
 **Checkpoint**: User Story 5 complete - all assumptions updated to reflect actual design iterations. Technical writers can create accurate documentation.
 

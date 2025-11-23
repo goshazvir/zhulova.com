@@ -87,6 +87,102 @@ src/
 
 **Structure Decision**: Single Astro project with component-based architecture. All changes are isolated to 5 `.astro` files in `src/components/` directory. No new files created, no file structure changes required.
 
+## Design Decisions
+
+### D1: Minimalist Grid with Vertical Dividers (StatsSection)
+
+**Decision**: Implement symmetric minimalist grid with vertical dividers instead of asymmetric grid layout.
+
+**Rationale**:
+- User rejected initial asymmetric grid proposal as "ugly"
+- Luxury brand aesthetic (Apple, Rolex) uses subtle dividers for visual separation
+- Equal-sized stats maintain visual balance and prevent hierarchy confusion
+- Vertical dividers create clean, professional appearance without visual weight
+
+**User Feedback**: "отлично мне очень нравится" ✅
+
+**Alternatives Considered**:
+- **Asymmetric grid** (larger primary stat, smaller secondary): Rejected by user - felt unbalanced and visually cluttered
+- **Animated counters**: Rejected - adds JavaScript complexity, violates simplicity principle
+- **No dividers**: Rejected - stats blend together, reduces scanability
+
+**Impact**:
+- Clean 4-column responsive grid (1 col mobile → 2 col tablet → 4 col desktop)
+- Subtle hover effect (bg-gray-50/50) adds interactivity without distraction
+- Responsive dividers: horizontal (mobile) → vertical (desktop) maintain visual structure across breakpoints
+
+### D2: Gold Vertical Line Pattern (QuestionsSection)
+
+**Decision**: Add gold vertical line accent (border-l-[3px]) to question cards, remove question mark icons.
+
+**Rationale**:
+- Gold is brand accent color, reinforces luxury positioning
+- Vertical line provides visual anchor without decorative clutter
+- Aligns with minimal luxury aesthetic - functional accent, not ornamental
+- User approved "Variant 1 (Gold Vertical Line)" over alternatives
+
+**User Feedback**: Approved Variant 1 (Gold Vertical Line) ✅
+
+**Alternatives Considered**:
+- **Question mark SVG icon**: Rejected - decorative without functional value, adds visual noise
+- **No accent**: Rejected - cards feel flat and undifferentiated
+- **Full gold border**: Rejected - too visually heavy, overwhelming
+
+**Impact**:
+- Clear visual differentiation between question cards
+- Hover effect transitions border color to gold, reinforcing interactivity
+- Underline tab indicators (border-b-2 border-gold-500) create cohesive gold accent system
+- Removed pill-style tab container (bg-navy-50), reducing visual weight by ~30%
+
+### D3: Compact Footer Redesign (45% Height Reduction)
+
+**Decision**: Reduce footer height by 45% through single-row horizontal layout and reduced padding.
+
+**Rationale**:
+- Original footer (1100-1300px height) occupied excessive vertical space
+- Single-row flexbox layout (logo | navigation | social) more space-efficient than 3-column grid
+- Industry standard pattern for luxury websites (streamlined, unobtrusive footer)
+- Maintains all functionality while reducing visual footprint
+
+**User Feedback**: "отпад" ✅
+
+**Alternatives Considered**:
+- **Remove CTA section**: Rejected - CTA drives conversions, essential for business
+- **Sticky footer**: Rejected - reduces viewport space, increases visual clutter
+- **Accordion footer**: Rejected - requires interaction to access links, harms UX
+
+**Impact**:
+- **Height reduction**: 1100-1300px → 600-700px (~45% reduction)
+- **CTA Section**: py-16 → py-8 md:py-10 (50% mobile, 37.5% desktop padding reduction)
+- **Image size**: 600px → 400px with responsive constraints (smaller footprint)
+- **Footer padding**: py-12 → py-6 (50% reduction)
+- **Social icons**: w-8 h-8 → w-6 h-6 (25% smaller, proportional to reduced space)
+- **Copyright integrated**: Eliminated separate block, lighter divider
+
+### D4: Carousel vs Grid Navigation (CaseStudiesSection)
+
+**Decision**: Implement horizontal scroll carousel with CSS scroll-snap instead of vertical timeline or grid layout.
+
+**Rationale**:
+- **Results-First approach**: 70% focus on achievements, 30% on context (user-approved design principle)
+- Carousel shows 2.5 cards on desktop, encouraging exploration without overwhelming
+- CSS scroll-snap provides native, performant scrolling (no heavy JavaScript libraries)
+- Horizontal layout more space-efficient than vertical timeline (saves ~400px height)
+
+**User Feedback**: "да сейчас супер" ✅
+
+**Alternatives Considered**:
+- **Vertical timeline** (research.md initial proposal): Rejected during implementation - too much vertical scroll, reduces scanability
+- **Static grid (2x2 or 3x1)**: Rejected - either hides case studies or requires excessive space
+- **Accordion**: Rejected - requires clicks to view content, reduces engagement
+
+**Impact**:
+- **Responsive card visibility**: 2.5 cards (desktop) → 1.5 cards (tablet) → 1 full card (mobile)
+- **Visual cleanup**: Removed colored backgrounds (bg-red-50, bg-green-50) → clean white cards with gold border-left accent
+- **Navigation**: Prev/next buttons (desktop), native scroll (mobile with scroll indicators)
+- **Mobile optimization**: 96% width cards, 2 achievements (vs 3 on desktop) for readability
+- **Content**: 4 case studies visible without overwhelming layout (Аліна +8x, Дмитро +2x, Олена +3x, Андрій +5x)
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

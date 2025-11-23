@@ -54,7 +54,7 @@ telegram: z.string()
 
 ### Decision
 
-**Fail-Fast Strategy**: Both database insert AND email send must succeed. If either fails, return error to user.
+**Email-First Strategy**: Email notification sent before database save to ensure coach can be notified. If email fails, submission rejected without database insert to prevent unnotified leads.
 
 **Implementation Pattern**:
 
@@ -63,70 +63,68 @@ try {
   // 1. Validate input
   const validatedData = schema.parse(body);
 
-  // 2. Save to database (MUST succeed)
+  // 2. Send email notification (MUST succeed FIRST)
+  const { data: emailData, error: emailError } = await resend.emails.send({...});
+
+  if (emailError) {
+    console.error('[API] Email send failed:', emailError);
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Failed to send email'
+    }), { status: 500 });
+  }
+
+  // 3. Save to database (only if email succeeded)
   const { data, error: dbError } = await supabase
     .from('leads')
     .insert([leadData])
-    .select()
+    .select('id')
     .single();
 
   if (dbError) {
     console.error('[API] Database insert failed:', dbError);
     return new Response(JSON.stringify({
       success: false,
-      error: 'Failed to save your request'
-    }), { status: 500 });
-  }
-
-  // 3. Send email notification (MUST succeed)
-  const { error: emailError } = await resend.emails.send({...});
-
-  if (emailError) {
-    console.error('[API] Email send failed:', emailError);
-    // Database already saved, log this as partial success
-    console.warn(`[API] Lead ${data.id} saved but notification failed`);
-    return new Response(JSON.stringify({
-      success: false,
-      error: 'Your request was saved, but we couldn\'t send confirmation. We\'ll contact you soon.'
+      error: 'Failed to save lead to database'
     }), { status: 500 });
   }
 
   // 4. Both succeeded
   return new Response(JSON.stringify({
     success: true,
-    message: 'Thank you! We\'ll contact you soon.',
-    leadId: data.id
+    message: 'Thank you! Your message has been sent.',
+    leadId: data.id,
+    emailId: emailData?.id
   }), { status: 200 });
 
 } catch (error) {
   console.error('[API] Unexpected error:', error);
   return new Response(JSON.stringify({
     success: false,
-    error: 'Something went wrong. Please try again.'
+    error: 'An unexpected error occurred'
   }), { status: 500 });
 }
 ```
 
 ### Rationale
 
-- **User Experience**: Clear, honest feedback (don't claim success if email fails)
-- **Data Integrity**: Database is source of truth; email failure doesn't lose lead
-- **Monitoring**: Console logs enable tracking partial failures in Vercel logs
-- **No Rollback**: Database insert is permanent (rollback adds complexity without benefit)
+- **Coach Notification Priority**: Ensures coach is always notified when lead is saved; prevents "saved but invisible" leads
+- **User Experience**: Clear failure feedback; if email can't be sent, user knows to try alternative contact methods
+- **Monitoring**: Console logs enable tracking failures in Vercel logs
+- **No Orphaned Leads**: Database insert only happens if email succeeds, preventing leads that coach never sees
 
 ### Alternatives Considered
 
 | Alternative | Rejected Because |
 |-------------|------------------|
-| **Always return success if DB saves** | Misleading to user; email failure is unacceptable for business |
-| **Rollback DB if email fails** | Loses valid lead data; email failures are transient |
+| **DB-first then email** | Creates risk of "invisible leads" that are saved but coach is never notified |
+| **Always return success if DB saves** | Misleading to user; if coach isn't notified, submission effectively failed |
 | **Queue email for retry** | Over-engineering for MVP; Resend has internal retry logic |
 | **Silent failure logging** | User should know something went wrong |
 
 ### Logging Strategy
 
 - **Error Level**: Database errors, email errors, unexpected exceptions
-- **Warn Level**: Partial successes (DB saved, email failed)
 - **Info Level**: Successful submissions (optional, for metrics)
 
 **Log Format**: `[API] {operation}: {details}` (searchable in Vercel logs)
@@ -227,9 +225,9 @@ const { error } = await resend.emails.send({
   from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
   to: process.env.NOTIFICATION_EMAIL || 'admin@example.com',
   replyTo: validatedData.email || undefined,  // Only set if provided
-  subject: `New Consultation Request from ${validatedData.name}`,
+  subject: `New Lead from ${validatedData.name}`,
   html: `
-    <h2>New Consultation Request</h2>
+    <h2>New Lead</h2>
     <p><strong>Name:</strong> ${validatedData.name}</p>
     <p><strong>Phone:</strong> ${validatedData.phone}</p>
     ${validatedData.telegram ? `<p><strong>Telegram:</strong> ${validatedData.telegram}</p>` : ''}
@@ -300,16 +298,16 @@ Use **user-friendly, non-technical** error messages:
 
 | Scenario | Error Message |
 |----------|---------------|
-| Validation failed (name too short) | "Ім'я має містити мінімум 2 символи" |
-| Validation failed (invalid phone) | "Введіть номер у форматі +380XXXXXXXXX" |
-| Database insert failed | "Не вдалося зберегти вашу заявку. Спробуйте пізніше." |
-| Email send failed (DB saved) | "Вашу заявку збережено, але ми не змогли надіслати підтвердження. Ми зв'яжемося з вами найближчим часом." |
-| Unexpected error | "Щось пішло не так. Спробуйте ще раз." |
-| Success | "Дякуємо за вашу заявку! Ми зв'яжемося з вами найближчим часом." |
+| Validation failed (name too short) | "Name must be at least 2 characters" |
+| Validation failed (invalid phone) | "Please enter a valid phone number" |
+| Database insert failed | "Failed to save lead to database" |
+| Email send failed | "Failed to send email" |
+| Unexpected error | "An unexpected error occurred" |
+| Success | "Thank you! Your message has been sent." |
 
-**Language**: Ukrainian (matches site locale)
+**Language**: English (API internal messages, frontend handles localization)
 
-**Tone**: Professional, reassuring, actionable
+**Tone**: Professional, clear, actionable
 
 ---
 

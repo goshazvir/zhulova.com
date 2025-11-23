@@ -9,6 +9,11 @@ High-performance static website for Viktoria Zhulova, a mindset coach. Built wit
 **Tech Stack:** Astro v4 + React v18 + TypeScript v5 (strict) + Tailwind CSS v3 + Zustand v4 + Supabase + Resend
 
 **Critical Constraints:**
+- **⚠️ CRITICAL: Language Policy** - ALWAYS respond to user in Russian (Русский язык) for all conversational messages. ALL code, comments, documentation, commit messages, and technical writing MUST be in English only. This is NON-NEGOTIABLE.
+  - ✅ User communication: Russian
+  - ✅ Code, comments, docs: English
+  - ✅ Git commits, PRs: English
+  - ❌ Never mix languages in code or documentation
 - **Hybrid static-first** - Static pages + Serverless functions for forms
 - **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1
 - **Accessibility:** WCAG AA compliance mandatory
@@ -649,6 +654,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Static content files in `src/pages/` directory (Astro file-based routing) (004-legal-pages)
 - TypeScript 5.x (strict mode), Node.js runtime (Vercel serverless) (005-fix-consultation-api)
 - Supabase PostgreSQL with RLS policies (existing `leads` table, schema documented in `specs/002-home-page/data-model.md`) (005-fix-consultation-api)
+- Markdown (GitHub-flavored), English language + None (plain text editing) (006-complete-spec-alignment)
+- Git version control (files in `specs/005-fix-consultation-api/`) (006-complete-spec-alignment)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `005-fix-consultation-api`
 **Created**: 2025-11-17
-**Status**: Draft
+**Status**: Completed (2025-11-17)
 **Input**: User description: "Fix Consultation Modal API endpoint to correctly handle form submissions and save to database. The consultation modal form sends {name, phone, telegram?, email?} but the API endpoint expects {name, email, message}. This causes form submissions to fail. Additionally, the Supabase insert is commented out, so no data is being saved to the database."
 
 ## Problem Statement
@@ -14,7 +14,7 @@ The consultation modal form on the homepage is currently non-functional. When vi
 3. Metadata fields (source tracking, user agent, referrer) are not being populated
 
 **Impact**:
-- 100% of consultation requests are being lost
+- 100% of leads are being lost
 - Potential clients cannot book consultations
 - Business cannot track lead sources or conversion data
 - Email notifications contain incorrect field data
@@ -74,36 +74,65 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 
 ### Edge Cases
 
-- What happens when a visitor submits the form multiple times with the same phone number within a short time period? (Should we implement duplicate detection or rate limiting?)
-- How does the system handle network failures during submission? (Currently shows generic error, should retry or queue?)
-- What happens if Supabase is down but Resend email service is working? (Email sent but no database record)
-- What happens if email sending fails but database save succeeds? (Lead saved but coach not notified)
-- How does the system handle submissions with unusual but valid characters in names (apostrophes, hyphens, Cyrillic characters)?
-- What happens when required metadata (user_agent, referrer) is missing or blocked by privacy tools?
+1. **Duplicate submissions** (same phone within short time):
+   - **Current behavior**: System ALLOWS duplicate submissions - no detection, rate limiting, or prevention
+   - **Implementation**: No duplicate checking logic in `src/pages/api/submit-lead.ts`
+   - **Database**: No UNIQUE constraint on phone field, no time-based checking
+   - **Future**: Could be implemented with Redis cache or DB trigger (out of current scope)
+
+2. **Network failures during submission**:
+   - **Current behavior**: Returns generic HTTP 500 error with message "An unexpected error occurred"
+   - **Implementation**: No retry logic, no queue, no special network error handling (lines 136-159 in `src/pages/api/submit-lead.ts`)
+   - **User experience**: User sees error and must manually retry
+   - **Future**: Could implement client-side retry or queue (out of current scope)
+
+3. **Supabase down, Resend email working**:
+   - **Current behavior**: Email-first strategy means email sends successfully, then DB insert fails with 500 error
+   - **Implementation**: Email sent at lines 59-72, DB insert at lines 86-125 in `src/pages/api/submit-lead.ts`
+   - **Result**: Coach receives email but lead not in database - requires manual database entry
+   - **Rationale**: Acceptable trade-off; email ensures coach is notified even if DB fails
+
+4. **Email fails, database succeeds**:
+   - **Current behavior**: IMPOSSIBLE due to email-first implementation strategy
+   - **Implementation**: Email validated and sent BEFORE database insert (lines 59-83 before 86-125 in `src/pages/api/submit-lead.ts`)
+   - **Result**: If email fails, function returns 500 before reaching DB insert code
+   - **Design decision**: Prevents "invisible leads" (saved but coach never notified)
+
+5. **Special characters in names** (apostrophes, hyphens, Cyrillic):
+   - **Current behavior**: Fully supported - no restrictions beyond length (2-255 characters)
+   - **Implementation**: Zod string validation (`z.string().min(2).trim()` at line 10 in `src/pages/api/submit-lead.ts`) accepts all Unicode
+   - **Database**: VARCHAR(255) stores UTF-8 characters without issues
+   - **No special handling needed**: Standard string validation is sufficient
+
+6. **Missing metadata** (user_agent, referrer blocked by privacy tools):
+   - **Current behavior**: Gracefully handled with NULL fallback
+   - **Implementation**: `request.headers.get('user-agent') || null` at lines 106-107 in `src/pages/api/submit-lead.ts`
+   - **Database**: Columns allow NULL, no constraint violations
+   - **No errors thrown**: Missing headers don't break submission
 
 ## Requirements
 
 ### Functional Requirements
 
 - **FR-001**: API endpoint MUST validate incoming form data against a schema matching the consultation modal form fields: name (required), phone (required), telegram (optional), email (optional)
-- **FR-002**: API endpoint MUST validate phone field against Ukrainian phone number format: `+380XXXXXXXXX` (country code + 9 digits)
-- **FR-003**: API endpoint MUST validate telegram field (when provided) against username format: 5-32 alphanumeric or underscore characters, accepting both "@username" and "username" formats
+- **FR-002**: API endpoint MUST validate phone field per international phone number format defined in [data-model.md](./data-model.md#validation-rules-summary)
+- **FR-003**: API endpoint MUST validate telegram field (when provided) per username format defined in [data-model.md](./data-model.md#validation-rules-summary), accepting both "@username" and "username" formats
 - **FR-004**: API endpoint MUST normalize telegram handles by prepending "@" if not present before saving to database (e.g., "username123" becomes "@username123")
-- **FR-005**: API endpoint MUST validate email field (when provided) using standard email format validation
-- **FR-006**: API endpoint MUST validate name field: minimum 2 characters, maximum 255 characters, trimmed whitespace
+- **FR-005**: API endpoint MUST validate email field per standard format defined in [data-model.md](./data-model.md#validation-rules-summary)
+- **FR-006**: API endpoint MUST validate name field per length requirements defined in [data-model.md](./data-model.md#validation-rules-summary)
 - **FR-007**: API endpoint MUST automatically populate metadata fields from the HTTP request: source (hardcoded to "consultation_modal"), user_agent (from User-Agent header), referrer (from Referer header)
 - **FR-008**: API endpoint MUST save validated form data to Supabase `leads` table using service role key (server-side only)
 - **FR-009**: API endpoint MUST send email notification to configured address (NOTIFICATION_EMAIL env var) with all submitted contact details
-- **FR-010**: Email notification MUST include: visitor name, phone number, telegram handle (if provided, with @ prefix), email (if provided), submission timestamp in Ukrainian timezone
+- **FR-010**: Email notification MUST include: visitor name, phone number, telegram handle (if provided, with @ prefix), email (if provided), source
 - **FR-011**: API endpoint MUST return appropriate HTTP status codes: 200 for success, 400 for validation errors, 500 for server errors
 - **FR-012**: API endpoint MUST return structured JSON responses with success/error status and relevant details
-- **FR-013**: System MUST handle partial failures gracefully (e.g., email fails but database save succeeds)
+- **FR-013**: System MUST handle failures gracefully using email-first validation strategy: email notification sent before database save to ensure coach can be notified; if email fails, submission rejected without database insert to prevent unnotified leads
 - **FR-014**: Optional fields (telegram, email) MUST be saved as NULL in database when not provided, not as empty strings
 - **FR-015**: Form submission MUST not expose sensitive environment variables (service keys) to client-side code
 
 ### Key Entities
 
-- **Lead**: Represents a consultation request from a potential client
+- **Lead**: Represents a lead from a potential client
   - Attributes: id (UUID), name (string), phone (string), telegram (string, nullable), email (string, nullable), source (string), user_agent (string, nullable), referrer (string, nullable), created_at (timestamp), updated_at (timestamp)
   - Relationships: Standalone entity (no foreign keys in MVP)
   - Lifecycle: Created on form submission, persisted indefinitely, may be followed up by coach manually
@@ -117,7 +146,6 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 - **SC-003**: Validation errors provide clear, actionable feedback to users, reducing form abandonment by at least 30%
 - **SC-004**: Zero data loss for valid submissions - all submitted information (including metadata) is accurately persisted
 - **SC-005**: API response time for form submissions is under 2 seconds for 95% of requests
-- **SC-006**: Duplicate submissions (same phone within 24 hours) are tracked for analytics purposes
 
 ## Assumptions
 
@@ -126,8 +154,8 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 - **A-003**: NOTIFICATION_EMAIL environment variable is configured with the coach's email address
 - **A-004**: Frontend consultation modal form will not be modified - only the API endpoint needs fixing
 - **A-005**: The existing consultationFormSchema Zod validation on the frontend is correct and matches the intended form design
-- **A-006**: Ukrainian phone number format (+380XXXXXXXXX) is the only acceptable format (no international variations)
-- **A-007**: Data retention policy allows indefinite storage of consultation requests (GDPR/privacy policy handled separately)
+- **A-006**: International phone number format is accepted to accommodate clients from different countries (minimum 7 digits, flexible formatting)
+- **A-007**: Data retention policy allows indefinite storage of leads (GDPR/privacy policy handled separately)
 - **A-008**: Service role key (SUPABASE_SERVICE_KEY) has appropriate permissions for inserting into `leads` table
 - **A-009**: No user authentication is required - this is a public form accessible to all website visitors
 
@@ -153,13 +181,29 @@ A visitor accidentally enters incorrect data (invalid phone format, incorrect em
 ### Out of Scope
 
 - Modifying frontend consultation modal form (already correct)
-- Implementing duplicate detection or rate limiting (future enhancement)
 - Adding user authentication or lead management dashboard
-- Implementing email retry logic or queuing for failed sends
-- Adding analytics tracking beyond basic metadata fields
 - Implementing CAPTCHA or advanced anti-spam measures
 - Creating admin interface for viewing/managing leads
 - Implementing automated follow-up sequences or CRM integration
+
+### Future Enhancements
+
+- **Duplicate detection**: Implement duplicate submission tracking (same phone within 24 hours) using Redis cache or database triggers for analytics purposes
+- **Email timestamps**: Add submission timestamp in Ukrainian timezone to email notifications
+- **Retry logic**: Implement email retry logic or queuing for failed sends to improve reliability
+- **Analytics tracking**: Add advanced analytics tracking beyond basic metadata fields
+
+## Monitoring & Verification
+
+How to measure success criteria after implementation:
+
+| Criterion | How to Measure | Tool/Location |
+|-----------|----------------|---------------|
+| **SC-001**: 100% DB saves | Check Vercel function logs for database errors | Vercel Dashboard → Functions → submit-lead → Logs (filter for "Database insert failed") |
+| **SC-002**: Email <5 seconds | Check Resend email delivery timestamps | Resend Dashboard → Emails → Sort by date, check delivery times |
+| **SC-003**: Clear validation errors | Monitor 400 validation error responses | Vercel Logs → Filter status:400, review error messages |
+| **SC-004**: Zero data loss | Audit Supabase records vs Vercel function success count | Supabase: `SELECT COUNT(*) FROM leads WHERE created_at > 'date'` vs Vercel successful 200 responses |
+| **SC-005**: API <2s (95th percentile) | Check p95 response times for submit-lead function | Vercel Speed Insights → Functions → submit-lead → Response time p95 |
 
 ## Notes
 
@@ -175,7 +219,7 @@ The system accepts Telegram handles in both formats ("@username" and "username")
 
 **Rationale**: Users shouldn't be blocked from submitting the form due to a minor formatting detail. Some users naturally include the @ symbol, while others don't. Rejecting valid usernames solely because of @ presence/absence creates unnecessary friction.
 
-**Implementation**: The API validates only the username portion (5-32 alphanumeric/underscore characters) and automatically normalizes by prepending @ if missing before database storage. This ensures:
+**Implementation**: The API validates only the username portion (3-32 alphanumeric/underscore characters) and automatically normalizes by prepending @ if missing before database storage. This ensures:
 - Consistent data format in database (always with @)
 - Maximum conversion rate (no form abandonment due to @ symbol)
 - User-friendly experience (accept what users naturally type)

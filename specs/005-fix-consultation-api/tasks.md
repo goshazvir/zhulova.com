@@ -166,9 +166,9 @@ if (dbError) {
 const { error: emailError } = await resend.emails.send({
   from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
   to: process.env.NOTIFICATION_EMAIL!,
-  subject: `New Consultation Request from ${validatedData.name}`,
+  subject: `New Lead from ${validatedData.name}`,
   html: `
-    <h2>New Consultation Request</h2>
+    <h2>New Lead</h2>
     <p><strong>Name:</strong> ${validatedData.name}</p>
     <p><strong>Phone:</strong> ${validatedData.phone}</p>
     ${validatedData.telegram ? `<p><strong>Telegram:</strong> ${validatedData.telegram}</p>` : ''}

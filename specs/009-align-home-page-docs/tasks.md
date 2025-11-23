@@ -175,7 +175,7 @@ This feature aligns 002-home-page specification with actual implementation compl
 
 ### Commit
 
-- [ ] T067 Commit documentation changes: `git add specs/002-home-page/spec.md specs/002-home-page/plan.md specs/002-home-page/data-model.md specs/002-home-page/quickstart.md CLAUDE.md specs/009-align-home-page-docs/ && git commit -m "docs: align 002-home-page spec with implementation"`
+- [x] T067 Commit documentation changes: ✅ Committed (86f6b62) with 2116 insertions, 119 deletions across 12 files
 
 ---
 

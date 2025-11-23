@@ -656,6 +656,7 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Supabase PostgreSQL with RLS policies (existing `leads` table, schema documented in `specs/002-home-page/data-model.md`) (005-fix-consultation-api)
 - Markdown (GitHub-flavored), English language + None (plain text editing) (006-complete-spec-alignment)
 - Git version control (files in `specs/005-fix-consultation-api/`) (006-complete-spec-alignment)
+- Git version control (files in `specs/004-legal-pages/`) (007-fix-legal-pages-docs)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

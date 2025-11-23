@@ -262,17 +262,61 @@ npm run dev
 
 ### Test Consultation Form
 
+#### Step 1: Verify Form Validation (Client-Side)
+
 1. **Open homepage**: http://localhost:4321
 2. **Click "Записатись на розбір"** button
-3. **Fill form**:
+3. **Test required field validation**:
+   - Leave Name empty → Click Submit → Verify error: "Ім'я має містити мінімум 2 символи"
+   - Enter Name: "A" → Click Submit → Verify error: "Ім'я має містити мінімум 2 символи"
+   - Leave Phone empty → Click Submit → Verify error: "Введіть номер телефону"
+   - Enter Phone: "123" → Click Submit → Verify error: "Введіть коректний номер телефону"
+4. **Test optional field validation**:
+   - Leave Telegram empty → Click Submit → No error (optional field works)
+   - Enter Telegram: "test" → Click Submit → Verify error: "Telegram: 3-32 символи (літери, цифри, _)"
+   - Enter Telegram: "@test_user" → Click Submit → No error (valid format)
+   - Leave Email empty → Click Submit → No error (optional field works)
+   - Enter Email: "invalid" → Click Submit → Verify error: "Введіть коректну email адресу"
+5. **Test successful validation**:
    - Name: `Тестовий Користувач`
    - Phone: `+380501234567`
    - Telegram: `@test_user` (optional)
    - Email: `test@example.com` (optional)
-4. **Submit** and check:
-   - Success message appears
-   - Check Supabase Dashboard → Table Editor → `leads` table
-   - Check email inbox (should receive notification)
+   - Click Submit → Form submits without errors
+
+#### Step 2: Verify API Endpoint (Network Tab)
+
+1. **Open Chrome DevTools** (F12) → Go to **Network** tab
+2. **Fill form with valid data** (see Step 1)
+3. **Click Submit** and observe:
+   - Request to `/api/submit-lead` appears in Network tab
+   - Request Method: POST
+   - Request Headers: `Content-Type: application/json`
+   - Request Payload: JSON with `{name, phone, telegram, email}`
+   - Response Status: 200 OK
+   - Response Body: `{"success": true, "leadId": "uuid-here", "message": "..."}`
+4. **Test validation errors**:
+   - Submit invalid data (e.g., phone: "123")
+   - Response Status: 400 Bad Request
+   - Response Body: `{"success": false, "error": {...}}`
+
+#### Step 3: Verify Database Insert (Supabase Dashboard)
+
+1. **Open Supabase Dashboard** → Navigate to **Table Editor** → Select `leads` table
+2. **Submit form** with test data (see Step 1)
+3. **Verify new record**:
+   - Check latest record (sort by `created_at DESC`)
+   - Verify `name`: "Тестовий Користувач"
+   - Verify `phone`: "+380501234567"
+   - Verify `telegram`: "@test_user"
+   - Verify `email`: "test@example.com"
+   - Verify `source`: "home_page"
+   - Verify `created_at`: Current timestamp (UTC)
+   - Verify `updated_at`: Current timestamp (UTC)
+4. **Verify email notification**:
+   - Check email inbox for notification
+   - Verify email includes all form fields
+   - Verify email subject: "Нова заявка на консультацію - Тестовий Користувач"
 
 ### Verify Serverless Function Locally
 

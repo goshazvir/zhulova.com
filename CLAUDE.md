@@ -658,6 +658,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Git version control (files in `specs/005-fix-consultation-api/`) (006-complete-spec-alignment)
 - Git version control (files in `specs/004-legal-pages/`) (007-fix-legal-pages-docs)
 - Git version control (files in `specs/001-base-infrastructure/`) (008-align-base-infra-docs)
+- Markdown (GitHub-flavored), English language + None (plain text editing) + Git version control (files in `specs/002-home-page/`) (009-align-home-page-docs)
+- N/A (documentation files only, no code changes) (009-align-home-page-docs)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety
@@ -732,8 +734,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
     - Footer (footer navigation)
   - **Performance Impact**: Footer section now loads 154x faster with optimized WebP image
 
-- **002-home-page** (2025-11-16): ✅ **COMPLETED & DEPLOYED**
-  - **Status**: 52/62 tasks (84%) - Production ready
+- **002-home-page** (2025-11-16): ✅ **COMPLETED**
+  - **Status**: All core features implemented and deployed to production
   - **All 6 user stories implemented**:
     - US1: Consultation booking with Supabase + Resend (MVP)
     - US2: Credibility section with stats and case studies

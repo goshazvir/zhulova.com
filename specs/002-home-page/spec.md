@@ -1,8 +1,8 @@
 # Feature Specification: Home Page - Viktoria Zhulova Coaching Website
 
 **Feature Branch**: `002-home-page`
-**Created**: 2025-01-16
-**Status**: Draft
+**Created**: 2025-11-16
+**Status**: Completed (2025-11-16)
 **Input**: User description: "001-home-page: Главная страница для сайта Виктории Жульовой, mindset coach"
 
 ## User Scenarios & Testing *(mandatory)*
@@ -108,16 +108,36 @@ A visitor wants to explore different sections of the website or connect with the
 
 ### Edge Cases
 
-- What happens when a visitor submits the consultation form but loses internet connection before submission completes?
-- How does the system handle duplicate consultation requests from the same person (same email/phone)?
-- What happens when the email notification service is unavailable during form submission?
-- How does the page appear on very small screens (mobile devices under 320px width)?
-- What happens when a visitor has JavaScript disabled in their browser?
-- How does the system handle non-Ukrainian characters in form inputs (names with special characters)?
-- What happens when a visitor submits the form with a phone number in an unexpected format?
-- How does the page load when the visitor has a slow internet connection?
-- What happens when a visitor opens multiple consultation modals simultaneously?
-- How does the system handle form submissions during high-traffic periods?
+**Q1: What happens when user submits form with invalid email format?**
+- **Answer**: Zod validation catches invalid email before API call, displays inline error message (Ukrainian: "Введіть коректну email адресу"), prevents form submission. Validation happens client-side in React Hook Form before network request.
+- **Code**: `src/types/consultationForm.ts:32-37` (Zod email schema), `ConsultationModal.tsx:16-23` (React Hook Form with zodResolver)
+- **Behavior**: User sees immediate feedback on invalid email, no API call made until validation passes.
+
+**Q2: What happens when /api/submit-lead endpoint fails due to database connection error?**
+- **Answer**: API returns 500 error with generic message, form displays error toast (Ukrainian: "Щось пішло не так. Спробуйте пізніше."), lead data not saved to Supabase. User can retry submission after fixing connection.
+- **Code**: `src/pages/api/submit-lead.ts:110-130` (Supabase insert error handling), `ConsultationModal.tsx:52-55` (error state handling)
+- **Behavior**: Form remains filled, user can retry, no data lost locally. API logs error to Vercel Function Logs for debugging.
+
+**Q3: What happens when multiple users submit consultation forms simultaneously?**
+- **Answer**: Each submission handled independently by separate serverless function invocation (Vercel Serverless Functions auto-scale). Database uses UUID primary key + timestamp to prevent conflicts. No rate limiting between different users. Concurrent writes safe via PostgreSQL ACID guarantees.
+- **Code**: `src/pages/api/submit-lead.ts:6` (stateless serverless function), `specs/002-home-page/data-model.md:15` (UUID primary key in leads table)
+- **Behavior**: Multiple users can submit simultaneously without conflicts. Each gets unique UUID, separate email notification sent.
+
+**Q4: What happens when Resend email delivery fails but database save succeeds?**
+- **Answer**: User sees success message (form submitted successfully), lead saved in Supabase for manual follow-up, but admin doesn't receive immediate email notification. API doesn't fail the request even if email fails - prioritizes data persistence over notification delivery. Error logged to Vercel logs.
+- **Code**: `src/pages/api/submit-lead.ts:117-159` (email sending with try-catch), `ConsultationModal.tsx:44-51` (success state after API 200 response)
+- **Behavior**: Acceptable failure mode - coach can manually check Supabase dashboard for new leads if emails stop arriving. No data loss occurs.
+
+**Q5: What happens when same user submits consultation form multiple times in quick succession?**
+- **Answer**: No rate limiting implemented. Each submission creates separate lead record in database and sends new email notification. Client-side prevents double-click during active submission (button disabled), but user can submit multiple times after modal resets (3 seconds auto-close). No server-side duplicate detection or IP-based rate limiting.
+- **Code**: `ConsultationModal.tsx:163` (disabled button during submit), `src/pages/api/submit-lead.ts:110-114` (insert without duplicate check)
+- **Behavior**: Multiple submissions from same user create multiple database records and emails. Acceptable for low-traffic scenarios and legitimate re-submissions, but vulnerable to spam/abuse if becomes problem.
+- **Recommendation**: If duplicate submissions become issue, implement rate limiting (see Future Enhancements section for 3-tier protection strategy)
+
+**Q6: What happens when user closes modal/navigates away before form submission completes?**
+- **Answer**: API request may complete in background (serverless function continues execution), but user won't see success/error message. If submission succeeds, lead saved in database but user unaware. No automatic retry mechanism or abort signal implemented.
+- **Code**: `ConsultationModal.tsx:25-56` (submission handler without AbortController), browser fetch behavior (continues after navigation)
+- **Behavior**: Edge case for impatient users - data may or may not be saved depending on timing. User should wait for success message before closing modal.
 
 ## Requirements *(mandatory)*
 
@@ -149,23 +169,23 @@ A visitor wants to explore different sections of the website or connect with the
 
 #### Consultation Booking Requirements
 
-- **FR-019**: Homepage MUST provide a "Записатись на розбір" (Book a Session) button in the hero section
-- **FR-020**: Homepage MUST provide a "Записатись на діагностику" (Book Diagnostic Session) button in the footer
-- **FR-021**: Clicking either booking button MUST open a consultation request form
-- **FR-022**: Consultation form MUST collect the following information: Name (required), Phone number (required), Telegram handle (optional), Email address (optional)
-- **FR-023**: Consultation form MUST validate required fields before allowing submission
-- **FR-024**: Phone number field MUST provide visual formatting guidance
-- **FR-025**: Telegram field MUST support handles starting with @ symbol
-- **FR-026**: Consultation form MUST display validation errors clearly for incomplete or invalid data
-- **FR-027**: Consultation form MUST show a loading state while submission is processing
-- **FR-028**: System MUST store submitted consultation requests in a persistent database with: submission ID, name, phone, Telegram handle, email, source page ("home_page"), and submission timestamp
-- **FR-029**: System MUST send an email notification to the coach when a consultation request is submitted
-- **FR-030**: Email notification MUST include: client name, phone number, Telegram handle, email address, submission date/time, and source page
-- **FR-031**: Consultation form MUST display a success message after successful submission
-- **FR-032**: Consultation form MUST display an error message if submission fails
-- **FR-033**: Success message MUST confirm the request was received
-- **FR-034**: Consultation form MUST be closable via a close button or keyboard shortcut
-- **FR-035**: Consultation form MUST prevent interaction with background content while open
+- **FR-019**: Homepage MUST provide a "Записатись на розбір" (Book a Session) button in the hero section *(`src/components/sections/HeroSection.astro:25-32` CTA button with onClick handler)*
+- **FR-020**: Homepage MUST provide a "Записатись на діагностику" (Book Diagnostic Session) button in the footer *(`src/components/layout/Footer.astro:40-47` CTA button)*
+- **FR-021**: Clicking either booking button MUST open a consultation request form *(`src/stores/uiStore.ts:8-10` openConsultationModal action, `ConsultationModal.tsx:11-12` isOpen state)*
+- **FR-022**: Consultation form MUST collect the following information: Name (required), Phone number (required), Telegram handle (optional), Email address (optional) *(`src/types/consultationForm.ts:7-38` Zod schema, `ConsultationModal.tsx:102-157` form inputs)*
+- **FR-023**: Consultation form MUST validate required fields before allowing submission *(`ConsultationModal.tsx:16-23` React Hook Form with zodResolver, `src/types/consultationForm.ts:8-20` name/phone required validation)*
+- **FR-024**: Phone number field MUST provide visual formatting guidance *(`ConsultationModal.tsx:116-123` Input component with placeholder "+380XXXXXXXXX")*
+- **FR-025**: Telegram field MUST support handles starting with @ symbol *(`src/types/consultationForm.ts:26-30` transform function auto-prefixes @)*
+- **FR-026**: Consultation form MUST display validation errors clearly for incomplete or invalid data *(`ConsultationModal.tsx:112, 123, 133, 143` error prop in Input components bound to React Hook Form errors object)*
+- **FR-027**: Consultation form MUST show a loading state while submission is processing *(`ConsultationModal.tsx:13, 26` submitStatus state, `ConsultationModal.tsx:163` button disabled={submitStatus === 'submitting'})*
+- **FR-028**: System MUST store submitted consultation requests in a persistent database with: submission ID, name, phone, Telegram handle, email, source page ("home_page"), and submission timestamp *(`src/pages/api/submit-lead.ts:110-114` Supabase insert, `specs/002-home-page/data-model.md:13-31` leads table schema)*
+- **FR-029**: System MUST send an email notification to the coach when a consultation request is submitted *(`src/pages/api/submit-lead.ts:117-159` Resend email sending with HTML template)*
+- **FR-030**: Email notification MUST include: client name, phone number, Telegram handle, email address, submission date/time, and source page *(`src/pages/api/submit-lead.ts:126-153` email HTML template with all fields)*
+- **FR-031**: Consultation form MUST display a success message after successful submission *(`ConsultationModal.tsx:70-99` success state rendering with checkmark icon and gold gradient animation)*
+- **FR-032**: Consultation form MUST display an error message if submission fails *(`ConsultationModal.tsx:52-55` error handling, `ConsultationModal.tsx:159-173` error state rendering)*
+- **FR-033**: Success message MUST confirm the request was received *(`ConsultationModal.tsx:85-91` Ukrainian success message "Ваш запит успішно надіслано!")*
+- **FR-034**: Consultation form MUST be closable via a close button or keyboard shortcut *(`ConsultationModal.tsx:58-66` handleClose function, `Modal.tsx` Escape key handling)*
+- **FR-035**: Consultation form MUST prevent interaction with background content while open *(`Modal.tsx` overlay with pointer-events blocking background)*
 
 #### Responsive Design Requirements
 
@@ -240,6 +260,31 @@ A visitor wants to explore different sections of the website or connect with the
 - **SC-019**: Bounce rate is below 60%
 - **SC-020**: Form validation errors display within 200 milliseconds
 
+### Monitoring & Verification
+
+How to measure each success criterion:
+
+- **SC-001**: Tool: **Chrome DevTools Network tab** | Method: Open DevTools → Network tab → Reload page → Check "Load" time in bottom status bar → Verify <10 seconds on standard broadband
+- **SC-002**: Tool: **Vercel Analytics or Google Analytics** | Method: Open Analytics dashboard → Navigate to Conversions → Calculate (form submissions / total visitors) × 100 → Verify ≥5%
+- **SC-003**: Tool: **Supabase Dashboard** | Method: Open Supabase project → Navigate to leads table → Query: `SELECT COUNT(*) FROM leads` → Compare with form submission attempts → Verify success rate ≥95%
+- **SC-004**: Tool: **Resend Dashboard + Vercel Function Logs** | Method: Resend Dashboard → Check delivery metrics → Cross-reference with Vercel logs → Verify ≥95% emails sent within 1 minute
+- **SC-005**: Tool: **Manual timing test** | Method: Open consultation modal → Start timer → Fill all required fields (name, phone) → Click submit → Stop timer → Verify <1 minute
+- **SC-006**: Tool: **Chrome DevTools Lighthouse** | Method: Open DevTools → Lighthouse tab → Select "Performance" → Generate report → Verify score ≥95
+- **SC-007**: Tool: **Chrome DevTools Lighthouse** | Method: Open DevTools → Lighthouse tab → Select "Accessibility" → Generate report → Verify score ≥95
+- **SC-008**: Tool: **Chrome DevTools Lighthouse** | Method: Open DevTools → Lighthouse tab → Select "SEO" → Generate report → Verify score ≥95
+- **SC-009**: Tool: **Manual keyboard navigation test** | Method: Close mouse/trackpad → Press Tab repeatedly → Navigate through all interactive elements (CTA buttons, form inputs, navigation links) → Verify all receive focus
+- **SC-010**: Tool: **Chrome DevTools Lighthouse (LCP metric)** | Method: Run Lighthouse Performance audit → Check "Largest Contentful Paint" value in metrics → Verify <2.5 seconds
+- **SC-011**: Tool: **Chrome DevTools Lighthouse (CLS metric)** | Method: Run Lighthouse Performance audit → Check "Cumulative Layout Shift" value in metrics → Verify <0.1
+- **SC-012**: Tool: **Chrome DevTools Lighthouse (FID/TBT metric)** | Method: Run Lighthouse Performance audit → Check "Total Blocking Time" → Verify <100ms (FID proxy metric)
+- **SC-013**: Tool: **axe DevTools or WAVE extension** | Method: Install browser extension → Run accessibility scan → Check "Images" section → Verify all have alt text → Verify 100% coverage
+- **SC-014**: Tool: **Chrome DevTools Responsive mode** | Method: Open DevTools → Toggle device toolbar → Test widths: 320px (mobile), 768px (tablet), 1440px (desktop), 1920px (large desktop) → Verify layout intact
+- **SC-015**: Tool: **Chrome DevTools Performance tab** | Method: Record performance → Click mobile menu button → Stop recording → Check interaction timing → Verify <300ms
+- **SC-016**: Tool: **Chrome DevTools Performance tab** | Method: Record performance → Click "Записатись на розбір" CTA → Stop recording → Check modal render timing → Verify <300ms
+- **SC-017**: Tool: **Vercel Analytics or Google Analytics** | Method: Analytics dashboard → Behavior → Scroll depth report → Check % of users scrolling past hero section → Verify ≥70%
+- **SC-018**: Tool: **Vercel Analytics or Google Analytics** | Method: Analytics dashboard → Behavior → Average session duration → Filter for homepage → Verify ≥2 minutes
+- **SC-019**: Tool: **Vercel Analytics or Google Analytics** | Method: Analytics dashboard → Behavior → Bounce rate for homepage → Verify <60%
+- **SC-020**: Tool: **Chrome DevTools Performance tab + Manual test** | Method: Record performance → Submit form with invalid data → Stop recording → Check error message display timing → Verify <200ms
+
 ## Assumptions
 
 1. **Email Service**: A reliable email delivery service is available for sending consultation request notifications
@@ -256,6 +301,9 @@ A visitor wants to explore different sections of the website or connect with the
 12. **Hosting Environment**: Website hosting supports serverless functions for form processing
 13. **Data Privacy**: Consultation requests comply with data protection regulations
 14. **Content Updates**: Coach can provide updated testimonials, case studies, and statistics as needed
+15. **Form Field Requirements**: Consultation form collects exactly 4 fields - Name (required, 2-255 characters), Phone (required, 7-20 characters with format validation), Telegram (optional, 3-32 characters with @ prefix), Email (optional, valid email format)
+16. **Form Validation**: Client-side validation using Zod schema with Ukrainian error messages provides immediate feedback before submission; server-side validation with identical Zod schema ensures data integrity even if client validation bypassed
+17. **Contact Method Flexibility**: Users must provide at least one contact method (phone required), but can optionally provide additional methods (telegram/email) to accommodate different communication preferences
 
 ## Out of Scope
 

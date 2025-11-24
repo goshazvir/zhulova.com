@@ -15,7 +15,7 @@ const leadSchema = z.object({
     .max(20, 'Phone number is too long')
     .trim()
     .refine(
-      (val) => /^[\d\s\-\+\(\)]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
+      (val) => /^[\d\s\-+()]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
       'Please enter a valid phone number'
     ),
   telegram: z

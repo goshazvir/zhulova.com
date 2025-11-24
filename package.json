@@ -23,7 +23,9 @@
     "perf:check": "node specs/012-architecture-review/scripts/auto-performance-check.js",
     "perf:lighthouse": "lhci autorun",
     "perf:monitor": "node specs/012-architecture-review/scripts/fetch-vercel-metrics.js",
-    "audit:all": "npm run perf:check && npm run perf:monitor"
+    "audit:all": "npm run perf:check && npm run perf:monitor",
+    "lint": "eslint src --ext .ts,.tsx,.astro",
+    "lint:fix": "eslint src --ext .ts,.tsx,.astro --fix"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
@@ -53,9 +55,13 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
     "@vitejs/plugin-react": "^5.1.1",
     "@vitest/coverage-v8": "^4.0.13",
     "@vitest/ui": "^4.0.13",
+    "eslint": "^9.39.1",
+    "eslint-plugin-astro": "^1.5.0",
     "jsdom": "^27.2.0",
     "terser": "^5.44.1",
     "typescript": "^5.7.3",

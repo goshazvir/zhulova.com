@@ -15,7 +15,7 @@ export const consultationFormSchema = z.object({
     .max(20, 'Номер телефону занадто довгий')
     .trim()
     .refine(
-      val => /^[\d\s\-\+\(\)]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
+      val => /^[\d\s\-+()]+$/.test(val) && /\d{7,}/.test(val.replace(/\D/g, '')),
       'Введіть коректний номер телефону'
     ),
 

@@ -20,8 +20,8 @@ test.describe('Legal Pages', () => {
     });
 
     test('should display privacy policy heading', async ({ page }) => {
-      // Main heading should be visible
-      const heading = page.locator('h1');
+      // Main heading should be visible - use specific selector to avoid browser extension elements
+      const heading = page.locator('main h1').first();
       await expect(heading).toBeVisible();
       await expect(heading).toContainText(/політика конфіденційності/i);
     });
@@ -37,8 +37,8 @@ test.describe('Legal Pages', () => {
     });
 
     test('should have navigation menu', async ({ page }) => {
-      // Header navigation should be visible
-      const header = page.locator('header');
+      // Header navigation should be visible - use semantic role to avoid browser extension elements
+      const header = page.getByRole('banner');
       await expect(header).toBeVisible();
 
       // Should have navigation links
@@ -47,8 +47,8 @@ test.describe('Legal Pages', () => {
     });
 
     test('should have footer', async ({ page }) => {
-      // Footer should be visible
-      const footer = page.locator('footer');
+      // Footer should be visible - use semantic role
+      const footer = page.getByRole('contentinfo');
       await expect(footer).toBeVisible();
 
       // Footer should have copyright text
@@ -71,8 +71,8 @@ test.describe('Legal Pages', () => {
     test('should work on mobile viewport', async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
 
-      // Page should still be readable
-      const heading = page.locator('h1');
+      // Page should still be readable - use specific selector
+      const heading = page.locator('main h1').first();
       await expect(heading).toBeVisible();
 
       // Content should be visible
@@ -105,8 +105,8 @@ test.describe('Legal Pages', () => {
     });
 
     test('should display terms heading', async ({ page }) => {
-      // Main heading should be visible
-      const heading = page.locator('h1');
+      // Main heading should be visible - use specific selector to avoid browser extension elements
+      const heading = page.locator('main h1').first();
       await expect(heading).toBeVisible();
       await expect(heading).toContainText(/умови використання/i);
     });
@@ -122,8 +122,8 @@ test.describe('Legal Pages', () => {
     });
 
     test('should have navigation menu', async ({ page }) => {
-      // Header navigation should be visible
-      const header = page.locator('header');
+      // Header navigation should be visible - use semantic role to avoid browser extension elements
+      const header = page.getByRole('banner');
       await expect(header).toBeVisible();
 
       // Should have navigation links
@@ -132,8 +132,8 @@ test.describe('Legal Pages', () => {
     });
 
     test('should have footer', async ({ page }) => {
-      // Footer should be visible
-      const footer = page.locator('footer');
+      // Footer should be visible - use semantic role
+      const footer = page.getByRole('contentinfo');
       await expect(footer).toBeVisible();
 
       // Footer should have copyright text
@@ -156,8 +156,8 @@ test.describe('Legal Pages', () => {
     test('should work on mobile viewport', async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
 
-      // Page should still be readable
-      const heading = page.locator('h1');
+      // Page should still be readable - use specific selector
+      const heading = page.locator('main h1').first();
       await expect(heading).toBeVisible();
 
       // Content should be visible
@@ -196,13 +196,13 @@ test.describe('Legal Pages', () => {
     });
 
     test('should have consistent footer across pages', async ({ page }) => {
-      // Check footer on privacy policy
+      // Check footer on privacy policy - use semantic role to avoid browser extension elements
       await page.goto('/privacy-policy', { waitUntil: 'networkidle' });
-      const footerOnPrivacy = await page.locator('footer').textContent();
+      const footerOnPrivacy = await page.getByRole('contentinfo').textContent();
 
       // Check footer on terms
       await page.goto('/terms', { waitUntil: 'networkidle' });
-      const footerOnTerms = await page.locator('footer').textContent();
+      const footerOnTerms = await page.getByRole('contentinfo').textContent();
 
       // Both should have copyright
       expect(footerOnPrivacy).toMatch(/© \d{4}/);

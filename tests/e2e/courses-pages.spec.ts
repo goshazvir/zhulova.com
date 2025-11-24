@@ -17,7 +17,8 @@ test.describe('Courses Pages', () => {
     });
 
     test('should display main heading', async ({ page }) => {
-      const heading = page.locator('h1');
+      // Use specific selector to avoid matching browser extension elements
+      const heading = page.locator('main h1').first();
       await expect(heading).toBeVisible();
       await expect(heading).toContainText(/курси/i);
     });
@@ -34,8 +35,9 @@ test.describe('Courses Pages', () => {
     });
 
     test('should have navigation and footer', async ({ page }) => {
-      await expect(page.locator('header')).toBeVisible();
-      await expect(page.locator('footer')).toBeVisible();
+      // Use semantic roles to avoid matching browser extension elements
+      await expect(page.getByRole('banner')).toBeVisible();
+      await expect(page.getByRole('contentinfo')).toBeVisible();
     });
 
     test('should navigate to course detail page', async ({ page }) => {
@@ -70,8 +72,8 @@ test.describe('Courses Pages', () => {
         });
 
         test(`should display course title on ${slug}`, async ({ page }) => {
-          // Should have h1 heading
-          const heading = page.locator('h1');
+          // Should have h1 heading - use specific selector to avoid browser extension elements
+          const heading = page.locator('main h1').first();
           await expect(heading).toBeVisible();
 
           // Heading should not be empty
@@ -91,8 +93,9 @@ test.describe('Courses Pages', () => {
         });
 
         test(`should have navigation and footer on ${slug}`, async ({ page }) => {
-          await expect(page.locator('header')).toBeVisible();
-          await expect(page.locator('footer')).toBeVisible();
+          // Use semantic roles to avoid matching browser extension elements
+          await expect(page.getByRole('banner')).toBeVisible();
+          await expect(page.getByRole('contentinfo')).toBeVisible();
         });
 
         test(`should have main content on ${slug}`, async ({ page }) => {
@@ -121,8 +124,8 @@ test.describe('Courses Pages', () => {
         test(`should work on mobile viewport on ${slug}`, async ({ page }) => {
           await page.setViewportSize({ width: 375, height: 667 });
 
-          // Content should be visible and readable
-          const heading = page.locator('h1');
+          // Content should be visible and readable - use specific selector
+          const heading = page.locator('main h1').first();
           await expect(heading).toBeVisible();
 
           const main = page.locator('main');
@@ -151,15 +154,17 @@ test.describe('Courses Pages', () => {
       const count = await courseLinks.count();
 
       if (count >= 2) {
-        // Click first course
+        // Click first course and wait for navigation
         await courseLinks.first().click();
+        await page.waitForURL(/\/courses\/.+/);
         const firstUrl = page.url();
 
         // Go back to catalog
-        await page.goto('/courses');
+        await page.goto('/courses', { waitUntil: 'networkidle' });
 
-        // Click second course
-        await courseLinks.nth(1).click();
+        // Click second course and wait for navigation
+        await page.locator('a[href^="/courses/"]').nth(1).click();
+        await page.waitForURL(/\/courses\/.+/);
         const secondUrl = page.url();
 
         // URLs should be different
@@ -169,13 +174,13 @@ test.describe('Courses Pages', () => {
     });
 
     test('should have consistent header across all course pages', async ({ page }) => {
-      // Check header on catalog
+      // Check header on catalog - use semantic role to avoid browser extension elements
       await page.goto('/courses', { waitUntil: 'networkidle' });
-      const headerOnCatalog = await page.locator('header').textContent();
+      const headerOnCatalog = await page.getByRole('banner').textContent();
 
       // Check header on detail page
       await page.goto('/courses/my-course', { waitUntil: 'networkidle' });
-      const headerOnDetail = await page.locator('header').textContent();
+      const headerOnDetail = await page.getByRole('banner').textContent();
 
       // Both should have navigation
       expect(headerOnCatalog).toBeTruthy();

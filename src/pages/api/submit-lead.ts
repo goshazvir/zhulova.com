@@ -3,9 +3,6 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { logError, logWarn, logInfo } from '@utils/logger';
 
-// Disable prerendering for this API endpoint (required for hybrid mode)
-export const prerender = false;
-
 // Environment validation flag (for cold start logging)
 let envValidated = false;
 

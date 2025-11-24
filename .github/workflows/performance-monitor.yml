@@ -1,0 +1,180 @@
+name: Performance Monitor
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    # Run daily at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  lighthouse-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run Lighthouse CI on local build
+        id: lighthouse
+        run: |
+          npm install -g @lhci/cli http-server
+
+          # Run Lighthouse using lighthouserc.cjs (starts http-server automatically)
+          lhci autorun || LIGHTHOUSE_FAILED=true
+
+          # Fail if assertions failed
+          if [ "$LIGHTHOUSE_FAILED" = "true" ]; then
+            echo "PERFORMANCE_CHECK=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "PERFORMANCE_CHECK=passed" >> $GITHUB_OUTPUT
+          fi
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+
+  pagespeed-insights:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: lighthouse-ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for Vercel deployment
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+        id: vercel
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 600
+
+      - name: Run PageSpeed Insights
+        id: psi
+        uses: jakepartusch/psi-action@v1.3
+        with:
+          url: ${{ steps.vercel.outputs.url || 'https://zhulova.com' }}
+          threshold: 95
+          strategy: desktop
+          key: ${{ secrets.PAGESPEED_API_KEY }}
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const score = ${{ steps.psi.outputs.score }};
+            const emoji = score >= 95 ? '✅' : score >= 85 ? '⚠️' : '❌';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ${emoji} PageSpeed Score: ${score}/100
+
+              | Metric | Value |
+              |--------|-------|
+              | Performance | ${score} |
+              | URL | ${{ steps.vercel.outputs.url }} |
+
+              [View full report](https://pagespeed.web.dev/report?url=${{ steps.vercel.outputs.url }})`
+            });
+
+      - name: Create issue on performance degradation
+        if: steps.psi.outputs.score < 85 && github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const score = ${{ steps.psi.outputs.score }};
+            const url = '${{ steps.vercel.outputs.url || 'https://zhulova.com' }}';
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Performance Alert: Score dropped to ${score}`,
+              body: `## Performance Degradation Detected
+
+              The Lighthouse performance score has dropped below the acceptable threshold.
+
+              | Metric | Value | Threshold |
+              |--------|-------|-----------|
+              | Current Score | ${score} | 85 |
+              | Target Score | 95 | 95 |
+              | URL | ${url} | - |
+
+              ### Action Required
+              - Review recent changes that may have impacted performance
+              - Check bundle sizes and loading times
+              - Optimize images and lazy loading
+              - Review JavaScript execution time
+
+              [View full report](https://pagespeed.web.dev/report?url=${url})
+
+              cc: @goshazvir`,
+              labels: ['performance', 'critical', 'automated-alert']
+            });
+
+            console.log(`Created issue #${issue.data.number} for performance degradation`);
+
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and analyze bundle
+        run: |
+          npm run build
+          echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size | Gzipped |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|---------|" >> $GITHUB_STEP_SUMMARY
+
+          for file in dist/_astro/*.js; do
+            if [ -f "$file" ]; then
+              SIZE=$(wc -c < "$file" | numfmt --to=iec)
+              GZIP=$(gzip -c "$file" | wc -c | numfmt --to=iec)
+              echo "| $(basename $file) | $SIZE | $GZIP |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+      - name: Check bundle size limits
+        run: |
+          TOTAL_SIZE=$(find dist/_astro -name "*.js" -exec cat {} \; | gzip -c | wc -c)
+          MAX_SIZE=102400  # 100KB gzipped
+
+          if [ $TOTAL_SIZE -gt $MAX_SIZE ]; then
+            echo "❌ Bundle size exceeded limit: $(($TOTAL_SIZE / 1024))KB > 100KB"
+            exit 1
+          else
+            echo "✅ Bundle size within limit: $(($TOTAL_SIZE / 1024))KB < 100KB"
+          fi

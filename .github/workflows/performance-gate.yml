@@ -1,0 +1,145 @@
+name: Performance Gate
+
+on:
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  performance-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run Lighthouse CI on local build
+        id: lighthouse
+        run: |
+          npm install -g @lhci/cli http-server
+
+          # Run Lighthouse using lighthouserc.cjs (starts http-server automatically)
+          lhci autorun || LIGHTHOUSE_FAILED=true
+
+          # Fail if assertions failed
+          if [ "$LIGHTHOUSE_FAILED" = "true" ]; then
+            echo "PERFORMANCE_CHECK=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "PERFORMANCE_CHECK=passed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check bundle size
+        id: bundle
+        run: |
+          # Calculate gzipped JS bundle size (more realistic)
+          TOTAL_JS_GZIP=$(find dist/_astro -name "*.js" -exec cat {} \; | gzip -c | wc -c)
+          JS_KB=$((TOTAL_JS_GZIP / 1024))
+
+          # Calculate gzipped CSS bundle size
+          TOTAL_CSS_GZIP=$(find dist/_astro -name "*.css" -exec cat {} \; | gzip -c | wc -c)
+          CSS_KB=$((TOTAL_CSS_GZIP / 1024))
+
+          echo "JS_SIZE=$JS_KB" >> $GITHUB_OUTPUT
+          echo "CSS_SIZE=$CSS_KB" >> $GITHUB_OUTPUT
+
+          # Check limits (temporarily relaxed for architecture review)
+          if [ $JS_KB -gt 100 ]; then
+            echo "❌ JS bundle too large: ${JS_KB}KB (limit: 100KB gzipped)"
+            echo "BUNDLE_CHECK=failed" >> $GITHUB_OUTPUT
+            exit 1
+          elif [ $CSS_KB -gt 20 ]; then
+            echo "❌ CSS bundle too large: ${CSS_KB}KB (limit: 20KB gzipped)"
+            echo "BUNDLE_CHECK=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ Bundle sizes within limits (JS: ${JS_KB}KB, CSS: ${CSS_KB}KB gzipped)"
+            echo "BUNDLE_CHECK=passed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const performanceCheck = '${{ steps.lighthouse.outputs.PERFORMANCE_CHECK }}' || 'unknown';
+            const bundleCheck = '${{ steps.bundle.outputs.BUNDLE_CHECK }}' || 'unknown';
+            const jsSize = '${{ steps.bundle.outputs.JS_SIZE }}' || '0';
+            const cssSize = '${{ steps.bundle.outputs.CSS_SIZE }}' || '0';
+            const previewUrl = '${{ steps.vercel.outputs.url }}' || 'N/A';
+
+            const performanceEmoji = performanceCheck === 'passed' ? '✅' : '❌';
+            const bundleEmoji = bundleCheck === 'passed' ? '✅' : '❌';
+            const overallEmoji = performanceCheck === 'passed' && bundleCheck === 'passed' ? '✅' : '❌';
+
+            const body = `## ${overallEmoji} Performance Gate Status
+
+            **Preview URL:** ${previewUrl}
+
+            | Check | Status | Details |
+            |-------|--------|---------|
+            | Lighthouse Performance | ${performanceEmoji} | Requires 85+ score (warn) |
+            | Bundle Size | ${bundleEmoji} | JS: ${jsSize}KB/100KB, CSS: ${cssSize}KB/20KB (gzipped) |
+
+            ### Requirements
+            - ⚠️ Lighthouse Performance Score: 85+ (warn)
+            - ✅ Lighthouse Accessibility: 90+ (error)
+            - ⚠️ Lighthouse Best Practices: 85+ (warn)
+            - ✅ Lighthouse SEO: 90+ (error)
+            - ✅ JS Bundle: < 100KB gzipped
+            - ✅ CSS Bundle: < 20KB gzipped
+
+            ${performanceCheck === 'failed' || bundleCheck === 'failed' ?
+              '### ⚠️ Action Required\nThis PR cannot be merged until critical requirements (Accessibility, SEO) are met.' :
+              '### ✅ Ready to Merge\nAll critical requirements have been satisfied.'}`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Performance Gate Status')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
+
+      - name: Set merge status
+        if: always()
+        run: |
+          if [ "${{ steps.lighthouse.outputs.PERFORMANCE_CHECK }}" = "failed" ] || [ "${{ steps.bundle.outputs.BUNDLE_CHECK }}" = "failed" ]; then
+            echo "::error::Performance requirements not met. PR cannot be merged."
+            exit 1
+          fi

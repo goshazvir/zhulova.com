@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { scrollToSection } from '@/utils/scrollAnimations';
 
@@ -9,6 +10,23 @@ export default function MobileMenu({ variant = 'main' }: Props) {
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const activeSection = useUIStore((state) => state.activeSection);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
+
+  // Handle Escape key press
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isMobileMenuOpen, closeMobileMenu]);
 
   // Check current page for active state
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -57,12 +75,12 @@ export default function MobileMenu({ variant = 'main' }: Props) {
         className="fixed top-0 right-0 bottom-0 w-64 bg-white z-50 shadow-xl md:hidden transform transition-transform duration-300 ease-in-out"
         role="dialog"
         aria-modal="true"
-        aria-label="Mobile navigation"
+        aria-labelledby="mobile-menu-title"
       >
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-navy-100">
-            <span className="text-lg font-serif font-bold text-navy-900">
+            <span id="mobile-menu-title" className="text-lg font-serif font-bold text-navy-900">
               Меню
             </span>
             <button

@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://astro.build/config
 export default defineConfig({
   site: 'https://zhulova.com',
-  output: 'server', // Server mode with prerendering for static pages
+  output: 'static', // Static pages (SSG) + API routes as serverless functions
   adapter: vercel({
     webAnalytics: { enabled: true },
   }),
@@ -35,6 +35,7 @@ export default defineConfig({
         '@utils': path.resolve(__dirname, './src/utils'),
         '@assets': path.resolve(__dirname, './src/assets'),
         '@data': path.resolve(__dirname, './src/data'),
+        '@styles': path.resolve(__dirname, './src/styles'),
       },
     },
     build: {

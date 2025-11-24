@@ -1,0 +1,197 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  width?: number;
+  height?: number;
+  className?: string;
+}
+
+const {
+  src,
+  alt,
+  width = 600,
+  height = 800,
+  className = ''
+} = Astro.props;
+---
+
+<div class={`hero-image-wrapper relative lg:sticky lg:top-20 pr-0 md:pr-4 lg:pr-8 w-full max-w-full box-border min-w-0 flex items-center ${className}`}>
+  <!-- Organic decorative elements -->
+  <div class="organic-blob" aria-hidden="true"></div>
+  <div class="organic-accent-1" aria-hidden="true"></div>
+  <div class="organic-accent-2" aria-hidden="true"></div>
+
+  <div class="relative hero-image-container w-full max-w-full overflow-hidden">
+    {typeof src === 'string' ? (
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading="eager"
+        fetchpriority="high"
+        class="w-full h-full object-cover"
+      />
+    ) : (
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        format="webp"
+        quality={92}
+        loading="eager"
+        fetchpriority="high"
+        class="w-full h-full object-cover"
+      />
+    )}
+  </div>
+</div>
+
+<style>
+  /* Hero Image Container */
+  .hero-image-container {
+    position: relative;
+    border-radius: 2rem;
+    overflow: hidden;
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .hero-image-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(217, 175, 108, 0.03) 0%,
+      transparent 40%,
+      transparent 60%,
+      rgba(217, 175, 108, 0.02) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Organic decorative blobs */
+  .organic-blob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(217, 175, 108, 0.08) 0%,
+      rgba(217, 175, 108, 0.04) 25%,
+      transparent 70%
+    );
+    filter: blur(40px);
+    animation: blob-rotate 20s linear infinite;
+    pointer-events: none;
+  }
+
+  .organic-accent-1 {
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 40%;
+    height: 40%;
+    background: radial-gradient(
+      circle at center,
+      rgba(217, 175, 108, 0.12) 0%,
+      transparent 70%
+    );
+    filter: blur(30px);
+    animation: float-1 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .organic-accent-2 {
+    position: absolute;
+    bottom: -5%;
+    left: -5%;
+    width: 35%;
+    height: 35%;
+    background: radial-gradient(
+      circle at center,
+      rgba(126, 176, 170, 0.1) 0%,
+      transparent 70%
+    );
+    filter: blur(25px);
+    animation: float-2 10s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Animations */
+  @keyframes blob-rotate {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) rotate(180deg) scale(1.05);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg) scale(1);
+    }
+  }
+
+  @keyframes float-1 {
+    0%, 100% {
+      transform: translateY(0) translateX(0) scale(1);
+    }
+    33% {
+      transform: translateY(-20px) translateX(10px) scale(1.02);
+    }
+    66% {
+      transform: translateY(10px) translateX(-5px) scale(0.98);
+    }
+  }
+
+  @keyframes float-2 {
+    0%, 100% {
+      transform: translateY(0) translateX(0) scale(1);
+    }
+    50% {
+      transform: translateY(20px) translateX(-10px) scale(1.03);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .hero-image-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .hero-image-wrapper {
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-image-container {
+      border-radius: 1.5rem;
+      max-width: 400px;
+    }
+
+    .organic-blob,
+    .organic-accent-1,
+    .organic-accent-2 {
+      opacity: 0.5;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-image-container {
+      border-radius: 1.25rem;
+      max-width: 320px;
+    }
+  }
+</style>

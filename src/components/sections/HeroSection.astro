@@ -101,6 +101,14 @@ import '@/styles/hero.css';
     });
   }
 
+  // Expose function for E2E tests
+  if (typeof window !== 'undefined') {
+    // @ts-ignore
+    window.__openConsultationModal = () => {
+      useUIStore.getState().openConsultationModal();
+    };
+  }
+
   // Handle scroll indicator click
   const scrollIndicator = document.querySelector('.scroll-indicator');
   if (scrollIndicator) {

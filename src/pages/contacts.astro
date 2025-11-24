@@ -193,10 +193,13 @@ import { socialLinks } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  const contactsCTAButton = document.getElementById('contacts-cta-button');
-  if (contactsCTAButton) {
-    contactsCTAButton.addEventListener('click', () => {
-      useUIStore.getState().openConsultationModal();
-    });
-  }
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    const contactsCTAButton = document.getElementById('contacts-cta-button');
+    if (contactsCTAButton) {
+      contactsCTAButton.addEventListener('click', () => {
+        useUIStore.getState().openConsultationModal();
+      });
+    }
+  });
 </script>

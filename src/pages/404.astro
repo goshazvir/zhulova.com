@@ -1,0 +1,79 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Сторінку не знайдено | Вікторія Жульова"
+  description="Сторінка, яку ви шукаєте, не існує. Перегляньте курси або поверніться на головну."
+>
+  <main class="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full text-center animate-fade-in">
+      <!-- Decorative 404 (aria-hidden for screen readers) -->
+      <p
+        class="text-6xl sm:text-8xl lg:text-9xl font-serif font-light text-navy-900 mb-4 select-none"
+        aria-hidden="true"
+      >
+        404
+      </p>
+
+      <!-- Main heading (semantic h1 for screen readers) -->
+      <h1 class="text-xl sm:text-2xl font-serif text-navy-900 mb-4">
+        Сторінку не знайдено
+      </h1>
+
+      <!-- Empathetic Ukrainian message -->
+      <p class="text-base sm:text-lg text-navy-600 mb-8 leading-relaxed">
+        Схоже, ця сторінка була переміщена або більше не існує.
+        Нічого страшного — давайте знайдемо те, що вам потрібно.
+      </p>
+
+      <!-- Primary CTA button -->
+      <a
+        href="/"
+        class="inline-flex items-center justify-center w-full sm:w-auto min-h-[48px] px-8 py-3 bg-navy-900 text-white font-medium rounded-lg hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 transition-colors"
+      >
+        На головну
+      </a>
+
+      <!-- Secondary CTAs -->
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-sm">
+        <a
+          href="/courses"
+          class="text-navy-600 hover:text-gold-700 underline underline-offset-2 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 transition-colors min-h-[48px] flex items-center"
+        >
+          Переглянути курси
+        </a>
+        <span class="hidden sm:inline text-navy-300" aria-hidden="true">•</span>
+        <a
+          href="/contacts"
+          class="text-navy-600 hover:text-gold-700 underline underline-offset-2 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 transition-colors min-h-[48px] flex items-center"
+        >
+          Зв'язатися зі мною
+        </a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in {
+      animation: none;
+    }
+  }
+</style>

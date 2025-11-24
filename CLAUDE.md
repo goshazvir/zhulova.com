@@ -800,6 +800,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - GitHub Actions (CI/CD automation: Lighthouse CI, bundle size checks, performance monitoring) (012-architecture-review)
 - Lighthouse CI (@lhci/cli), http-server (local build testing) (012-architecture-review)
 - Node.js scripts (performance analysis, accessibility audits, component structure analysis) (012-architecture-review)
+- TypeScript 5.x (strict mode), Astro 4.x + Astro (existing), Tailwind CSS 3.x (existing), React 18.x (for Button component if needed) (015-custom-404-page)
+- N/A (static page, no data persistence) (015-custom-404-page)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

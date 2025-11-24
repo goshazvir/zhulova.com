@@ -58,13 +58,13 @@ function safeStringify(obj: unknown): string {
  */
 const SENSITIVE_PATTERNS = [
   // Email addresses
-  { pattern: /\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Z|a-z]{2,}\b/g, replacement: '[EMAIL]' },
+  { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, replacement: '[EMAIL]' },
   // API keys (Stripe)
   { pattern: /sk_(test|live)_[a-zA-Z0-9]{24,}/g, replacement: 'sk_$1_[REDACTED]' },
   // API keys (Resend)
   { pattern: /re_[a-zA-Z0-9]{20,}/g, replacement: 're_[REDACTED]' },
   // Bearer tokens
-  { pattern: /Bearer\s+[a-zA-Z0-9\-._~+\/]+=*/gi, replacement: 'Bearer [REDACTED]' },
+  { pattern: /Bearer\s+[a-zA-Z0-9._~+/-]+=*/gi, replacement: 'Bearer [REDACTED]' },
   // Phone numbers (US format)
   { pattern: /(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g, replacement: '[PHONE]' },
   // Database URLs (credentials)
@@ -173,7 +173,7 @@ function truncateContext(context: LogContext, maxSize: number = 1024): LogContex
   }
 
   // Strategy 1: Remove optional fields (duration, retryAttempt)
-  const { duration, retryAttempt, ...essential } = context;
+  const { duration: _duration, retryAttempt: _retryAttempt, ...essential } = context;
   const truncated1 = JSON.stringify(essential);
 
   if (truncated1.length <= maxSize) {
@@ -289,7 +289,7 @@ function log(
 
     // Output structured JSON to console
     outputFn(safeStringify(logEntry));
-  } catch (error) {
+  } catch {
     // Fallback to basic console output if logging itself fails
     outputFn(`[LOGGER FAILED] ${message}`);
   }

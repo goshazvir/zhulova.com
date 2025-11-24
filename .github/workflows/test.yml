@@ -189,15 +189,16 @@ jobs:
               console.log('Test results not found, using default message');
             }
 
-            const body = `## ${{ job.status == 'success' ? '✅' : '❌' }} E2E Tests Completed
+            const statusIcon = '${{ job.status }}' === 'success' ? '✅' : '❌';
+            const failureNote = '${{ job.status }}' === 'failure' ? '\n\n⚠️ **Screenshots and traces** available in artifacts (7 days retention)' : '';
+
+            const body = `## ${statusIcon} E2E Tests Completed
 
             ${testResults}
 
             **Status**: ${{ job.status }}
             **Browser**: Chromium (Desktop Chrome)
-            **Run**: [View logs](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-
-            ${job.status == 'failure' ? '⚠️ **Screenshots and traces** available in artifacts (7 days retention)' : ''}`;
+            **Run**: [View logs](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})${failureNote}`;
 
             // Find existing comment
             const { data: comments } = await github.rest.issues.listComments({

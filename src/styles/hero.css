@@ -1,0 +1,192 @@
+/* Hero Section Styles */
+
+/* Responsive hero section height with modern viewport units */
+.hero-section {
+  /* Mobile first approach */
+  min-height: auto;
+  padding-bottom: 1.5rem;
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+  .hero-section {
+    min-height: 75vh;
+    min-height: 75dvh; /* Dynamic viewport height */
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .hero-section {
+    min-height: 85vh;
+    min-height: 85lvh; /* Large viewport height */
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-section {
+    min-height: auto;
+    padding-top: 7rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* Small screens (< 600px height) */
+@media (max-height: 600px) {
+  .hero-section {
+    min-height: auto;
+    padding-top: 6rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* Very large screens (4K+) */
+@media (min-width: 2560px) {
+  .hero-section {
+    min-height: 70vh;
+    max-height: 1200px;
+  }
+}
+
+/* Aurora Background Effect */
+.aurora-background {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #fafaf5 25%,
+    #fffef8 50%,
+    #fdf9f0 75%,
+    #fefdfb 100%
+  );
+  overflow: hidden;
+}
+
+.aurora-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(217, 175, 108, 0.08) 0%,
+    transparent 40%
+  ),
+  radial-gradient(
+    ellipse at bottom right,
+    rgba(126, 176, 170, 0.06) 0%,
+    transparent 40%
+  ),
+  radial-gradient(
+    ellipse at center,
+    rgba(217, 175, 108, 0.04) 0%,
+    transparent 60%
+  );
+  animation: aurora-shift 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes aurora-shift {
+  0%, 100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-5%) translateY(5%) rotate(1deg);
+  }
+  50% {
+    transform: translateX(3%) translateY(-3%) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(-3%) translateY(-5%) rotate(0.5deg);
+  }
+}
+
+/* Hero Title Responsive Sizing */
+.hero-title {
+  font-size: clamp(2rem, 5vw + 0.5rem, 4rem);
+  line-height: 1.1;
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+  }
+}
+
+/* Hero Content Animations */
+.hero-content {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero CTA Button */
+.hero-cta {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.hero-cta:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.hero-cta:active {
+  transform: scale(0.98);
+}
+
+/* Scroll Indicator */
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* Hide scroll indicator on small screens */
+@media (max-height: 700px), (max-width: 640px) {
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+/* Ensure proper spacing on mobile landscape */
+@media (max-width: 896px) and (orientation: landscape) {
+  .hero-content {
+    padding-top: 0.5rem;
+  }
+
+  .hero-title {
+    margin-bottom: 0.5rem;
+  }
+}

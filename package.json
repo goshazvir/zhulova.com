@@ -13,9 +13,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "test:supabase": "node .claude/scripts/test-supabase.js",
-    "favicon:update": "node .claude/scripts/generate-favicon-from-svg.js",
-    "og:update": "node .claude/scripts/generate-og-image.js",
-    "hero:update": "node .claude/scripts/generate-hero-image.js"
+    "perf:check": "node specs/012-architecture-review/scripts/auto-performance-check.js",
+    "perf:lighthouse": "lhci autorun",
+    "perf:monitor": "node specs/012-architecture-review/scripts/fetch-vercel-metrics.js",
+    "audit:all": "npm run perf:check && npm run perf:monitor"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

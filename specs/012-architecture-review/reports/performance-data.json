@@ -1,0 +1,22 @@
+{
+  "pagespeed": [
+    {
+      "page": "home",
+      "url": "https://zhulova.com/",
+      "error": "PageSpeed API error: 400"
+    },
+    {
+      "page": "courses",
+      "url": "https://zhulova.com/courses",
+      "error": "PageSpeed API error: 400"
+    },
+    {
+      "page": "contacts",
+      "url": "https://zhulova.com/contacts",
+      "error": "PageSpeed API error: 400"
+    }
+  ],
+  "bundleSize": {
+    "error": "Build directory not found"
+  }
+}

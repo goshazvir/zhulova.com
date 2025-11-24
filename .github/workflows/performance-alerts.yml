@@ -1,0 +1,150 @@
+name: Performance Alerts
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to monitor'
+        required: false
+        default: 'https://zhulova.com'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  monitor-performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check Core Web Vitals
+        id: cwv
+        run: |
+          # Install Chrome and Lighthouse
+          npm install -g lighthouse
+
+          # Run Lighthouse and capture metrics
+          URL="${{ github.event.inputs.url || 'https://zhulova.com' }}"
+          lighthouse "$URL" \
+            --output=json \
+            --output-path=./lighthouse-report.json \
+            --preset=desktop \
+            --only-categories=performance \
+            --chrome-flags="--headless --no-sandbox"
+
+          # Parse metrics
+          PERF_SCORE=$(jq '.categories.performance.score * 100' lighthouse-report.json)
+          LCP=$(jq '.audits["largest-contentful-paint"].numericValue' lighthouse-report.json)
+          FID=$(jq '.audits["max-potential-fid"].numericValue' lighthouse-report.json)
+          CLS=$(jq '.audits["cumulative-layout-shift"].numericValue' lighthouse-report.json)
+
+          # Convert to seconds/score
+          LCP_SEC=$(echo "scale=2; $LCP / 1000" | bc)
+          FID_MS=$FID
+
+          echo "PERF_SCORE=$PERF_SCORE" >> $GITHUB_OUTPUT
+          echo "LCP=$LCP_SEC" >> $GITHUB_OUTPUT
+          echo "FID=$FID_MS" >> $GITHUB_OUTPUT
+          echo "CLS=$CLS" >> $GITHUB_OUTPUT
+
+          # Check thresholds
+          if (( $(echo "$PERF_SCORE < 85" | bc -l) )); then
+            echo "ALERT=critical" >> $GITHUB_OUTPUT
+          elif (( $(echo "$PERF_SCORE < 95" | bc -l) )); then
+            echo "ALERT=warning" >> $GITHUB_OUTPUT
+          else
+            echo "ALERT=ok" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Store metrics in repository
+        if: always()
+        run: |
+          mkdir -p .performance-history
+          DATE=$(date +%Y-%m-%d_%H-%M-%S)
+
+          cat > .performance-history/metrics-$DATE.json << EOF
+          {
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "score": ${{ steps.cwv.outputs.PERF_SCORE }},
+            "lcp": ${{ steps.cwv.outputs.LCP }},
+            "fid": ${{ steps.cwv.outputs.FID }},
+            "cls": ${{ steps.cwv.outputs.CLS }}
+          }
+          EOF
+
+      - name: Create GitHub issue for critical alerts
+        if: steps.cwv.outputs.ALERT == 'critical'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const metrics = {
+              score: ${{ steps.cwv.outputs.PERF_SCORE }},
+              lcp: '${{ steps.cwv.outputs.LCP }}s',
+              fid: '${{ steps.cwv.outputs.FID }}ms',
+              cls: ${{ steps.cwv.outputs.CLS }}
+            };
+
+            // Check if similar issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'performance,automated-alert'
+            });
+
+            const existingIssue = issues.data.find(issue =>
+              issue.title.includes('Performance Alert') &&
+              new Date(issue.created_at) > new Date(Date.now() - 24*60*60*1000)
+            );
+
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🚨 Critical Performance Alert: Score ${metrics.score}`,
+                body: `## Critical Performance Degradation
+
+                The performance monitoring detected critical issues that require immediate attention.
+
+                ### Current Metrics
+                | Metric | Value | Target | Status |
+                |--------|-------|--------|--------|
+                | Performance Score | ${metrics.score} | 95+ | ❌ |
+                | LCP | ${metrics.lcp} | <2.5s | ${parseFloat(metrics.lcp) > 2.5 ? '❌' : '✅'} |
+                | FID | ${metrics.fid} | <100ms | ${parseFloat(metrics.fid) > 100 ? '❌' : '✅'} |
+                | CLS | ${metrics.cls} | <0.1 | ${parseFloat(metrics.cls) > 0.1 ? '❌' : '✅'} |
+
+                ### Recommended Actions
+                1. Review recent deployments
+                2. Check bundle sizes
+                3. Analyze render-blocking resources
+                4. Optimize critical path
+                5. Review image optimization
+
+                ### Resources
+                - [Lighthouse Report](./lighthouse-report.json)
+                - [Performance History](./.performance-history/)
+                - [Web.dev Measure](https://web.dev/measure/)
+
+                cc: @goshazvir`,
+                labels: ['performance', 'critical', 'automated-alert', 'high-priority']
+              });
+            }
+
+      - name: Upload performance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report-${{ github.run_id }}
+          path: |
+            lighthouse-report.json
+            .performance-history/

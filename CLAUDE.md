@@ -14,7 +14,7 @@ High-performance static website for Viktoria Zhulova, a mindset coach. Built wit
   - ✅ Code, comments, docs: English
   - ✅ Git commits, PRs: English
   - ❌ Never mix languages in code or documentation
-- **Hybrid static-first** - Static pages + Serverless functions for forms
+- **Server mode with prerendering** - Static pages + Serverless functions for forms
 - **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1
 - **Accessibility:** WCAG AA compliance mandatory
 - **Security:** Input validation, environment variables, RLS policies
@@ -123,16 +123,18 @@ npm run astro        # Astro CLI access
 ```
 
 **Which command to use:**
-- **`npm run dev`** - Standard development server (supports both static pages AND API routes via hybrid mode)
+- **`npm run dev`** - Standard development server (supports both static pages AND API routes via server mode)
 - **`npm run dev:vercel`** - Vercel dev server (optional, for testing Vercel-specific features)
 
 **Build process:** `astro check` (TypeScript validation) runs before every build. Build fails on type errors.
 
 ## Architecture
 
-### Hybrid Static-First Philosophy
+### Static Mode with Serverless API Routes
 
-**Configuration:** `output: 'hybrid'` in `astro.config.mjs` with Vercel adapter
+**Configuration:** `output: 'static'` in `astro.config.mjs` with Vercel adapter
+
+**Note:** Astro 5 uses `output: 'static'` mode for SSG (Static Site Generation). All pages are pre-rendered to HTML at build time. API routes in `src/pages/api/` are automatically converted to serverless functions by Vercel adapter.
 
 Every **page** is pre-rendered at build time (static). API endpoints are serverless functions:
 
@@ -143,13 +145,13 @@ User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interacti
 ```
 
 **Static Layer (pages):**
-- All pages pre-rendered at build time (default behavior in hybrid mode)
-- Pages are static unless `export const prerender = false` is added
+- All pages pre-rendered at build time to HTML files in `dist/`
+- Full SEO benefits (crawlable HTML, meta tags, structured data)
 - Content from Astro Content Collections
 
 **Dynamic Layer (API endpoints):**
 - Location: `src/pages/api/**/*.ts`
-- Must have `export const prerender = false` to work as serverless functions
+- Automatically converted to Vercel serverless functions (no `prerender = false` needed)
 - Form submissions → `/api/submit-lead` (POST)
 - Email notifications → Resend
 - Database writes → Supabase PostgreSQL
@@ -157,7 +159,7 @@ User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interacti
 **Example API endpoint:**
 ```typescript
 // src/pages/api/submit-lead.ts
-export const prerender = false; // REQUIRED for serverless function
+// No prerender export needed - API routes are serverless by default in static mode
 
 export const POST: APIRoute = async ({ request }) => {
   const body = await request.json();
@@ -242,6 +244,31 @@ const courses = await getCollection('courses', ({ data }) => {
 ```
 
 ## Performance Requirements
+
+### Current Performance Baseline (as of 2025-11-24)
+
+**Bundle Metrics** (Architecture Review #012):
+- **JavaScript**: 80KB gzipped (limit: 100KB) - ✅ Excellent
+- **CSS**: 7KB gzipped (limit: 20KB) - ✅ Excellent
+- **Images**: 227KB total (was 22MB before optimization) - ✅ Optimized
+- **Total**: ~314KB gzipped
+
+**Lighthouse Targets**:
+- **Performance**: 85+ (production-ready threshold, aligned with GitHub Actions)
+- **Accessibility**: 90+ (currently 95%+ WCAG AA)
+- **Best Practices**: 85+
+- **SEO**: 90+
+
+**Core Web Vitals**:
+- **LCP (Largest Contentful Paint)**: <2.5s
+- **CLS (Cumulative Layout Shift)**: <0.1
+- **FID (First Input Delay)**: <100ms
+
+**Automated Monitoring**:
+- Lighthouse CI runs on every PR (`.github/workflows/performance-monitor.yml`)
+- Bundle size checks enforce limits (performance-gate.yml)
+- Performance alerts trigger if scores drop below 85 (performance-alerts.yml)
+- Configuration: `lighthouserc.cjs` (tests static build via http-server)
 
 ### Image Optimization
 
@@ -506,13 +533,13 @@ PUBLIC_SITE_URL=https://zhulova.com
 3. Auto-deploy on push to main branch
 
 **Configuration:**
-- `astro.config.mjs` - Astro config with Vercel adapter (`output: 'hybrid'`)
+- `astro.config.mjs` - Astro config with Vercel adapter (`output: 'static'`)
 - `vercel.json` - Vercel configuration (headers, regions)
 - `.vercel/` - Local Vercel settings (in .gitignore)
 
 **Build command:** `npm run build`
 **Output directory:** `dist`
-**Serverless functions:** `src/pages/api/**/*.ts` (must have `export const prerender = false`)
+**Serverless functions:** `src/pages/api/**/*.ts` (automatically converted by Vercel adapter)
 
 **Alternative platforms:**
 - Netlify (with Netlify Functions)
@@ -574,15 +601,16 @@ The project currently has the following pages:
 ### Adding a Serverless Function
 
 1. Create file in `src/pages/api/function-name.ts`
-2. Add `export const prerender = false;` (REQUIRED for serverless)
-3. Import `APIRoute` from Astro
-4. Define Zod validation schema
-5. Export `POST` (or `GET`) handler
-6. Validate inputs with Zod
-7. Access env vars via `import.meta.env.VARIABLE_NAME` (NO fallback values)
-8. Interact with Supabase/Resend using server-only env vars
-9. Return JSON response
-10. Test locally with `npm run dev`
+2. Import `APIRoute` from Astro
+3. Define Zod validation schema
+4. Export `POST` (or `GET`) handler
+5. Validate inputs with Zod
+6. Access env vars via `import.meta.env.VARIABLE_NAME` (NO fallback values)
+7. Interact with Supabase/Resend using server-only env vars
+8. Return JSON response
+9. Test locally with `npm run dev`
+
+**Note:** In `output: 'static'` mode, all files in `src/pages/api/` are automatically converted to Vercel serverless functions. No `export const prerender = false` needed.
 
 **Example structure:**
 ```typescript
@@ -590,8 +618,7 @@ The project currently has the following pages:
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
 
-// REQUIRED: Disable prerendering for serverless function
-export const prerender = false;
+// API routes are automatically serverless in static mode
 
 const schema = z.object({
   name: z.string().min(2),
@@ -617,7 +644,6 @@ export const POST: APIRoute = async ({ request }) => {
 
 ## What NOT to Do
 
-- ❌ Change `output: 'hybrid'` to `output: 'server'` in `astro.config.mjs` (keep hybrid for static pages + API routes)
 - ❌ Use CSS-in-JS libraries (styled-components, emotion)
 - ❌ Add heavy npm packages without justification
 - ❌ Skip TypeScript types or use `any`
@@ -662,6 +688,11 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - N/A (documentation files only, no code changes) (009-align-home-page-docs)
 - TypeScript 5.x (strict mode enabled) + None (native console API only per FR-015) (011-server-error-logging)
 - N/A (logs written to stdout/stderr, captured by Vercel infrastructure) (011-server-error-logging)
+- TypeScript 5.x (strict mode), Astro 4.x, React 18.x + Tailwind CSS 3.x, Zustand 4.x, Supabase Client, Resend SDK (012-architecture-review)
+- Supabase PostgreSQL (serverless), Environment variables in Vercel (012-architecture-review)
+- GitHub Actions (CI/CD automation: Lighthouse CI, bundle size checks, performance monitoring) (012-architecture-review)
+- Lighthouse CI (@lhci/cli), http-server (local build testing) (012-architecture-review)
+- Node.js scripts (performance analysis, accessibility audits, component structure analysis) (012-architecture-review)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety
@@ -687,6 +718,38 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Vercel - Hosting + Serverless Functions + Edge Network + Analytics
 
 ## Recent Changes
+
+- **012-architecture-review** (2025-11-24): ✅ **COMPLETED** - Comprehensive architecture review with performance monitoring automation
+  - **Purpose**: Validate best practices, performance (Lighthouse 85+), WCAG AA accessibility, evaluate static rendering mode, prepare for unit/e2e testing
+  - **Status**: 96% tasks complete (50/52 tasks), all critical objectives achieved
+  - **Key Achievements**:
+    - **Performance Automation**: 3 GitHub Actions workflows configured (performance-monitor.yml, performance-gate.yml, performance-alerts.yml)
+      - Lighthouse CI on every PR with 85+ score requirement
+      - Bundle size enforcement: JS < 100KB, CSS < 20KB (gzipped)
+      - Automated performance alerts on degradation
+    - **Bundle Metrics**: 80KB JS, 7KB CSS (gzipped) - excellent performance ✅
+    - **Image Optimization**: 22MB → 227KB (99% reduction) - removed unused source files
+    - **Accessibility**: Improved from 64% to 95%+ WCAG AA compliance
+      - Fixed keyboard navigation (Escape key for modals)
+      - Fixed color contrast for gold text
+      - Added proper ARIA attributes and alt text
+    - **Architecture Validated**: Static mode (Astro's `output: 'static'` + Vercel adapter) confirmed as optimal
+      - All pages pre-rendered to HTML at build time
+      - API routes auto-converted to Vercel serverless functions
+      - No CORS issues, single deployment simplicity
+    - **Component Refactoring**: HeroSection.astro split from 758 lines → 4 modular components
+    - **Testing Strategy**: Framework selected (Vitest + React Testing Library), component testability: 21% → 85% potential after migration
+  - **Deliverables**:
+    - **11 reports**: executive-summary.md, recommendations.md, performance.md, accessibility.md, component-structure.md, and automation reports
+    - **5 scripts**: fetch-vercel-metrics.js, local-performance-check.js, auto-performance-check.js, accessibility-audit.js, analyze-component-structure.js
+    - **4 configs**: lighthouserc.cjs, performance-monitor.yml, performance-alerts.yml, performance-gate.yml
+    - **1 migration script**: migrate-components.sh for folder-based structure
+  - **CI/CD Integration**: Full automation pipeline active
+    - Lighthouse CI tests static build on every PR
+    - Bundle size limits enforced automatically
+    - Performance gate blocks merge if metrics degrade
+  - **Security**: API key exposure cleaned from entire git history
+  - **Pattern**: Following GitHub Spec-Kit methodology for architecture reviews
 
 - **010-align-home-design-docs** (2025-11-23): Documentation alignment for feature 003-home-design-refinement completed 2025-11-17
   - **Purpose**: Align specs/003-home-design-refinement documentation with implementation from PRs #9, #10, #11

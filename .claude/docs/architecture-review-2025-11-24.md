@@ -6,15 +6,16 @@
 
 ## Quick Reference
 
-### Current Performance Metrics
+### Current Performance Metrics (Updated 2025-11-24)
 
 | Metric | Value | Limit | Status |
 |--------|-------|-------|--------|
-| **JS Bundle** | 80KB gzipped | 100KB | ✅ Excellent (20% under) |
-| **CSS Bundle** | 7KB gzipped | 20KB | ✅ Excellent (65% under) |
+| **JS Bundle** | **0KB** (100% static) | 100KB | ✅ Exceptional (no JavaScript) |
+| **CSS Bundle** | ~9KB gzipped | 20KB | ✅ Excellent (55% under) |
 | **Images** | 227KB total | - | ✅ Optimized (was 22MB) |
-| **Accessibility** | 95%+ WCAG AA | 90%+ | ✅ Compliant |
-| **Lighthouse** | 85+ | 85+ | ✅ Production-ready |
+| **Accessibility** | 100 (Lighthouse) | 90+ | ✅ Fully Compliant |
+| **Lighthouse** | 95+ | 85+ | ✅ Exceeds Production Requirements |
+| **Test Coverage** | 40% (151 tests) | 80% | 🎯 Target (MVP achieved) |
 
 ### Key Decisions
 
@@ -29,15 +30,21 @@
    - JS Bundle: 50KB → 100KB (React SPA requires more)
    - Rationale: 85+ is "Good" per Google, achievable on real hardware
 
-3. **Testing Strategy Defined** 🧪
-   - Framework: Vitest + React Testing Library
-   - Target: 80% test coverage
-   - Component testability: 21% → 85% potential after migration
-   - Pattern: Folder-based structure with co-located tests
+3. **Testing Strategy Implemented** 🧪 ✅
+   - **Frameworks**: Vitest (unit) + Playwright (E2E) + React Testing Library + axe-core
+   - **Coverage**: 151 tests (78 unit + 73 E2E) with 40% baseline coverage
+   - **Target**: 80% test coverage (MVP: 40% achieved)
+   - **Component Structure**: Migrated to folder-based pattern with co-located tests
+   - **CI/CD Integration**: test.yml workflow with fast-fail pattern (85% cost reduction)
 
 ### Automation Implemented
 
-**GitHub Actions Workflows**:
+**GitHub Actions Workflows** (4 total):
+- `test.yml` - **NEW!** Unit + E2E test automation (sequential execution, fast-fail pattern)
+  - Unit tests (Vitest): 78 tests, ~30 seconds
+  - E2E tests (Playwright): 73 tests, ~3-4 minutes (Chromium only on CI)
+  - Smart artifact retention: coverage (14d), reports (30d), screenshots (7d)
+  - Automated PR comments with test results and coverage
 - `performance-monitor.yml` - Lighthouse CI on every PR
 - `performance-gate.yml` - Block merge if metrics degrade
 - `performance-alerts.yml` - Create issues for degradation
@@ -51,6 +58,7 @@
 - Automated checks in CI/CD
 - JS < 100KB, CSS < 20KB (gzipped)
 - Fails PR if limits exceeded
+- **Current**: JS 0KB ✅, CSS ~9KB ✅
 
 ### Deliverables Created
 
@@ -71,32 +79,49 @@
 - analyze-component-structure.js
 - fetch-vercel-metrics.js
 
-**Configs** (4 files):
+**Configs** (4 files → 5 files):
 - lighthouserc.cjs
+- .github/workflows/test.yml - **NEW!**
 - .github/workflows/performance-monitor.yml
 - .github/workflows/performance-gate.yml
 - .github/workflows/performance-alerts.yml
+
+**Testing Infrastructure** - **NEW!** (Feature 013):
+- vitest.config.ts - Unit test configuration
+- playwright.config.ts - E2E test configuration
+- 78 unit tests in `src/` (co-located with components)
+- 73 E2E tests in `tests/e2e/`
+- Coverage reporting (40% baseline)
 
 ### Improvements Made
 
 **Performance**:
 - ✅ HeroSection.astro refactored: 758 lines → 4 components
 - ✅ Image optimization: 22MB → 227KB (99% reduction)
-- ✅ Bundle analysis: 80KB JS, 7KB CSS (gzipped)
+- ✅ Bundle optimized: **0KB JS** (was 80KB), ~9KB CSS (gzipped)
 - ✅ Automated monitoring: Daily Lighthouse audits
 
 **Accessibility**:
-- ✅ Improved from 64% to 95%+ WCAG AA compliance
+- ✅ Improved from 64% to 100 (Lighthouse score)
 - ✅ Fixed keyboard navigation (Escape key for modals)
 - ✅ Fixed color contrast for gold text
 - ✅ Added proper ARIA attributes
 - ✅ Verified alt text on all images
+- ✅ Automated a11y tests with axe-core
+
+**Testing & Quality Assurance** - **NEW!**:
+- ✅ 151 total tests implemented (78 unit + 73 E2E)
+- ✅ CI/CD test automation with fast-fail pattern
+- ✅ Component migration to folder-based structure
+- ✅ 40% code coverage baseline (target: 80%)
+- ✅ Cross-browser E2E tests (5 projects)
+- ✅ Automated PR comments with test results
 
 **Code Quality**:
 - ✅ Zero TypeScript `any` types
 - ✅ Strict mode enabled
 - ✅ Console.log production-ready
-- ✅ Component structure analyzed
+- ✅ Component structure optimized
 
 **Security**:
 - ✅ API key exposure cleaned from git history

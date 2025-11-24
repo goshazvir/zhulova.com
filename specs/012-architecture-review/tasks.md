@@ -123,8 +123,8 @@
 - [x] T037 [US4] Analyze current component structure for testability in src/components/ ✅ 21% testability
 - [x] T038 [P] [US4] Create sample Vitest config for unit testing in vitest.config.ts ✅ In testing-setup.md
 - [x] T039 [P] [US4] Create sample Playwright config for e2e testing in playwright.config.ts ✅ In testing-setup.md
-- [ ] T040 [US4] Write example unit test with React Testing Library for a component
-- [ ] T041 [US4] Write example e2e test for consultation form flow
+- [x] T040 [US4] Write example unit test with React Testing Library for a component ✅ Created 78 unit tests (logger, scrollAnimations, Button, Input, Modal, ConsultationModal, MobileMenu)
+- [x] T041 [US4] Write example e2e test for consultation form flow ✅ Created 73 E2E tests (consultation-form, consultation-cta-buttons, legal-pages, courses-pages)
 - [x] T042 [US4] Document component restructuring needs in reports/testing-readiness.md ✅ In component-structure.md
 - [x] T043 [P] [US4] Create testing strategy with coverage goals ✅ 80% goal defined
 - [x] T044 [US4] Setup Lighthouse CI configuration for automated performance testing ✅ lighthouserc.js created

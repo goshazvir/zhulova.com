@@ -14,10 +14,11 @@ High-performance static website for Viktoria Zhulova, a mindset coach. Built wit
   - ✅ Code, comments, docs: English
   - ✅ Git commits, PRs: English
   - ❌ Never mix languages in code or documentation
-- **Server mode with prerendering** - Static pages + Serverless functions for forms
-- **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1
-- **Accessibility:** WCAG AA compliance mandatory
-- **Security:** Input validation, environment variables, RLS policies
+- **Static-first architecture** - Pre-rendered pages (SSG) + Serverless functions for forms
+- **Performance targets:** Lighthouse 95+, LCP <2.5s, CLS <0.1, 0KB JavaScript bundle
+- **Accessibility:** WCAG AA compliance mandatory (0 critical violations)
+- **Security:** Input validation, environment variables, RLS policies, structured error logging
+- **Testing:** 78 unit tests + 73 E2E tests with CI/CD automation
 - **⚠️ CRITICAL: English only for Git** - ALL git commits, PR titles, PR descriptions, PR comments, and git-related communication MUST be written in English. Never use Ukrainian, Russian, or any other language in git operations.
 - **⚠️ CRITICAL: Never push without approval** - NEVER execute `git push` without explicit user approval. Always wait for the user to explicitly say "push", "deploy", or give clear permission before pushing to any remote repository.
 
@@ -70,10 +71,19 @@ All project documentation is centralized in `.claude/docs/`:
   - Content strategy
   - Payment integration approach
 
+- **`ci-cd-testing.md`** - CI/CD testing strategy (35KB)
+  - Testing workflow architecture (unit → E2E → summary)
+  - Sequential execution pattern with fast-fail
+  - Optimization strategies (Chromium-only CI, smart artifacts)
+  - Alternative approaches comparison (4 options)
+  - Performance metrics and cost savings (85% reduction)
+  - Troubleshooting guide and best practices
+
 **When building features:**
 1. Consult `technical-spec.md` for technical constraints
 2. Reference `about.md` for business requirements and design direction
-3. Both documents are authoritative - follow them strictly
+3. Check `ci-cd-testing.md` for testing patterns and CI/CD workflows
+4. All documents are authoritative - follow them strictly
 
 ## Utility Scripts
 
@@ -123,10 +133,107 @@ npm run astro        # Astro CLI access
 ```
 
 **Which command to use:**
-- **`npm run dev`** - Standard development server (supports both static pages AND API routes via server mode)
+- **`npm run dev`** - Standard development server (supports both static pages AND API routes)
 - **`npm run dev:vercel`** - Vercel dev server (optional, for testing Vercel-specific features)
 
 **Build process:** `astro check` (TypeScript validation) runs before every build. Build fails on type errors.
+
+## Testing & Quality Assurance
+
+### Test Commands
+
+**Unit Tests (Vitest + React Testing Library):**
+```bash
+npm run test              # Watch mode (development)
+npm run test:run          # Single run (CI)
+npm run test:ui           # Interactive UI mode
+npm run test:coverage     # With coverage report
+```
+
+**E2E Tests (Playwright):**
+```bash
+npm run test:e2e          # All browsers (local: 5, CI: 1)
+npm run test:e2e:ui       # Interactive UI mode
+npm run test:e2e:report   # View HTML report
+npx playwright test --project=chromium  # Specific browser
+```
+
+**Performance Testing:**
+```bash
+npm run perf:check        # Local Lighthouse audit
+npm run perf:lighthouse   # Lighthouse CI
+npm run perf:monitor      # Fetch Vercel metrics
+npm run audit:all         # All performance checks
+```
+
+### Test Coverage
+
+**Current:** 40% (statements, branches, functions, lines)
+**Target:** 80%
+**Thresholds:** Configured in `vitest.config.ts`
+
+**What's tested:**
+- ✅ React components (Button, Input, Modal, ConsultationModal, MobileMenu)
+- ✅ Utilities (logger with PII sanitization, scrollAnimations with IntersectionObserver)
+- ✅ E2E flows (consultation form, all 5 CTA buttons, legal pages, course pages)
+- ✅ Accessibility (axe-core, keyboard navigation, screen reader compatibility)
+- ✅ Performance (Lighthouse CI, bundle size monitoring)
+
+### CI/CD Workflows
+
+**Automated on every PR:**
+- Unit tests (78 tests) → E2E tests (73 tests) → Summary
+- Performance gate (Lighthouse + bundle size)
+- Automated PR comments with results
+
+**Daily scheduled:**
+- Performance monitoring (Core Web Vitals trends)
+- Production health checks with alerting
+
+**Fast-fail pattern:**
+- Unit tests fail → E2E skipped (saves 3-4 min)
+- 85% reduction in CI minutes (620 → 90 min/month)
+- 77% faster execution (15.5 min → 3.5 min)
+
+**Artifact retention:**
+- Coverage reports: 14 days (trend analysis)
+- E2E HTML reports: 30 days (historical data)
+- Screenshots/traces: 7 days (only on failure)
+
+**Browser optimization:**
+- **CI:** Chromium only (90% user coverage, 4x faster)
+- **Local:** All 5 browsers (Chrome, Firefox, Safari, Mobile Chrome, Mobile Safari)
+
+### Testing Best Practices
+
+**When writing unit tests:**
+- Place test files next to components: `Component.tsx` → `Component.test.tsx`
+- Use React Testing Library for component tests
+- Test behavior, not implementation details
+- Mock external dependencies (API calls, browser APIs)
+- Aim for 80% coverage
+
+**When writing E2E tests:**
+- Test user flows, not individual elements
+- Use semantic selectors (`getByRole`, `getByLabel`)
+- Mock API responses with `page.route()`
+- Test keyboard navigation for accessibility
+- Keep tests independent (no shared state)
+
+**Before pushing code:**
+```bash
+# 1. Run unit tests
+npm run test:run
+
+# 2. Run E2E tests (at least Chromium)
+npx playwright test --project=chromium
+
+# 3. Check TypeScript
+npm run build
+
+# 4. All pass? Push to GitHub
+git push origin feature-branch
+```
 
 ## Architecture
 

@@ -136,85 +136,88 @@ import { caseStudies } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // CTA Button
-  const caseStudiesCTA = document.getElementById('case-studies-cta');
-  if (caseStudiesCTA) {
-    caseStudiesCTA.addEventListener('click', () => {
-      useUIStore.getState().openConsultationModal();
-    });
-  }
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    // CTA Button
+    const caseStudiesCTA = document.getElementById('case-studies-cta');
+    if (caseStudiesCTA) {
+      caseStudiesCTA.addEventListener('click', () => {
+        useUIStore.getState().openConsultationModal();
+      });
+    }
 
-  // Carousel Navigation
-  const carousel = document.getElementById('case-studies-carousel');
-  const prevBtn = document.getElementById('case-studies-prev');
-  const nextBtn = document.getElementById('case-studies-next');
-  const indicators = document.querySelectorAll('.case-study-indicator');
+    // Carousel Navigation
+    const carousel = document.getElementById('case-studies-carousel');
+    const prevBtn = document.getElementById('case-studies-prev');
+    const nextBtn = document.getElementById('case-studies-next');
+    const indicators = document.querySelectorAll('.case-study-indicator');
 
-  if (carousel && prevBtn && nextBtn) {
-    const scrollAmount = carousel.offsetWidth * 0.8;
+    if (carousel && prevBtn && nextBtn) {
+      const scrollAmount = carousel.offsetWidth * 0.8;
 
-    // Previous button
-    prevBtn.addEventListener('click', () => {
-      carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
-
-    // Next button
-    nextBtn.addEventListener('click', () => {
-      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
-
-    // Update button states based on scroll position
-    const updateButtons = () => {
-      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
-      (prevBtn as HTMLButtonElement).disabled = carousel.scrollLeft <= 0;
-      (nextBtn as HTMLButtonElement).disabled = carousel.scrollLeft >= maxScroll - 1;
-    };
-
-    // Update active indicator
-    const updateIndicators = () => {
-      const cards = carousel.querySelectorAll('[data-animate]');
-      const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
-
-      let activeIndex = 0;
-      cards.forEach((card, index) => {
-        const cardCenter = (card as HTMLElement).offsetLeft + (card as HTMLElement).offsetWidth / 2;
-        if (Math.abs(scrollCenter - cardCenter) < (card as HTMLElement).offsetWidth / 2) {
-          activeIndex = index;
-        }
+      // Previous button
+      prevBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       });
 
-      indicators.forEach((indicator, index) => {
-        if (index === activeIndex) {
-          indicator.classList.add('bg-gold-500', 'w-6');
-          indicator.classList.remove('bg-gray-300', 'w-2');
-        } else {
-          indicator.classList.add('bg-gray-300', 'w-2');
-          indicator.classList.remove('bg-gold-500', 'w-6');
-        }
+      // Next button
+      nextBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       });
-    };
 
-    // Indicator click navigation
-    indicators.forEach((indicator, index) => {
-      indicator.addEventListener('click', () => {
+      // Update button states based on scroll position
+      const updateButtons = () => {
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        (prevBtn as HTMLButtonElement).disabled = carousel.scrollLeft <= 0;
+        (nextBtn as HTMLButtonElement).disabled = carousel.scrollLeft >= maxScroll - 1;
+      };
+
+      // Update active indicator
+      const updateIndicators = () => {
         const cards = carousel.querySelectorAll('[data-animate]');
-        const targetCard = cards[index] as HTMLElement;
-        if (targetCard) {
-          carousel.scrollTo({
-            left: targetCard.offsetLeft - 16,
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
+        const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
 
-    carousel.addEventListener('scroll', () => {
+        let activeIndex = 0;
+        cards.forEach((card, index) => {
+          const cardCenter = (card as HTMLElement).offsetLeft + (card as HTMLElement).offsetWidth / 2;
+          if (Math.abs(scrollCenter - cardCenter) < (card as HTMLElement).offsetWidth / 2) {
+            activeIndex = index;
+          }
+        });
+
+        indicators.forEach((indicator, index) => {
+          if (index === activeIndex) {
+            indicator.classList.add('bg-gold-500', 'w-6');
+            indicator.classList.remove('bg-gray-300', 'w-2');
+          } else {
+            indicator.classList.add('bg-gray-300', 'w-2');
+            indicator.classList.remove('bg-gold-500', 'w-6');
+          }
+        });
+      };
+
+      // Indicator click navigation
+      indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+          const cards = carousel.querySelectorAll('[data-animate]');
+          const targetCard = cards[index] as HTMLElement;
+          if (targetCard) {
+            carousel.scrollTo({
+              left: targetCard.offsetLeft - 16,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+
+      carousel.addEventListener('scroll', () => {
+        updateButtons();
+        updateIndicators();
+      });
+
+      // Initial state
       updateButtons();
       updateIndicators();
-    });
-
-    // Initial state
-    updateButtons();
-    updateIndicators();
-  }
+    }
+  });
 </script>

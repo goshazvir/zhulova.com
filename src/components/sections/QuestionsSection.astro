@@ -83,53 +83,56 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Tab switching functionality
-  const personalTab = document.getElementById('personal-tab');
-  const businessTab = document.getElementById('business-tab');
-  const personalPanel = document.getElementById('personal-panel');
-  const businessPanel = document.getElementById('business-panel');
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    // Tab switching functionality
+    const personalTab = document.getElementById('personal-tab');
+    const businessTab = document.getElementById('business-tab');
+    const personalPanel = document.getElementById('personal-panel');
+    const businessPanel = document.getElementById('business-panel');
 
-  function switchTab(tab: 'personal' | 'business') {
-    if (tab === 'personal') {
-      personalTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
-      personalTab?.classList.remove('border-transparent', 'text-navy-500');
-      personalTab?.setAttribute('aria-selected', 'true');
+    function switchTab(tab: 'personal' | 'business') {
+      if (tab === 'personal') {
+        personalTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
+        personalTab?.classList.remove('border-transparent', 'text-navy-500');
+        personalTab?.setAttribute('aria-selected', 'true');
 
-      businessTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
-      businessTab?.classList.add('border-transparent', 'text-navy-500');
-      businessTab?.setAttribute('aria-selected', 'false');
+        businessTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
+        businessTab?.classList.add('border-transparent', 'text-navy-500');
+        businessTab?.setAttribute('aria-selected', 'false');
 
-      personalPanel?.classList.remove('hidden');
-      personalPanel?.classList.add('grid');
-      businessPanel?.classList.add('hidden');
-      businessPanel?.classList.remove('grid');
-    } else {
-      businessTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
-      businessTab?.classList.remove('border-transparent', 'text-navy-500');
-      businessTab?.setAttribute('aria-selected', 'true');
+        personalPanel?.classList.remove('hidden');
+        personalPanel?.classList.add('grid');
+        businessPanel?.classList.add('hidden');
+        businessPanel?.classList.remove('grid');
+      } else {
+        businessTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
+        businessTab?.classList.remove('border-transparent', 'text-navy-500');
+        businessTab?.setAttribute('aria-selected', 'true');
 
-      personalTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
-      personalTab?.classList.add('border-transparent', 'text-navy-500');
-      personalTab?.setAttribute('aria-selected', 'false');
+        personalTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
+        personalTab?.classList.add('border-transparent', 'text-navy-500');
+        personalTab?.setAttribute('aria-selected', 'false');
 
-      businessPanel?.classList.remove('hidden');
-      businessPanel?.classList.add('grid');
-      personalPanel?.classList.add('hidden');
-      personalPanel?.classList.remove('grid');
+        businessPanel?.classList.remove('hidden');
+        businessPanel?.classList.add('grid');
+        personalPanel?.classList.add('hidden');
+        personalPanel?.classList.remove('grid');
+      }
     }
-  }
 
-  // Initialize first tab as active
-  switchTab('personal');
+    // Initialize first tab as active
+    switchTab('personal');
 
-  personalTab?.addEventListener('click', () => switchTab('personal'));
-  businessTab?.addEventListener('click', () => switchTab('business'));
+    personalTab?.addEventListener('click', () => switchTab('personal'));
+    businessTab?.addEventListener('click', () => switchTab('business'));
 
-  // CTA button
-  const questionsCTA = document.getElementById('questions-cta');
-  if (questionsCTA) {
-    questionsCTA.addEventListener('click', () => {
-      useUIStore.getState().openConsultationModal();
-    });
-  }
+    // CTA button
+    const questionsCTA = document.getElementById('questions-cta');
+    if (questionsCTA) {
+      questionsCTA.addEventListener('click', () => {
+        useUIStore.getState().openConsultationModal();
+      });
+    }
+  });
 </script>

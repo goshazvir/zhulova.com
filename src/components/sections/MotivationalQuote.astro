@@ -52,10 +52,13 @@ import { motivationalQuote } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  const quoteCTA = document.getElementById('quote-cta');
-  if (quoteCTA) {
-    quoteCTA.addEventListener('click', () => {
-      useUIStore.getState().openConsultationModal();
-    });
-  }
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    const quoteCTA = document.getElementById('quote-cta');
+    if (quoteCTA) {
+      quoteCTA.addEventListener('click', () => {
+        useUIStore.getState().openConsultationModal();
+      });
+    }
+  });
 </script>

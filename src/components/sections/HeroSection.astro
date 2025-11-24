@@ -93,30 +93,33 @@ import '@/styles/hero.css';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Handle CTA button click
-  const ctaButton = document.getElementById('hero-cta-button');
-  if (ctaButton) {
-    ctaButton.addEventListener('click', () => {
-      useUIStore.getState().openConsultationModal();
-    });
-  }
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    // Handle CTA button click
+    const ctaButton = document.getElementById('hero-cta-button');
+    if (ctaButton) {
+      ctaButton.addEventListener('click', () => {
+        useUIStore.getState().openConsultationModal();
+      });
+    }
 
-  // Expose function for E2E tests
-  if (typeof window !== 'undefined') {
-    // @ts-ignore
-    window.__openConsultationModal = () => {
-      useUIStore.getState().openConsultationModal();
-    };
-  }
+    // Expose function for E2E tests
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      window.__openConsultationModal = () => {
+        useUIStore.getState().openConsultationModal();
+      };
+    }
 
-  // Handle scroll indicator click
-  const scrollIndicator = document.querySelector('.scroll-indicator');
-  if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', () => {
-      const nextSection = document.getElementById('stories');
-      if (nextSection) {
-        nextSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  }
+    // Handle scroll indicator click
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+      scrollIndicator.addEventListener('click', () => {
+        const nextSection = document.getElementById('stories');
+        if (nextSection) {
+          nextSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+  });
 </script>

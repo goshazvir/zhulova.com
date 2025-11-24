@@ -8,8 +8,9 @@ interface Props {
 
 const { variant = 'main' } = Astro.props;
 
-// Check current page for active state
+// Check current page for active state and conditional logo link
 const currentPath = Astro.url.pathname;
+const isHomePage = currentPath === '/' || currentPath === '';
 const isCoursesPage = currentPath.startsWith('/courses');
 const isContactsPage = currentPath.startsWith('/contacts');
 ---
@@ -19,24 +20,45 @@ const isContactsPage = currentPath.startsWith('/contacts');
     <div class="flex items-center justify-between h-20">
       <!-- Logo / Brand -->
       <div class="flex-shrink-0">
-        <a href="/" class="flex items-center hover:opacity-80 transition-opacity" aria-label="Вікторія Жульова - Головна">
-          <!-- Mobile: VZ with gold dot (same as desktop) -->
-          <img
-            src="/logo.svg"
-            alt="VZ"
-            class="h-12 md:hidden"
-            width="90"
-            height="50"
-          />
-          <!-- Desktop: VZ with gold dot -->
-          <img
-            src="/logo.svg"
-            alt="Viktoria Zhulova"
-            class="hidden md:block h-14"
-            width="90"
-            height="50"
-          />
-        </a>
+        {isHomePage ? (
+          <div class="flex items-center">
+            <!-- Mobile: VZ with gold dot (same as desktop) -->
+            <img
+              src="/logo.svg"
+              alt="VZ"
+              class="h-12 md:hidden"
+              width="90"
+              height="50"
+            />
+            <!-- Desktop: VZ with gold dot -->
+            <img
+              src="/logo.svg"
+              alt="Viktoria Zhulova"
+              class="hidden md:block h-14"
+              width="90"
+              height="50"
+            />
+          </div>
+        ) : (
+          <a href="/" class="flex items-center hover:opacity-80 transition-opacity" aria-label="На головну">
+            <!-- Mobile: VZ with gold dot (same as desktop) -->
+            <img
+              src="/logo.svg"
+              alt="VZ"
+              class="h-12 md:hidden"
+              width="90"
+              height="50"
+            />
+            <!-- Desktop: VZ with gold dot -->
+            <img
+              src="/logo.svg"
+              alt="Viktoria Zhulova"
+              class="hidden md:block h-14"
+              width="90"
+              height="50"
+            />
+          </a>
+        )}
       </div>
 
       <!-- Desktop Navigation -->
@@ -150,50 +172,53 @@ const isContactsPage = currentPath.startsWith('/contacts');
   import { useUIStore } from '@/stores/uiStore';
   import { scrollToSection, initSectionTracking } from '@/utils/scrollAnimations';
 
-  // Mobile menu toggle
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  if (mobileMenuButton) {
-    mobileMenuButton.addEventListener('click', () => {
-      useUIStore.getState().toggleMobileMenu();
-    });
-  }
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    if (mobileMenuButton) {
+      mobileMenuButton.addEventListener('click', () => {
+        useUIStore.getState().toggleMobileMenu();
+      });
+    }
 
-  // Smooth scroll for navigation links
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      const href = link.getAttribute('href');
-      if (href && (href.startsWith('#') || href.includes('#'))) {
-        // Only prevent default if we're on the home page or the link contains a hash
-        const hashIndex = href.indexOf('#');
-        if (hashIndex !== -1) {
-          const sectionId = href.substring(hashIndex + 1);
-          // Only smooth scroll if we're on the home page
-          if (window.location.pathname === '/' || window.location.pathname === '') {
-            e.preventDefault();
-            scrollToSection(sectionId);
-            useUIStore.getState().closeMobileMenu();
-          }
-          // If we're on another page, let the browser navigate normally to /#section
-        }
-      }
-    });
-  });
-
-  // Track active section
-  initSectionTracking((sectionId) => {
-    useUIStore.getState().setActiveSection(sectionId);
-
-    // Update active nav link
+    // Smooth scroll for navigation links
+    const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach((link) => {
-      const linkSection = link.getAttribute('data-section');
-      if (linkSection === sectionId) {
-        link.classList.add('text-gold-600', 'font-semibold');
-        link.classList.remove('text-navy-700');
-      } else {
-        link.classList.remove('text-gold-600', 'font-semibold');
-        link.classList.add('text-navy-700');
-      }
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href && (href.startsWith('#') || href.includes('#'))) {
+          // Only prevent default if we're on the home page or the link contains a hash
+          const hashIndex = href.indexOf('#');
+          if (hashIndex !== -1) {
+            const sectionId = href.substring(hashIndex + 1);
+            // Only smooth scroll if we're on the home page
+            if (window.location.pathname === '/' || window.location.pathname === '') {
+              e.preventDefault();
+              scrollToSection(sectionId);
+              useUIStore.getState().closeMobileMenu();
+            }
+            // If we're on another page, let the browser navigate normally to /#section
+          }
+        }
+      });
+    });
+
+    // Track active section
+    initSectionTracking((sectionId) => {
+      useUIStore.getState().setActiveSection(sectionId);
+
+      // Update active nav link
+      navLinks.forEach((link) => {
+        const linkSection = link.getAttribute('data-section');
+        if (linkSection === sectionId) {
+          link.classList.add('text-gold-600', 'font-semibold');
+          link.classList.remove('text-navy-700');
+        } else {
+          link.classList.remove('text-gold-600', 'font-semibold');
+          link.classList.add('text-navy-700');
+        }
+      });
     });
   });
 </script>

@@ -7,6 +7,10 @@ interface Props {
 }
 
 const { variant = 'main' } = Astro.props;
+
+// Check if on home page for conditional logo link
+const currentPath = Astro.url.pathname;
+const isHomePage = currentPath === '/' || currentPath === '';
 ---
 
 <footer class="bg-navy-900 text-white">
@@ -58,13 +62,25 @@ const { variant = 'main' } = Astro.props;
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
         <!-- Left: Brand & Logo -->
         <div class="lg:w-auto">
-          <img
-            src="/logo-light.svg"
-            alt="Viktoria Zhulova"
-            class="h-10 mb-2"
-            width="90"
-            height="50"
-          />
+          {isHomePage ? (
+            <img
+              src="/logo-light.svg"
+              alt="Viktoria Zhulova"
+              class="h-10 mb-2"
+              width="90"
+              height="50"
+            />
+          ) : (
+            <a href="/" aria-label="На головну" class="inline-block hover:opacity-80 transition-opacity">
+              <img
+                src="/logo-light.svg"
+                alt="Viktoria Zhulova"
+                class="h-10 mb-2"
+                width="90"
+                height="50"
+              />
+            </a>
+          )}
           <p class="text-navy-400 text-sm max-w-xs">
             Сертифікований коуч з досвідом роботи понад 10 років
           </p>
@@ -196,10 +212,13 @@ const { variant = 'main' } = Astro.props;
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  const footerCTAButton = document.getElementById('footer-cta-button');
-  if (footerCTAButton) {
-    footerCTAButton.addEventListener('click', () => {
-      useUIStore.getState().openConsultationModal();
-    });
-  }
+  // Use astro:page-load to re-initialize after View Transitions navigation
+  document.addEventListener('astro:page-load', () => {
+    const footerCTAButton = document.getElementById('footer-cta-button');
+    if (footerCTAButton) {
+      footerCTAButton.addEventListener('click', () => {
+        useUIStore.getState().openConsultationModal();
+      });
+    }
+  });
 </script>

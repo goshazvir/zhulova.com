@@ -2,7 +2,6 @@
 import '../styles/global.css';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -29,9 +28,6 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-
-    <!-- View Transitions for SPA-like navigation -->
-    <ViewTransitions />
 
     <!-- Primary Meta Tags -->
     <title>{title}</title>

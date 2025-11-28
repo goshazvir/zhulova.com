@@ -1,5 +1,10 @@
 /* Google Fonts loaded via BaseLayout.astro for non-blocking performance */
 
+/* Native CSS View Transitions - 0KB JavaScript, Chrome/Edge 126+ */
+@view-transition {
+  navigation: auto;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -1,28 +1,58 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { consultationFormSchema, type ConsultationFormData } from '@/types/consultationForm';
 import Modal from '@/components/common/Modal';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 
+type FormErrors = Partial<Record<keyof ConsultationFormData, string>>;
+
 export default function ConsultationModal() {
   const isOpen = useUIStore((state) => state.isConsultationModalOpen);
   const closeModal = useUIStore((state) => state.closeConsultationModal);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ConsultationFormData>({
-    resolver: zodResolver(consultationFormSchema),
+  const [formData, setFormData] = useState<ConsultationFormData>({
+    name: '',
+    phone: '',
+    telegram: '',
+    email: '',
   });
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const onSubmit = async (data: ConsultationFormData) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name as keyof ConsultationFormData]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const result = consultationFormSchema.safeParse(formData);
+    if (!result.success) {
+      const newErrors: FormErrors = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof ConsultationFormData;
+        if (!newErrors[field]) {
+          newErrors[field] = err.message;
+        }
+      });
+      setErrors(newErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setSubmitStatus('submitting');
     setErrorMessage('');
 
@@ -32,7 +62,7 @@ export default function ConsultationModal() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
       });
 
       const result = await response.json();
@@ -42,7 +72,7 @@ export default function ConsultationModal() {
       }
 
       setSubmitStatus('success');
-      reset();
+      resetForm();
 
       // Auto-close modal after 3 seconds
       setTimeout(() => {
@@ -55,11 +85,16 @@ export default function ConsultationModal() {
     }
   };
 
+  const resetForm = () => {
+    setFormData({ name: '', phone: '', telegram: '', email: '' });
+    setErrors({});
+  };
+
   const handleClose = () => {
     closeModal();
     // Reset form and status after modal closes
     setTimeout(() => {
-      reset();
+      resetForm();
       setSubmitStatus('idle');
       setErrorMessage('');
     }, 300);
@@ -98,7 +133,7 @@ export default function ConsultationModal() {
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <p className="text-sm sm:text-base text-navy-700 leading-relaxed">
             Заповніть форму нижче, і я зв'яжуся з вами для призначення <span className="font-semibold text-navy-900">безкоштовної діагностичної сесії</span>.
           </p>
@@ -106,42 +141,50 @@ export default function ConsultationModal() {
           {/* Name Field */}
           <Input
             label="Ім'я"
+            name="name"
             type="text"
             placeholder="Ваше ім'я"
             required
-            error={errors.name?.message}
-            {...register('name')}
+            value={formData.name}
+            onChange={handleChange}
+            error={errors.name}
           />
 
           {/* Phone Field */}
           <Input
             label="Телефон"
+            name="phone"
             type="tel"
             placeholder="+380 50 123 45 67"
             required
             helperText="Наприклад: +380 50 123 45 67"
-            error={errors.phone?.message}
-            {...register('phone')}
+            value={formData.phone}
+            onChange={handleChange}
+            error={errors.phone}
           />
 
           {/* Telegram Field */}
           <Input
             label="Telegram"
+            name="telegram"
             type="text"
             placeholder="@username"
             helperText="Необов'язково. Ваш нікнейм у Telegram"
-            error={errors.telegram?.message}
-            {...register('telegram')}
+            value={formData.telegram}
+            onChange={handleChange}
+            error={errors.telegram}
           />
 
           {/* Email Field */}
           <Input
             label="Email"
+            name="email"
             type="email"
             placeholder="your@email.com"
             helperText="Необов'язково"
-            error={errors.email?.message}
-            {...register('email')}
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
           />
 
           {/* Error Message */}

@@ -102,12 +102,12 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
     function switchTab(tab: 'personal' | 'business') {
       if (tab === 'personal') {
         personalTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
-        personalTab?.classList.remove('border-transparent', 'text-navy-500');
+        personalTab?.classList.remove('border-transparent', 'text-navy-600');
         personalTab?.setAttribute('aria-selected', 'true');
         personalTab?.setAttribute('tabindex', '0');
 
         businessTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
-        businessTab?.classList.add('border-transparent', 'text-navy-500');
+        businessTab?.classList.add('border-transparent', 'text-navy-600');
         businessTab?.setAttribute('aria-selected', 'false');
         businessTab?.setAttribute('tabindex', '-1');
 
@@ -117,12 +117,12 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
         businessPanel?.classList.remove('grid');
       } else {
         businessTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
-        businessTab?.classList.remove('border-transparent', 'text-navy-500');
+        businessTab?.classList.remove('border-transparent', 'text-navy-600');
         businessTab?.setAttribute('aria-selected', 'true');
         businessTab?.setAttribute('tabindex', '0');
 
         personalTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
-        personalTab?.classList.add('border-transparent', 'text-navy-500');
+        personalTab?.classList.add('border-transparent', 'text-navy-600');
         personalTab?.setAttribute('aria-selected', 'false');
         personalTab?.setAttribute('tabindex', '-1');
 

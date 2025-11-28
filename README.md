@@ -21,8 +21,8 @@ A production website for a mindset coach, built with focus on **performance**, *
 ## Key Achievements
 
 ### Performance
-- **Lighthouse 95+** across all metrics
-- **0KB JavaScript bundle** - fully static pages with Islands Architecture
+- **Lighthouse 100** on desktop, **94** on mobile
+- **~27KB JavaScript bundle** (gzipped) - Islands Architecture, React only for forms
 - **LCP < 2.0s** - responsive images with automatic srcset generation
 - **Edge CDN** - sub-100ms TTFB globally
 
@@ -133,8 +133,8 @@ Unit Tests (30s) → [pass] → E2E Tests (3min) → [pass] → Summary
 ```
 
 **Static-first approach:**
-- All pages pre-rendered at build time (0KB JS)
-- Only forms use serverless functions
+- All pages pre-rendered at build time
+- React hydration only for interactive forms (~27KB gzipped)
 - Perfect SEO - all content in HTML
 
 ---
@@ -166,65 +166,28 @@ This project uses **Spec-Kit** methodology - each feature has:
 
 | Feature | Implementation |
 |---------|---------------|
-| **Form Handling** | React Hook Form + Zod validation + Supabase storage |
+| **Form Handling** | Native HTML5 validation + server-side Zod + Supabase storage |
 | **Email Notifications** | Resend API with structured templates |
 | **Error Logging** | Custom logger with PII sanitization |
 | **Responsive Images** | Astro Image with automatic srcset (320/480/600px) |
-| **View Transitions** | SPA-like navigation without JS overhead |
+| **View Transitions** | Native CSS `@view-transition` (0KB JS, Chrome/Edge 126+) |
 | **Analytics** | Vercel Analytics (privacy-friendly, no cookies) |
 
 ---
 
-## Performance Metrics
+## Performance (PageSpeed Insights)
 
-| Metric | Score |
-|--------|-------|
-| Performance | 95+ |
-| Accessibility | 100 |
-| Best Practices | 95+ |
-| SEO | 100 |
-| JS Bundle | 0KB |
-| LCP | < 2.0s |
-| CLS | < 0.05 |
-| TTFB | < 100ms |
+| Desktop | Mobile |
+|---------|--------|
+| ![PageSpeed Desktop](docs/images/pagespeed-desktop.png) | ![PageSpeed Mobile](docs/images/pagespeed-mobile.png) |
 
----
+### Key Optimizations
 
-## Backend Integration
-
-### Supabase (PostgreSQL)
-
-```
-Client → API Route → Zod Validation → Supabase Client → PostgreSQL
-                                                      ↓
-                                              Row Level Security
-```
-
-**Implementation:**
-- **Database** - PostgreSQL with `leads` table for form submissions
-- **Row Level Security** - policies prevent unauthorized access
-- **Type-safe client** - auto-generated TypeScript types
-- **Connection pooling** - efficient serverless connections
-
-### Resend (Email)
-
-- Transactional emails on form submission
-- Structured HTML templates
-- Delivery tracking and error handling
-
-### API Route Example
-
-```typescript
-// src/pages/api/submit-lead.ts
-export const POST: APIRoute = async ({ request }) => {
-  const data = LeadSchema.parse(await request.json());  // Zod validation
-
-  await supabase.from('leads').insert(data);            // Database
-  await resend.emails.send({ to, subject, html });      // Email
-
-  return new Response(JSON.stringify({ success: true }));
-};
-```
+- **Native HTML5 validation** - browser-native form validation, server-side Zod
+- **Native CSS View Transitions** - smooth page navigation without JS
+- **Islands Architecture** - React only for interactive components
+- **Optimized images** - responsive srcset with WebP format
+- **Minimal JS bundle** - ~27KB gzipped (React core only)
 
 ---
 

@@ -50,9 +50,12 @@ const description = 'Допоможу досягти ваших цілей за 
 <script>
   import { initScrollAnimations } from '@/utils/scrollAnimations';
 
-  // Initialize scroll animations after page load
+  // Initialize scroll animations after page load (desktop only for performance)
   document.addEventListener('DOMContentLoaded', () => {
-    initScrollAnimations();
+    // Skip animations on mobile to reduce JS execution and forced reflows
+    if (window.innerWidth >= 768) {
+      initScrollAnimations();
+    }
   });
 </script>
 

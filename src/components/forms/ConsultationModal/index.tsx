@@ -1,55 +1,40 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useUIStore } from '@/stores/uiStore';
-import { consultationFormSchema, type ConsultationFormData } from '@/types/consultationForm';
 import Modal from '@/components/common/Modal';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 
-type FormErrors = Partial<Record<keyof ConsultationFormData, string>>;
+interface FormData {
+  name: string;
+  phone: string;
+  telegram: string;
+  email: string;
+}
 
 export default function ConsultationModal() {
   const isOpen = useUIStore((state) => state.isConsultationModalOpen);
   const closeModal = useUIStore((state) => state.closeConsultationModal);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [formData, setFormData] = useState<ConsultationFormData>({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
     telegram: '',
     email: '',
   });
-  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name as keyof ConsultationFormData]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const result = consultationFormSchema.safeParse(formData);
-    if (!result.success) {
-      const newErrors: FormErrors = {};
-      result.error.errors.forEach((err) => {
-        const field = err.path[0] as keyof ConsultationFormData;
-        if (!newErrors[field]) {
-          newErrors[field] = err.message;
-        }
-      });
-      setErrors(newErrors);
-      return false;
-    }
-    setErrors({});
-    return true;
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    // HTML5 validation handles required fields
+    const form = e.currentTarget;
+    if (!form.checkValidity()) {
+      form.reportValidity();
       return;
     }
 
@@ -87,7 +72,6 @@ export default function ConsultationModal() {
 
   const resetForm = () => {
     setFormData({ name: '', phone: '', telegram: '', email: '' });
-    setErrors({});
   };
 
   const handleClose = () => {
@@ -133,7 +117,7 @@ export default function ConsultationModal() {
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" noValidate>
           <p className="text-sm sm:text-base text-navy-700 leading-relaxed">
             Заповніть форму нижче, і я зв'яжуся з вами для призначення <span className="font-semibold text-navy-900">безкоштовної діагностичної сесії</span>.
           </p>
@@ -145,9 +129,10 @@ export default function ConsultationModal() {
             type="text"
             placeholder="Ваше ім'я"
             required
+            minLength={2}
+            maxLength={255}
             value={formData.name}
             onChange={handleChange}
-            error={errors.name}
           />
 
           {/* Phone Field */}
@@ -157,10 +142,13 @@ export default function ConsultationModal() {
             type="tel"
             placeholder="+380 50 123 45 67"
             required
+            minLength={7}
+            maxLength={20}
+            pattern="[\d\s\-+()]{7,20}"
+            title="Введіть коректний номер телефону"
             helperText="Наприклад: +380 50 123 45 67"
             value={formData.phone}
             onChange={handleChange}
-            error={errors.phone}
           />
 
           {/* Telegram Field */}
@@ -169,10 +157,11 @@ export default function ConsultationModal() {
             name="telegram"
             type="text"
             placeholder="@username"
+            pattern="@?[a-zA-Z0-9_]{3,32}"
+            title="Telegram: 3-32 символи (літери, цифри, _)"
             helperText="Необов'язково. Ваш нікнейм у Telegram"
             value={formData.telegram}
             onChange={handleChange}
-            error={errors.telegram}
           />
 
           {/* Email Field */}
@@ -181,10 +170,10 @@ export default function ConsultationModal() {
             name="email"
             type="email"
             placeholder="your@email.com"
+            maxLength={255}
             helperText="Необов'язково"
             value={formData.email}
             onChange={handleChange}
-            error={errors.email}
           />
 
           {/* Error Message */}

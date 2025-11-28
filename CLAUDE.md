@@ -802,6 +802,8 @@ For Astro-specific questions, refer to [Astro Docs](https://docs.astro.build).
 - Node.js scripts (performance analysis, accessibility audits, component structure analysis) (012-architecture-review)
 - TypeScript 5.x (strict mode), Astro 4.x + Astro (existing), Tailwind CSS 3.x (existing), React 18.x (for Button component if needed) (015-custom-404-page)
 - N/A (static page, no data persistence) (015-custom-404-page)
+- TypeScript 5.x (strict mode) + Astro 4.x, Tailwind CSS 3.x (017-pagespeed-a11y)
+- N/A (no data changes) (017-pagespeed-a11y)
 
 **Frontend (Static):**
 - TypeScript 5.x (strict mode) - Type safety

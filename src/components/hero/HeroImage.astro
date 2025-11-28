@@ -7,6 +7,8 @@ export interface Props {
   alt: string;
   width?: number;
   height?: number;
+  widths?: number[];
+  sizes?: string;
   className?: string;
 }
 
@@ -15,6 +17,8 @@ const {
   alt,
   width = 600,
   height = 800,
+  widths = [320, 480, 600],
+  sizes = '(max-width: 640px) 320px, (max-width: 768px) 480px, 600px',
   className = ''
 } = Astro.props;
 ---
@@ -42,6 +46,8 @@ const {
         alt={alt}
         width={width}
         height={height}
+        widths={widths}
+        sizes={sizes}
         format="webp"
         quality={92}
         loading="eager"

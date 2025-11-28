@@ -3,6 +3,9 @@ import { heroContent } from '@/data/homePageContent';
 import TrustIndicators from '@/components/hero/TrustIndicators.astro';
 import HeroImage from '@/components/hero/HeroImage.astro';
 import '@/styles/hero.css';
+
+// Import hero image for Astro's responsive image optimization
+import heroImageSrc from '@/assets/images/hero-viktoria-luxury.webp';
 ---
 
 <section id="home" class="relative hero-section aurora-background pt-28 md:pt-32 lg:pt-28 overflow-hidden" data-animate>
@@ -38,9 +41,9 @@ import '@/styles/hero.css';
         <TrustIndicators />
       </div>
 
-      <!-- Right Column: Image Component -->
+      <!-- Right Column: Image Component with responsive srcset -->
       <HeroImage
-        src={heroContent.imageSrc}
+        src={heroImageSrc}
         alt={heroContent.imageAlt}
         width={600}
         height={800}

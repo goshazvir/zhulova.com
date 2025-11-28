@@ -54,7 +54,7 @@ import { caseStudies } from '@/data/homePageContent';
                 <h3 class="text-xl font-serif font-bold text-navy-900 mb-1">
                   {study.clientName}
                 </h3>
-                <p class="text-gold-600 font-medium text-sm mb-3">
+                <p class="text-gold-700 font-medium text-sm mb-3">
                   {study.profession}
                 </p>
                 {/* Key Result - Hero */}
@@ -106,13 +106,15 @@ import { caseStudies } from '@/data/homePageContent';
       </div>
 
       <!-- Scroll Indicators (Mobile) -->
-      <div class="flex justify-center gap-2 mt-6 lg:hidden">
+      <div class="flex justify-center gap-1 mt-6 lg:hidden">
         {caseStudies.map((_, index) => (
           <button
-            class="case-study-indicator w-2 h-2 rounded-full bg-gray-300 transition-all"
+            class="case-study-indicator min-w-[44px] min-h-[44px] flex items-center justify-center transition-all"
             data-index={index}
             aria-label={`Перейти до кейсу ${index + 1}`}
-          ></button>
+          >
+            <span class="indicator-dot w-2 h-2 rounded-full bg-gray-300 transition-all"></span>
+          </button>
         ))}
       </div>
     </div>
@@ -153,15 +155,26 @@ import { caseStudies } from '@/data/homePageContent';
     const indicators = document.querySelectorAll('.case-study-indicator');
 
     if (carousel && prevBtn && nextBtn) {
-      const scrollAmount = carousel.offsetWidth * 0.8;
+      // Cache carousel width to avoid forced reflows
+      let cachedCarouselWidth = carousel.offsetWidth;
+
+      // Update cached width on resize using ResizeObserver
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          cachedCarouselWidth = entry.contentRect.width;
+        }
+      });
+      resizeObserver.observe(carousel);
 
       // Previous button
       prevBtn.addEventListener('click', () => {
+        const scrollAmount = cachedCarouselWidth * 0.8;
         carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       });
 
       // Next button
       nextBtn.addEventListener('click', () => {
+        const scrollAmount = cachedCarouselWidth * 0.8;
         carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       });
 
@@ -186,12 +199,13 @@ import { caseStudies } from '@/data/homePageContent';
         });
 
         indicators.forEach((indicator, index) => {
+          const dot = indicator.querySelector('.indicator-dot');
           if (index === activeIndex) {
-            indicator.classList.add('bg-gold-500', 'w-6');
-            indicator.classList.remove('bg-gray-300', 'w-2');
+            dot?.classList.add('bg-gold-500', 'w-6');
+            dot?.classList.remove('bg-gray-300', 'w-2');
           } else {
-            indicator.classList.add('bg-gray-300', 'w-2');
-            indicator.classList.remove('bg-gold-500', 'w-6');
+            dot?.classList.add('bg-gray-300', 'w-2');
+            dot?.classList.remove('bg-gold-500', 'w-6');
           }
         });
       };

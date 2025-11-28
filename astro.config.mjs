@@ -17,8 +17,8 @@ export default defineConfig({
   }),
 
   build: {
-    // Inline CSS smaller than 4KB to reduce render-blocking resources
-    inlineStylesheets: 'auto',
+    // Inline all stylesheets to eliminate render-blocking CSS
+    inlineStylesheets: 'always',
   },
 
   integrations: [

@@ -184,8 +184,8 @@ import { socialLinks } from '@/data/homePageContent';
     </section>
   </main>
 
-  <!-- Consultation Modal -->
-  <ConsultationModal client:load />
+  <!-- Consultation Modal - deferred until browser idle -->
+  <ConsultationModal client:idle />
 
   <Footer variant="legal" />
 </BaseLayout>

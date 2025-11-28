@@ -43,8 +43,8 @@ const description = 'Допоможу досягти ваших цілей за 
 
   <Footer />
 
-  <!-- Consultation Modal (React Component) -->
-  <ConsultationModal client:load />
+  <!-- Consultation Modal - deferred until browser idle -->
+  <ConsultationModal client:idle />
 </BaseLayout>
 
 <script>

@@ -16,6 +16,11 @@ export default defineConfig({
     webAnalytics: { enabled: true },
   }),
 
+  build: {
+    // Inline CSS smaller than 4KB to reduce render-blocking resources
+    inlineStylesheets: 'auto',
+  },
+
   integrations: [
     react(), // React for interactive islands
     tailwind({

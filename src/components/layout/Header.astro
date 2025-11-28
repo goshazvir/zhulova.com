@@ -165,8 +165,8 @@ const isContactsPage = currentPath.startsWith('/contacts');
   </div>
 </header>
 
-<!-- Mobile Menu Component -->
-<MobileMenu client:load variant={variant} />
+<!-- Mobile Menu Component - only hydrates on mobile screens -->
+<MobileMenu client:media="(max-width: 768px)" variant={variant} />
 
 <script>
   import { useUIStore } from '@/stores/uiStore';

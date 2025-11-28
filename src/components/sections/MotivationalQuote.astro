@@ -52,8 +52,8 @@ import { motivationalQuote } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Use astro:page-load to re-initialize after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
     const quoteCTA = document.getElementById('quote-cta');
     if (quoteCTA) {
       quoteCTA.addEventListener('click', () => {

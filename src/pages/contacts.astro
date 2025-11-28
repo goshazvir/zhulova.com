@@ -193,8 +193,8 @@ import { socialLinks } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Use astro:page-load to re-initialize after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
     const contactsCTAButton = document.getElementById('contacts-cta-button');
     if (contactsCTAButton) {
       contactsCTAButton.addEventListener('click', () => {

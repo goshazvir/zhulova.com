@@ -96,8 +96,8 @@ import heroImageSrc from '@/assets/images/hero-viktoria-luxury.webp';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Use astro:page-load to re-initialize after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
     // Handle CTA button click
     const ctaButton = document.getElementById('hero-cta-button');
     if (ctaButton) {

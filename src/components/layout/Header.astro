@@ -172,8 +172,8 @@ const isContactsPage = currentPath.startsWith('/contacts');
   import { useUIStore } from '@/stores/uiStore';
   import { scrollToSection, initSectionTracking } from '@/utils/scrollAnimations';
 
-  // Use astro:page-load to re-initialize after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     if (mobileMenuButton) {

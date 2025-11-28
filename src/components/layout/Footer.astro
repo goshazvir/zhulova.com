@@ -212,8 +212,8 @@ const isHomePage = currentPath === '/' || currentPath === '';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Use astro:page-load to re-initialize after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
     const footerCTAButton = document.getElementById('footer-cta-button');
     if (footerCTAButton) {
       footerCTAButton.addEventListener('click', () => {

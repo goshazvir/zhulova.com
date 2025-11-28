@@ -138,8 +138,8 @@ import { caseStudies } from '@/data/homePageContent';
 <script>
   import { useUIStore } from '@/stores/uiStore';
 
-  // Use astro:page-load to re-initialize after View Transitions navigation
-  document.addEventListener('astro:page-load', () => {
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
     // CTA Button
     const caseStudiesCTA = document.getElementById('case-studies-cta');
     if (caseStudiesCTA) {

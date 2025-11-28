@@ -17,8 +17,10 @@ const {
   alt,
   width = 600,
   height = 800,
-  widths = [320, 480, 600],
-  sizes = '(max-width: 640px) 320px, (max-width: 768px) 480px, 600px',
+  // Mobile-first widths: 240 for small phones, 320 for phones, 480 for tablets, 600 for desktop
+  widths = [240, 320, 480, 600],
+  // Optimized sizes for mobile LCP - smaller images for smaller screens
+  sizes = '(max-width: 480px) 240px, (max-width: 640px) 320px, (max-width: 768px) 480px, 600px',
   className = ''
 } = Astro.props;
 ---

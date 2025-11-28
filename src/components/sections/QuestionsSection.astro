@@ -15,14 +15,20 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
 
     {/* Tabs */}
     <div class="flex justify-center mb-12">
-      <div class="flex gap-8 border-b border-gray-200">
+      <div
+        class="flex gap-8 border-b border-gray-200"
+        role="tablist"
+        aria-label="Категорії питань"
+      >
         <button
           id="personal-tab"
           type="button"
           class="pb-3 px-4 font-medium transition-all border-b-2 hover:text-navy-700"
           data-tab="personal"
           aria-selected="true"
+          aria-controls="personal-panel"
           role="tab"
+          tabindex="0"
         >
           Особисті питання
         </button>
@@ -32,7 +38,9 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
           class="pb-3 px-4 font-medium transition-all border-b-2 hover:text-navy-700"
           data-tab="business"
           aria-selected="false"
+          aria-controls="business-panel"
           role="tab"
+          tabindex="-1"
         >
           Бізнес і лідерство
         </button>
@@ -96,10 +104,12 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
         personalTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
         personalTab?.classList.remove('border-transparent', 'text-navy-500');
         personalTab?.setAttribute('aria-selected', 'true');
+        personalTab?.setAttribute('tabindex', '0');
 
         businessTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
         businessTab?.classList.add('border-transparent', 'text-navy-500');
         businessTab?.setAttribute('aria-selected', 'false');
+        businessTab?.setAttribute('tabindex', '-1');
 
         personalPanel?.classList.remove('hidden');
         personalPanel?.classList.add('grid');
@@ -109,10 +119,12 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
         businessTab?.classList.add('border-gold-500', 'text-navy-900', 'font-semibold');
         businessTab?.classList.remove('border-transparent', 'text-navy-500');
         businessTab?.setAttribute('aria-selected', 'true');
+        businessTab?.setAttribute('tabindex', '0');
 
         personalTab?.classList.remove('border-gold-500', 'text-navy-900', 'font-semibold');
         personalTab?.classList.add('border-transparent', 'text-navy-500');
         personalTab?.setAttribute('aria-selected', 'false');
+        personalTab?.setAttribute('tabindex', '-1');
 
         businessPanel?.classList.remove('hidden');
         businessPanel?.classList.add('grid');
@@ -121,11 +133,28 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
       }
     }
 
+    // Keyboard navigation for tabs (arrow keys per WAI-ARIA)
+    function handleTabKeydown(e: KeyboardEvent) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const currentTab = document.activeElement;
+        if (currentTab === personalTab) {
+          businessTab?.focus();
+          switchTab('business');
+        } else if (currentTab === businessTab) {
+          personalTab?.focus();
+          switchTab('personal');
+        }
+      }
+    }
+
     // Initialize first tab as active
     switchTab('personal');
 
     personalTab?.addEventListener('click', () => switchTab('personal'));
     businessTab?.addEventListener('click', () => switchTab('business'));
+    personalTab?.addEventListener('keydown', handleTabKeydown);
+    businessTab?.addEventListener('keydown', handleTabKeydown);
 
     // CTA button
     const questionsCTA = document.getElementById('questions-cta');

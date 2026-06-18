@@ -6,6 +6,7 @@ import StickyCta from '@components/sections/opora/StickyCta.astro';
 import HeroOpora from '@components/sections/opora/HeroOpora.astro';
 import WhereSection from '@components/sections/opora/WhereSection.astro';
 import BridgeSection from '@components/sections/opora/BridgeSection.astro';
+import ChangesSection from '@components/sections/opora/ChangesSection.astro';
 
 const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
 ---
@@ -20,7 +21,7 @@ const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
     <HeroOpora href={checkoutUrl} />
     <WhereSection />
     <BridgeSection />
-    <!-- SECTION: changes -->
+    <ChangesSection />
     <!-- SECTION: bonuses -->
     <!-- SECTION: about -->
     <!-- SECTION: testimonials -->

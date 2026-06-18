@@ -1,0 +1,16 @@
+---
+import { Badge } from '@design-system/Badge';
+interface Props {
+  tag: string;
+  title: string;
+  text: string;
+  highlight?: boolean;
+}
+const { tag, title, text, highlight = false } = Astro.props;
+const ring = highlight ? 'border-gold-300 ring-1 ring-gold-200' : 'border-navy-100';
+---
+<div class={`rounded-xl border bg-white p-6 shadow-sm ${ring}`}>
+  <Badge variant="gold">{tag}</Badge>
+  <h3 class="mt-4 font-serif text-xl font-semibold text-navy-900">{title}</h3>
+  <p class="mt-2 leading-relaxed text-navy-700">{text}</p>
+</div>

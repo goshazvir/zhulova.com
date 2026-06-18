@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
 import StickyCta from '@components/sections/opora/StickyCta.astro';
+import HeroOpora from '@components/sections/opora/HeroOpora.astro';
 
 const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
 ---
@@ -14,7 +15,7 @@ const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
   <Header variant="main" />
 
   <main class="overflow-x-hidden">
-    <!-- SECTION: hero -->
+    <HeroOpora href={checkoutUrl} />
     <!-- SECTION: where -->
     <!-- SECTION: bridge -->
     <!-- SECTION: changes -->

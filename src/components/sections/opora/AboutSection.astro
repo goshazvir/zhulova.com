@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import SectionEyebrow from './SectionEyebrow.astro';
+import CheckItem from './CheckItem.astro';
+import portrait from '@assets/footer-viktoria.webp';
+
+const regalia = [
+  'Сертифікований коуч, 10+ років практики',
+  '200+ клієнтів, які дійшли до своїх цілей',
+  'Майстер рейкі 2 ступені, працюю зі станами та хворобами енергетично',
+  'НЛП, медитації, перепрограмування старих патернів',
+];
+---
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <SectionEyebrow num="05" label="Хто я" />
+    <div class="grid items-start gap-12 lg:grid-cols-2">
+      <Image
+        src={portrait}
+        alt="Вікторія Жульова"
+        widths={[400, 600]}
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        loading="lazy"
+        class="mx-auto w-full max-w-sm rounded-2xl ring-2 ring-gold-300"
+      />
+      <div>
+        <h2 class="font-serif text-3xl font-bold text-navy-900 md:text-4xl">
+          Вікторія Жульова
+        </h2>
+        <ul class="mt-6 space-y-3">
+          {regalia.map((r) => <CheckItem>{r}</CheckItem>)}
+        </ul>
+        <p class="mt-6 leading-relaxed text-navy-700">
+          Я не вчу з книжки. Сама тривожниця й гіперконтролерка з тих, що мусять тримати все під контролем, бо інакше всередині паніка. Свого часу лежала на дивані вигоріла дотла й дивилась серіали про любов, аби не дивитись у реальність. І зібрала себе з нуля, по цеглинці. Тому цю дорогу я знаю зсередини й проведу тебе нею швидше, ніж ти пройшла б сама.
+        </p>
+        <a
+          href="https://instagram.com/viktoria_revolution"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-8 inline-flex items-center gap-2 rounded-lg border-2 border-navy-900 px-6 py-3 font-medium text-navy-900 transition-colors hover:bg-navy-50"
+        >
+          instagram @viktoria_revolution
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

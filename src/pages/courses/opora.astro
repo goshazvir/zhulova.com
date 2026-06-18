@@ -10,6 +10,7 @@ import ChangesSection from '@components/sections/opora/ChangesSection.astro';
 import BonusesSection from '@components/sections/opora/BonusesSection.astro';
 import AboutSection from '@components/sections/opora/AboutSection.astro';
 import TestimonialsSection from '@components/sections/opora/TestimonialsSection.astro';
+import BuySection from '@components/sections/opora/BuySection.astro';
 
 const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
 ---
@@ -28,7 +29,7 @@ const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
     <BonusesSection />
     <AboutSection />
     <TestimonialsSection />
-    <!-- SECTION: buy -->
+    <BuySection href={checkoutUrl} />
     <!-- SECTION: faq -->
     <!-- SECTION: journey -->
   </main>

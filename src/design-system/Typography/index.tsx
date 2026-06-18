@@ -15,7 +15,7 @@ const headingClasses: Record<HeadingLevel, string> = {
 };
 
 export function Heading({ level = 2, className = '', children, ...props }: HeadingProps) {
-  const Tag = `h${level}` as const;
+  const Tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4';
   return (
     <Tag
       className={`font-serif text-navy-900 ${headingClasses[level]} ${className}`}

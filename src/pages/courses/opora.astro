@@ -2,10 +2,9 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
+import StickyCta from '@components/sections/opora/StickyCta.astro';
 
-// checkoutUrl is consumed by later section tasks; void keeps strict mode happy until then
 const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
-void checkoutUrl;
 ---
 
 <BaseLayout
@@ -28,5 +27,5 @@ void checkoutUrl;
   </main>
 
   <Footer variant="legal" />
-  <!-- SECTION: sticky -->
+  <StickyCta href={checkoutUrl} />
 </BaseLayout>

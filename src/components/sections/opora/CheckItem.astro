@@ -1,0 +1,13 @@
+---
+interface Props {
+  tone?: 'light' | 'dark';
+}
+const { tone = 'light' } = Astro.props;
+const textClass = tone === 'dark' ? 'text-white/90' : 'text-navy-800';
+---
+<li class="flex items-start gap-3">
+  <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+  </svg>
+  <span class={`font-sans ${textClass}`}><slot /></span>
+</li>

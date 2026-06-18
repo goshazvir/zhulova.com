@@ -1,0 +1,29 @@
+---
+import SectionEyebrow from './SectionEyebrow.astro';
+import CompareRow from './CompareRow.astro';
+---
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <SectionEyebrow num="01" label="Де це сидить у житті" />
+    <h2 class="font-serif text-3xl font-bold text-navy-900 md:text-4xl">
+      Тривога забирає не тільки настрій
+    </h2>
+    <div class="mt-10 space-y-6">
+      <CompareRow
+        label="Вечір"
+        now="Лягаєш без сил, а голова крутить ту саму думку по колу, і привіт безсоння."
+        support="Кілька вправ — і всередині спокій, щоб можна було заснути."
+      />
+      <CompareRow
+        label="Ранок"
+        now="Прокидаєшся втомленою, ще нічого не зробила, а вже немає енергії та сили."
+        support="Робиш одну маленьку справу для себе зранку — і день з новими фарбами."
+      />
+      <CompareRow
+        label="Голова"
+        now="«Я не справляюся», «в інших вийшло, а в мене ні» — думки крутяться по колу."
+        support="Вчишся ловити цю думку й відповідати їй по-дорослому, і голова тихішає."
+      />
+    </div>
+  </div>
+</section>

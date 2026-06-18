@@ -1,0 +1,22 @@
+---
+interface Props {
+  question: string;
+}
+const { question } = Astro.props;
+---
+<details class="faq-item border-b border-navy-200 py-5">
+  <summary class="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-navy-900">
+    <span>{question}</span>
+    <span class="faq-marker text-2xl leading-none text-gold-600" aria-hidden="true"></span>
+  </summary>
+  <div class="mt-3 leading-relaxed text-navy-700">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .faq-item > summary { list-style: none; }
+  .faq-item > summary::-webkit-details-marker { display: none; }
+  .faq-marker::after { content: '+'; }
+  .faq-item[open] .faq-marker::after { content: '−'; }
+</style>

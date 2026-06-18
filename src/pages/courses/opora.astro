@@ -15,12 +15,31 @@ import FaqSection from '@components/sections/opora/FaqSection.astro';
 import JourneySection from '@components/sections/opora/JourneySection.astro';
 
 const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
+
+const courseSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'Опора на себе',
+  description: '3-денний міні-курс: практики спокою, зменшення внутрішнього критика і дорослий план.',
+  provider: {
+    '@type': 'Person',
+    name: 'Вікторія Жульова',
+    url: 'https://zhulova.com',
+  },
+  offers: {
+    '@type': 'Offer',
+    price: '9',
+    priceCurrency: 'EUR',
+    category: 'mini-course',
+  },
+};
 ---
 
 <BaseLayout
   title="Опора на себе — 3-денний міні-курс · Вікторія Жульова"
   description="За три дні розберемось, чому тебе виснажує й тривожить. Практики спокою, зменшення внутрішнього критика і дорослий план. Один платіж 9 €, усе в Телеграмі."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(courseSchema)} is:inline />
   <Header variant="main" />
 
   <main class="overflow-x-hidden">

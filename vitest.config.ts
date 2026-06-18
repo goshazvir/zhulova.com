@@ -33,6 +33,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '@components': resolve(__dirname, './src/components'),
+      '@design-system': resolve(__dirname, './src/design-system'),
       '@layouts': resolve(__dirname, './src/layouts'),
       '@stores': resolve(__dirname, './src/stores'),
       '@types': resolve(__dirname, './src/types'),

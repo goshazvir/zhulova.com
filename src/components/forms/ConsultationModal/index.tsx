@@ -1,8 +1,8 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useUIStore } from '@/stores/uiStore';
-import Modal from '@/components/common/Modal';
-import Input from '@/components/common/Input';
-import Button from '@/components/common/Button';
+import Modal from '@design-system/Modal';
+import Input from '@design-system/Input';
+import Button from '@design-system/Button';
 
 interface FormData {
   name: string;

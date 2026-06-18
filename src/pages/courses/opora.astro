@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+
+// checkoutUrl is consumed by later section tasks (hero, buy, sticky CTAs)
+// @ts-expect-error TS6133 -- intentional forward declaration; sections added in subsequent tasks
+const checkoutUrl = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
+---
+
+<BaseLayout
+  title="Опора на себе — 3-денний міні-курс · Вікторія Жульова"
+  description="За три дні розберемось, чому тебе виснажує й тривожить. Практики спокою, зменшення внутрішнього критика і дорослий план. Один платіж 9 €, усе в Телеграмі."
+>
+  <Header variant="main" />
+
+  <main class="overflow-x-hidden">
+    <!-- SECTION: hero -->
+    <!-- SECTION: where -->
+    <!-- SECTION: bridge -->
+    <!-- SECTION: changes -->
+    <!-- SECTION: bonuses -->
+    <!-- SECTION: about -->
+    <!-- SECTION: testimonials -->
+    <!-- SECTION: buy -->
+    <!-- SECTION: faq -->
+    <!-- SECTION: journey -->
+  </main>
+
+  <Footer variant="legal" />
+  <!-- SECTION: sticky -->
+</BaseLayout>

@@ -29,5 +29,7 @@ test.describe('Opora landing', () => {
 
     // Check that dummy course routes are not linked from catalog
     await expect(page.locator('a[href="/courses/my-course"]')).toHaveCount(0);
+    await expect(page.locator('a[href="/courses/mindset-mastery"]')).toHaveCount(0);
+    await expect(page.locator('a[href="/courses/goals-achievement"]')).toHaveCount(0);
   });
 });

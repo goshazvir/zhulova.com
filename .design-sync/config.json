@@ -1,0 +1,40 @@
+{
+  "projectId": "a167176d-cb37-404c-9e23-19d690bafdc5",
+  "shape": "package",
+  "pkg": "zhulova",
+  "globalName": "Zhulova",
+  "srcDir": "src/design-system",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".design-sync/ds-styles.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "componentSrcMap": {
+    "Button": "src/design-system/Button/index.tsx",
+    "Input": "src/design-system/Input/index.tsx",
+    "Modal": "src/design-system/Modal/index.tsx",
+    "Card": "src/design-system/Card/index.tsx",
+    "Heading": "src/design-system/Typography/index.tsx",
+    "Text": "src/design-system/Typography/index.tsx",
+    "Section": "src/design-system/Section/index.tsx",
+    "Container": "src/design-system/Section/index.tsx",
+    "Badge": "src/design-system/Badge/index.tsx",
+    "Stat": "src/design-system/Badge/index.tsx"
+  },
+  "dtsPropsFor": {
+    "Button": "variant?: 'primary' | 'secondary' | 'outline'; size?: 'sm' | 'md' | 'lg'; children: React.ReactNode; onClick?: () => void; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; className?: string;",
+    "Input": "label: string; error?: string; helperText?: string; type?: string; placeholder?: string; value?: string; defaultValue?: string; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; name?: string; id?: string; required?: boolean; disabled?: boolean; className?: string;",
+    "Modal": "isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode;",
+    "Card": "variant?: 'default' | 'bordered' | 'elevated'; padding?: 'sm' | 'md' | 'lg'; children: React.ReactNode; className?: string;",
+    "Heading": "level?: 1 | 2 | 3 | 4; children: React.ReactNode; className?: string;",
+    "Text": "size?: 'sm' | 'md' | 'lg'; tone?: 'default' | 'muted' | 'gold'; children: React.ReactNode; className?: string;",
+    "Section": "spacing?: 'sm' | 'md' | 'lg'; background?: 'none' | 'navy' | 'sage'; children: React.ReactNode; className?: string;",
+    "Container": "children: React.ReactNode; className?: string;",
+    "Badge": "variant?: 'navy' | 'gold' | 'sage'; size?: 'sm' | 'md'; children: React.ReactNode; className?: string;",
+    "Stat": "value: React.ReactNode; label: React.ReactNode; className?: string;"
+  },
+  "overrides": {
+    "Modal": { "cardMode": "single", "viewport": "600x520" },
+    "Section": { "cardMode": "column" },
+    "Container": { "cardMode": "column" },
+    "Card": { "cardMode": "column" }
+  }
+}

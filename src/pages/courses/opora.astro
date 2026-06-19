@@ -1,0 +1,60 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import StickyCta from '@components/sections/opora/StickyCta.astro';
+import HeroOpora from '@components/sections/opora/HeroOpora.astro';
+import WhereSection from '@components/sections/opora/WhereSection.astro';
+import BridgeSection from '@components/sections/opora/BridgeSection.astro';
+import ChangesSection from '@components/sections/opora/ChangesSection.astro';
+import BonusesSection from '@components/sections/opora/BonusesSection.astro';
+import AboutSection from '@components/sections/opora/AboutSection.astro';
+import TestimonialsSection from '@components/sections/opora/TestimonialsSection.astro';
+import BuySection from '@components/sections/opora/BuySection.astro';
+import FaqSection from '@components/sections/opora/FaqSection.astro';
+import JourneySection from '@components/sections/opora/JourneySection.astro';
+
+const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
+
+const courseSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'Опора на себе',
+  description: '3-денний міні-курс: практики спокою, зменшення внутрішнього критика і дорослий план.',
+  provider: {
+    '@type': 'Person',
+    name: 'Вікторія Жульова',
+    url: 'https://zhulova.com',
+  },
+  offers: {
+    '@type': 'Offer',
+    price: '9',
+    priceCurrency: 'EUR',
+    category: 'mini-course',
+  },
+};
+---
+
+<BaseLayout
+  title="Опора на себе — 3-денний міні-курс · Вікторія Жульова"
+  description="За три дні розберемось, чому тебе виснажує й тривожить. Практики спокою, зменшення внутрішнього критика і дорослий план. Один платіж 9 €, усе в Телеграмі."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(courseSchema)} is:inline />
+  <Header variant="main" />
+
+  <main class="overflow-x-hidden pb-24">
+    <HeroOpora href={checkoutUrl} />
+    <WhereSection />
+    <BridgeSection />
+    <ChangesSection />
+    <BonusesSection />
+    <AboutSection />
+    <TestimonialsSection />
+    <BuySection href={checkoutUrl} />
+    <FaqSection />
+    <JourneySection href={checkoutUrl} />
+  </main>
+
+  <Footer variant="legal" />
+  <StickyCta href={checkoutUrl} />
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+import SectionEyebrow from './SectionEyebrow.astro';
+import CtaButton from './CtaButton.astro';
+
+interface Props {
+  href: string;
+}
+const { href } = Astro.props;
+
+const steps = [
+  { when: 'День 1', text: 'Робиш перше заземлення, і вперше за довгий час голова на пару хвилин замовкає.' },
+  { when: 'Кінець 3 днів', text: 'У тебе є план від нічної тривоги, тихіший критик і дві практики, до яких можна вертатись.' },
+  { when: 'Через тиждень', text: 'Помічаєш, що рідше зриваєшся в самобичування й частіше ловиш себе раніше.' },
+  { when: 'Через місяць', text: 'Опора збирається з дрібних дотриманих обіцянок собі, і ти потроху відчуваєш під ногами тверду землю.' },
+];
+---
+<section class="bg-white py-20">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <SectionEyebrow num="09" label="Куди ти прийдеш" />
+    <h2 class="font-serif text-3xl font-bold text-navy-900 md:text-4xl">
+      Що міняється, коли почнеш
+    </h2>
+    <p class="mt-4 max-w-2xl text-lg text-navy-600">
+      Заходиш за 9 € і йдеш по днях. Далі все вирішує те, чи робиш ти ці дрібні кроки. Орієнтовно дорога складається так:
+    </p>
+    <ol class="mt-10 grid gap-6 md:grid-cols-4">
+      {steps.map((s) => (
+        <li class="relative rounded-xl border-t-4 border-gold-400 bg-navy-50 p-5">
+          <span class="font-serif text-sm font-bold uppercase tracking-wider text-gold-600">{s.when}</span>
+          <p class="mt-2 text-sm leading-relaxed text-navy-800">{s.text}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="mt-12 text-center">
+      <CtaButton href={href}>ЗАБРАТИ ЗА 9 €</CtaButton>
+      <p class="mt-3 text-sm text-navy-500">Один платіж 9 €, доступ одразу й назавжди.</p>
+    </div>
+  </div>
+</section>

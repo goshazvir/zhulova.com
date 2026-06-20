@@ -59,7 +59,7 @@ test.describe('Courses Pages', () => {
   });
 
   test.describe('Course Detail Pages', () => {
-    const courseSlugs = ['my-course', 'mindset-mastery', 'goals-achievement'];
+    const courseSlugs = ['opora'];
 
     courseSlugs.forEach((slug) => {
       test.describe(`/courses/${slug}`, () => {
@@ -179,7 +179,7 @@ test.describe('Courses Pages', () => {
       const headerOnCatalog = await page.getByRole('banner').textContent();
 
       // Check header on detail page
-      await page.goto('/courses/my-course', { waitUntil: 'networkidle' });
+      await page.goto('/courses/opora', { waitUntil: 'networkidle' });
       const headerOnDetail = await page.getByRole('banner').textContent();
 
       // Both should have navigation

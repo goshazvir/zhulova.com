@@ -241,6 +241,14 @@ test.describe('Legal Pages', () => {
       }
     });
 
+    test('should link to offer from footer on legal pages', async ({ page }) => {
+      await page.goto('/terms', { waitUntil: 'networkidle' });
+      const offerLink = page.getByRole('contentinfo').locator('a[href="/oferta"]').first();
+      await expect(offerLink).toBeVisible();
+      await offerLink.click();
+      await expect(page).toHaveURL(/oferta/);
+    });
+
     test('should have consistent footer across pages', async ({ page }) => {
       // Check footer on privacy policy - use semantic role to avoid browser extension elements
       await page.goto('/privacy-policy', { waitUntil: 'networkidle' });

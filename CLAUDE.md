@@ -241,7 +241,7 @@ git push origin feature-branch
 
 **Configuration:** `output: 'static'` in `astro.config.mjs` with Vercel adapter
 
-**Note:** Astro 5 uses `output: 'static'` mode for SSG (Static Site Generation). All pages are pre-rendered to HTML at build time. API routes in `src/pages/api/` are automatically converted to serverless functions by Vercel adapter.
+**Note:** Astro 5 uses `output: 'static'` mode for SSG (Static Site Generation). All pages are pre-rendered to HTML at build time. In Astro 5, endpoints prerender by default, so every API route in `src/pages/api/` MUST export `const prerender = false` to be deployed as a Vercel serverless function — otherwise the route 404s in production.
 
 Every **page** is pre-rendered at build time (static). API endpoints are serverless functions:
 
@@ -258,7 +258,7 @@ User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interacti
 
 **Dynamic Layer (API endpoints):**
 - Location: `src/pages/api/**/*.ts`
-- Automatically converted to Vercel serverless functions (no `prerender = false` needed)
+- Deployed as Vercel serverless functions — each endpoint MUST export `const prerender = false` (Astro 5 prerenders endpoints by default)
 - Form submissions → `/api/submit-lead` (POST)
 - Email notifications → Resend
 - Database writes → Supabase PostgreSQL
@@ -266,7 +266,8 @@ User Request → CDN → Pre-rendered HTML → Hydration (minimal) → Interacti
 **Example API endpoint:**
 ```typescript
 // src/pages/api/submit-lead.ts
-// No prerender export needed - API routes are serverless by default in static mode
+// Required in Astro 5 static mode so the route deploys as a serverless function
+export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   const body = await request.json();
@@ -646,7 +647,7 @@ PUBLIC_SITE_URL=https://zhulova.com
 
 **Build command:** `npm run build`
 **Output directory:** `dist`
-**Serverless functions:** `src/pages/api/**/*.ts` (automatically converted by Vercel adapter)
+**Serverless functions:** `src/pages/api/**/*.ts` (each must export `const prerender = false`)
 
 **Alternative platforms:**
 - Netlify (with Netlify Functions)
@@ -707,7 +708,7 @@ The project currently has the following pages:
 
 ### Adding a Serverless Function
 
-1. Create file in `src/pages/api/function-name.ts`
+1. Create file in `src/pages/api/function-name.ts` and add `export const prerender = false` (required in Astro 5 static mode, or the function is never deployed and the route 404s)
 2. Import `APIRoute` from Astro
 3. Define Zod validation schema
 4. Export `POST` (or `GET`) handler
@@ -717,7 +718,7 @@ The project currently has the following pages:
 8. Return JSON response
 9. Test locally with `npm run dev`
 
-**Note:** In `output: 'static'` mode, all files in `src/pages/api/` are automatically converted to Vercel serverless functions. No `export const prerender = false` needed.
+**Note:** In Astro 5 `output: 'static'` mode, endpoints prerender by default. Every file in `src/pages/api/` MUST export `const prerender = false` to be deployed as a Vercel serverless function — without it the route 404s in production (the function is never emitted).
 
 **Example structure:**
 ```typescript
@@ -725,7 +726,8 @@ The project currently has the following pages:
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
 
-// API routes are automatically serverless in static mode
+// Required in Astro 5 static mode so the route deploys as a serverless function
+export const prerender = false;
 
 const schema = z.object({
   name: z.string().min(2),

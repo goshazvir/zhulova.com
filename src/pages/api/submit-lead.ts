@@ -3,6 +3,11 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { logError, logWarn, logInfo } from '@utils/logger';
 
+// Render on-demand as a Vercel serverless function. In Astro 5 static mode
+// endpoints prerender by default, which a POST handler cannot do — without
+// this the route 404s in production.
+export const prerender = false;
+
 // Environment validation flag (for cold start logging)
 let envValidated = false;
 

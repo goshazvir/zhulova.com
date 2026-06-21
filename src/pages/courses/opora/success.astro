@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import CtaButton from '@components/sections/opora/CtaButton.astro';
+
+// Bot link delivers the course; fall back to contacts if not configured yet.
+const botUrl: string = import.meta.env.PUBLIC_OPORA_BOT_URL || '/contacts';
+---
+
+<BaseLayout
+  title="Оплата успішна — Опора на себе · Вікторія Жульова"
+  description="Оплата пройшла успішно. Відкрий телеграм-бот, щоб забрати курс «Опора на себе»."
+  noindex
+>
+  <Header variant="main" />
+
+  <main class="min-h-screen bg-white pt-32 pb-20">
+    <section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div
+        class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gold-100 text-gold-600"
+      >
+        <svg
+          class="h-8 w-8"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-4">
+        Оплата пройшла успішно
+      </h1>
+
+      <p class="text-lg text-navy-700 mb-8 leading-relaxed">
+        Дякую за покупку! Доступ до курсу — у телеграм-боті. Натисни кнопку нижче, щоб
+        відкрити його й почати.
+      </p>
+
+      <CtaButton href={botUrl}>Відкрити бота й забрати курс</CtaButton>
+
+      <p class="mt-6 text-sm text-navy-500">
+        Бот не відкрився?
+        <a href="/contacts" class="text-gold-600 underline hover:text-gold-500">Напиши нам</a>.
+      </p>
+    </section>
+  </main>
+
+  <Footer variant="legal" />
+</BaseLayout>

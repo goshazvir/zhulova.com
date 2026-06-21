@@ -124,7 +124,8 @@ export const POST: APIRoute = async ({ request }) => {
     // Send email notification via Resend
     const { data, error } = await resend.emails.send({
       from: fromEmail,
-      to: notificationEmail,
+      // NOTIFICATION_EMAIL may hold several comma-separated recipients
+      to: notificationEmail.split(',').map((e: string) => e.trim()).filter(Boolean),
       replyTo: validatedData.email || undefined,
       subject: `New Consultation Request from ${validatedData.name}`,
       html: `

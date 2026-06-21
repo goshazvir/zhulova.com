@@ -176,6 +176,52 @@ test.describe('Legal Pages', () => {
     });
   });
 
+  test.describe('Offer Page', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('/oferta', { waitUntil: 'networkidle' });
+    });
+
+    test('should load offer page successfully', async ({ page }) => {
+      await expect(page).toHaveURL(/oferta/);
+      await expect(page).toHaveTitle(/публічна оферта/i);
+    });
+
+    test('should display offer heading', async ({ page }) => {
+      const heading = page.locator('main h1').first();
+      await expect(heading).toBeVisible();
+      await expect(heading).toContainText(/публічна оферта/i);
+    });
+
+    test('should have seller requisites section', async ({ page }) => {
+      const main = page.locator('main');
+      await expect(main).toContainText(/реквізити продавця/i);
+    });
+
+    test('should link to privacy policy', async ({ page }) => {
+      const privacyLink = page.locator('main a[href="/privacy-policy"]').first();
+      await expect(privacyLink).toBeVisible();
+    });
+
+    test('should have proper meta tags for SEO', async ({ page }) => {
+      const metaDescription = page.locator('meta[name="description"]');
+      await expect(metaDescription).toHaveAttribute('content', /.+/);
+      const ogTitle = page.locator('meta[property="og:title"]');
+      await expect(ogTitle).toHaveAttribute('content', /.+/);
+    });
+
+    test('should have footer', async ({ page }) => {
+      const footer = page.getByRole('contentinfo');
+      await expect(footer).toBeVisible();
+      await expect(footer).toContainText(/© \d{4}/);
+    });
+
+    test('should work on mobile viewport', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 667 });
+      const heading = page.locator('main h1').first();
+      await expect(heading).toBeVisible();
+    });
+  });
+
   test.describe('Cross-page navigation', () => {
     test('should navigate between privacy and terms pages', async ({ page }) => {
       await page.goto('/privacy-policy', { waitUntil: 'networkidle' });

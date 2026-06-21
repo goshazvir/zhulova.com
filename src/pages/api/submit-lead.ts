@@ -200,36 +200,45 @@ export const POST: APIRoute = async ({ request }) => {
       referrer: request.headers.get('referer') || null,
     };
 
-    const { data: dbData, error: dbError } = await supabase
-      .from('leads')
-      .insert([leadData])
-      .select('id')
-      .single();
+    // Persist to Supabase. The email notification above already delivered the
+    // lead, so a database failure must NOT fail the user's submission — the DB
+    // is a secondary log (e.g. the project may be paused). Log and continue.
+    let leadId: string | null = null;
+    try {
+      const { data: dbData, error: dbError } = await supabase
+        .from('leads')
+        .insert([leadData])
+        .select('id')
+        .single();
 
-    if (dbError) {
-      // T013: Database error logging
-      logError(`Database insert failed: ${dbError.message}`, {
+      if (dbError) {
+        // T013: Database error logging (non-fatal — email already sent)
+        logError(`Database insert failed (non-fatal): ${dbError.message}`, {
+          action: 'insert_lead',
+          duration: Date.now() - startTime,
+          errorCode: dbError.code || 'DB_ERROR',
+          affectedResource: 'leads',
+          httpStatus: 200,
+        }, endpoint);
+      } else {
+        leadId = dbData.id;
+      }
+    } catch (dbException) {
+      const message = dbException instanceof Error ? dbException.message : 'Unknown DB error';
+      logError(`Database insert threw (non-fatal): ${message}`, {
         action: 'insert_lead',
         duration: Date.now() - startTime,
-        errorCode: dbError.code || 'DB_ERROR',
+        errorCode: 'DB_EXCEPTION',
         affectedResource: 'leads',
-        httpStatus: 500,
+        httpStatus: 200,
       }, endpoint);
-
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Failed to save lead to database',
-        }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
     }
 
     return new Response(
       JSON.stringify({
         success: true,
         message: 'Thank you! Your message has been sent.',
-        leadId: dbData.id,
+        leadId,
         emailId: data?.id
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }

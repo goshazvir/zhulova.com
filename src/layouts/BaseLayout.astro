@@ -8,6 +8,7 @@ interface Props {
   description: string;
   image?: string;
   canonical?: string;
+  noindex?: boolean;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description,
   image = '/images/og-default.jpg',
   canonical,
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://zhulova.com';
@@ -33,6 +35,7 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />

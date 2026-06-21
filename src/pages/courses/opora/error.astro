@@ -1,0 +1,39 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import CtaButton from '@components/sections/opora/CtaButton.astro';
+
+// Send the buyer back to the WayForPay button to try again.
+const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
+---
+
+<BaseLayout
+  title="Оплата не пройшла — Опора на себе · Вікторія Жульова"
+  description="Оплата не пройшла. Спробуй ще раз або звернись до нас."
+  noindex
+>
+  <Header variant="main" />
+
+  <main class="min-h-screen bg-white pt-32 pb-20">
+    <section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-3xl md:text-4xl font-serif font-bold text-navy-900 mb-4">
+        Оплата не пройшла
+      </h1>
+
+      <p class="text-lg text-navy-700 mb-8 leading-relaxed">
+        Щось пішло не так під час оплати, і гроші не списано. Спробуй ще раз — це займе
+        хвилину.
+      </p>
+
+      <CtaButton href={checkoutUrl}>Спробувати ще раз</CtaButton>
+
+      <p class="mt-6 text-sm text-navy-500">
+        Не виходить?
+        <a href="/contacts" class="text-gold-600 underline hover:text-gold-500">Звернись до нас</a>.
+      </p>
+    </section>
+  </main>
+
+  <Footer variant="legal" />
+</BaseLayout>

@@ -39,4 +39,36 @@ test.describe('Opora Payment Result Pages', () => {
       await expect(page.getByRole('contentinfo')).toBeVisible();
     });
   });
+
+  test.describe('Error page (/courses/opora/error)', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('/courses/opora/error', { waitUntil: 'networkidle' });
+    });
+
+    test('should load successfully', async ({ page }) => {
+      await expect(page).toHaveURL(/\/courses\/opora\/error$/);
+    });
+
+    test('should display a heading', async ({ page }) => {
+      const heading = page.locator('main h1').first();
+      await expect(heading).toBeVisible();
+      await expect(heading).toContainText(/не пройшла/i);
+    });
+
+    test('should have a retry CTA with a non-empty link', async ({ page }) => {
+      const cta = page.locator('main a').filter({ hasText: /спробувати ще раз/i }).first();
+      await expect(cta).toBeVisible();
+      const href = await cta.getAttribute('href');
+      expect(href).toBeTruthy();
+    });
+
+    test('should link to contacts', async ({ page }) => {
+      await expect(page.locator('main a[href="/contacts"]').first()).toBeVisible();
+    });
+
+    test('should be excluded from search engines (noindex)', async ({ page }) => {
+      const robots = page.locator('meta[name="robots"]');
+      await expect(robots).toHaveAttribute('content', /noindex/);
+    });
+  });
 });

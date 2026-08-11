@@ -31,6 +31,22 @@ npm run test:e2e:report                   # open the HTML report
 npm run test:run && npx playwright test --project=chromium && npm run build
 ```
 
+## Database verification scripts
+
+One-off scripts (not part of the CI suites) that verify live Supabase state
+after running a migration from `docs/db/`:
+
+```bash
+npm run test:supabase                            # leads table: CRUD + RLS
+node .claude/scripts/test-quiz-submissions.js    # quiz_submissions: CRUD, RLS, check constraints
+```
+
+Both need `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` and `SUPABASE_ANON_KEY` in
+`.env`. They insert a marked test record, assert RLS hides it from the anon
+key, assert the check constraints reject invalid data, then delete it.
+The `created_at` index cannot be asserted via PostgREST — confirm it in the
+Supabase SQL editor: `select indexname from pg_indexes where tablename = 'quiz_submissions';`
+
 ## What the E2E suite covers
 
 | Spec | Critical flow |

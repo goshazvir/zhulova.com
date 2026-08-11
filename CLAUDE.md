@@ -419,7 +419,7 @@ import heroImage from '../assets/hero.jpg';
 - No heavy libraries (moment.js, lodash, etc.)
 - Zustand for state management (1KB gzipped)
 
-**Console logs removed in production** (terser config in `astro.config.mjs`).
+**Console logs stripped in production, except `console.error`** (terser `pure_funcs` config in `astro.config.mjs`). `console.error` is preserved intentionally — it carries error traces such as the quiz lead-loss log. Never rely on `console.log`/`info`/`debug`/`warn` reaching production.
 
 ### Performance Monitoring
 
@@ -674,8 +674,12 @@ The project currently has the following pages:
 ### Utility Pages
 - **`/logo-preview`** - Logo showcase (all variants)
 
+### Quiz Pages
+- **`/quiz/opora`** - Quiz «На що ти опираєшся?» (12 questions, React island `QuizApp`, NOT in navigation)
+
 ### API Routes
 - **`/api/submit-lead`** - Serverless function for consultation form (Supabase + Resend)
+- **`/api/submit-quiz`** - Serverless function for quiz submissions (Supabase, server-side scoring)
 
 **Navigation Structure:**
 - **Header/MobileMenu**: Про мене, Кейси, Питання, Відгуки, Курси, Контакти

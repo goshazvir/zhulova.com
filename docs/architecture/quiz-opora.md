@@ -128,7 +128,7 @@ but email succeeds → still `200` (lead captured via email, error logged). Both
 | Var | Status | Use |
 |---|---|---|
 | `PUBLIC_OPORA_BOT_URL` | exists | CTA «Забираю курс собі» → same Opora course bot as `courses/opora/success.astro` (correct bot — same course being gifted). Fallback `/contacts` as in success page |
-| `PUBLIC_DIAGNOSTIC_BOOKING_URL` | **new** | «Записатись на діагностику вже зараз»; default fallback `https://calendly.com/` until founder supplies real Calendly link (swap in Vercel env, no code change) |
+| `PUBLIC_DIAGNOSTIC_BOOKING_URL` | in `.env.example` | «Записатись на діагностику вже зараз»; default fallback `https://calendly.com/` until founder supplies real Calendly link (swap in Vercel env, no code change) |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `NOTIFICATION_EMAIL` | exist | reused by `/api/submit-quiz` |
 
 Add `PUBLIC_DIAGNOSTIC_BOOKING_URL` to `.env.example` and Vercel.

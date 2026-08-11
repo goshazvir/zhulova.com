@@ -137,6 +137,19 @@ Unit Tests (30s) → [pass] → E2E Tests (3min) → [pass] → Summary
 - React hydration only for interactive forms (~27KB gzipped)
 - Perfect SEO - all content in HTML
 
+### Pages & API Routes
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Home — hero, case studies, testimonials, consultation form |
+| `/courses`, `/courses/*` | Course catalog and detail pages |
+| `/contacts` | Social media hub |
+| `/quiz/opora` | Quiz «На що ти опираєшся?» — campaign landing, not in site navigation (see `docs/architecture/quiz-opora.md`) |
+| `/privacy-policy`, `/terms`, `/oferta` | Legal pages |
+| `/404` | Custom 404 page |
+| `/api/submit-lead` | Serverless function: consultation form → Supabase + Resend |
+| `/api/submit-quiz` | Serverless function: quiz submissions → server-side scoring, Supabase + Resend |
+
 ---
 
 ## Development Workflow

@@ -43,6 +43,19 @@ import Footer from '@components/layout/Footer.astro';
         </div>
       </section>
 
+      <!-- Quiz Data Section -->
+      <section class="mb-10">
+        <h2 class="text-2xl font-serif text-navy-900 mb-4">Дані тестів (квізів)</h2>
+        <div class="text-navy-700 leading-relaxed space-y-4">
+          <p>
+            На нашому сайті розміщено тест «На що ти опираєшся?». Коли ви проходите тест, ми зберігаємо ваш <strong>нік в Instagram</strong>, ваші <strong>відповіді на запитання тесту</strong> та його результат, а також технічну інформацію — тип браузера (user agent) і адресу сторінки, з якої ви перейшли (referrer).
+          </p>
+          <p>
+            Ці дані ми використовуємо виключно для того, щоб зв'язатися з вами щодо результатів тесту та запропонувати відповідні коучингові послуги. Дані зберігаються в захищеній базі даних (Supabase), а сповіщення про нові результати надсилаються нам електронною поштою через сервіс Resend.
+          </p>
+        </div>
+      </section>
+
       <!-- Section 2 -->
       <section class="mb-10">
         <h2 class="text-2xl font-serif text-navy-900 mb-4">Мета обробки даних</h2>
@@ -87,7 +100,7 @@ import Footer from '@components/layout/Footer.astro';
             Для надання наших послуг ми можемо передавати ваші персональні дані наступним сервісам:
           </p>
           <ul class="list-disc list-inside space-y-2 ml-4">
-            <li><strong>Supabase</strong> — постачальник хмарних баз даних для зберігання запитів на консультацію (GDPR-сумісний)</li>
+            <li><strong>Supabase</strong> — постачальник хмарних баз даних для зберігання запитів на консультацію та результатів тестів (GDPR-сумісний)</li>
             <li><strong>Resend</strong> — сервіс електронної пошти для надсилання сповіщень про нові запити (GDPR-сумісний)</li>
             <li><strong>WayForPay</strong> — платіжний сервіс для обробки онлайн-оплат; дані платіжних карток обробляються на стороні сервісу і не зберігаються нами</li>
             <li><strong>Vercel</strong> — хостинг сайту та аналітика продуктивності (Analytics, Speed Insights)</li>

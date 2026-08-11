@@ -199,7 +199,7 @@ export default function QuizApp({ botUrl, bookingUrl }: QuizAppProps) {
         <div className="flex flex-col gap-3">
           {question.options.map((option, index) => (
             <QuizOptionCard
-              key={option.text}
+              key={index}
               text={option.text}
               selected={answers[questionIndex] === index}
               onSelect={() => selectOption(index)}

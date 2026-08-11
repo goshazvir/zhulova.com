@@ -49,7 +49,9 @@ export default defineConfig({
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true, // Remove console.log in production
+          // Strip debug noise but KEEP console.error — it is the only client-side
+          // trace of a lost lead when /api/submit-quiz fails (quiz-opora.md, AC-4)
+          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
         },
       },
     },

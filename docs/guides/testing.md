@@ -37,7 +37,7 @@ npm run test:run && npx playwright test --project=chromium && npm run build
 | --- | --- |
 | `consultation-form.spec.ts` | Consultation modal: validation, submit, API error handling |
 | `consultation-cta-buttons.spec.ts` | All CTA buttons open the consultation modal |
-| `quiz-opora.spec.ts` | Quiz funnel `/quiz/opora`: gate validation, 12-answer run with a single POST, lead-loss path (API fails twice, result still renders) |
+| `quiz-opora.spec.ts` | Quiz funnel `/quiz/opora`: gate validation, 12-answer run with a single POST (payload asserted: bare-nick handle, 12 answers, no score fields), lead-loss path (API fails twice, result still renders), keyboard-only pass (Tab/Enter), axe scans of intro/question/result screens |
 | `opora.spec.ts` | Course landing `/courses/opora` sections and catalog links |
 | `opora-payment-pages.spec.ts` | Payment success/failure pages |
 | `courses-pages.spec.ts` | Courses catalog and detail pages |
@@ -58,8 +58,14 @@ npm run test:run && npx playwright test --project=chromium && npm run build
 
   ```ts
   await page.goto('/quiz/opora');
-  await page.waitForSelector('astro-island:not([ssr])', { state: 'attached' });
+  await page.waitForSelector('astro-island[component-url*="QuizApp"]:not([ssr])', {
+    state: 'attached',
+  });
   ```
+
+  Target the island by `component-url` — pages carry several islands (the
+  component plus Analytics/SpeedInsights), and a bare
+  `astro-island:not([ssr])` resolves as soon as ANY of them hydrates.
 
   This race is test-runner-only (real users interact seconds after load), but
   without the wait the specs are flaky, especially on mobile projects.

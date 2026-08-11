@@ -51,6 +51,12 @@ npm run test:run && npx playwright test --project=chromium && npm run build
   an accessibility smell worth fixing in the component).
 - **Mock serverless APIs with `page.route()`** — E2E must not hit Supabase or
   Resend. Assert on the captured request payloads instead.
+- **Never hit real Instagram from tests.** The nick existence check
+  (`src/utils/quiz/instagramCheck.ts`) is exercised only in unit tests with a
+  mocked `fetch`; E2E covers it indirectly by mocking `/api/submit-quiz`
+  responses (including the `instagram_not_found` rejection). Real probes from
+  CI would be flaky (Instagram blocks datacenter IPs) and rate-limit the
+  production egress.
 - **Wait for island hydration before interacting.** Astro islands render
   static HTML first; React 18 attaches listeners only after `hydrateRoot`, so
   clicks fired before hydration are silently lost. `astro-island` drops its

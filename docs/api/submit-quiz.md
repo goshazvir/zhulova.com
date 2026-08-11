@@ -57,7 +57,8 @@ beyond the Instagram handle is logged; raw answers are never logged.
 
 ## Tests
 
-`src/pages/api/submit-quiz.test.ts` — 30 unit tests (Supabase/Resend/logger
+`src/pages/api/_submit-quiz.test.ts` (underscore keeps Astro from routing the
+test file as an endpoint) — 30 unit tests (Supabase/Resend/logger
 mocked, TDD-first): success path, server-side recompute, unknown-key
 stripping, handle normalization, the full validation matrix, header capture,
 the failure matrix above, and per-variable env fail-fast. The live-table

@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event';
 import QuizApp from './QuizApp';
 import { QUESTIONS } from '@utils/quiz/questions';
+import {
+  INSTAGRAM_FORMAT_ERROR,
+  INSTAGRAM_NOT_FOUND_ERROR,
+} from '@utils/quiz/instagram';
 
 /**
  * Expected result fixture: answering the FIRST option of every question gives
@@ -85,14 +89,26 @@ describe('QuizApp', () => {
       expect(screen.queryByText(QUESTIONS[0].question)).not.toBeInTheDocument();
     });
 
-    it('rejects an invalid handle (regex ^@?[a-zA-Z0-9._]{2,30}$)', async () => {
+    it('rejects a malformed nick with the Ukrainian format error (ADR-0002 #1)', async () => {
       const user = userEvent.setup();
       render(<QuizApp />);
       await user.type(screen.getByLabelText(GATE_LABEL), 'bad handle!');
       await user.click(screen.getByRole('button', { name: START_LABEL }));
-      expect(screen.getByRole('alert')).toHaveTextContent(GATE_ERROR);
+      expect(screen.getByRole('alert')).toHaveTextContent(INSTAGRAM_FORMAT_ERROR);
       expect(screen.queryByText(QUESTIONS[0].question)).not.toBeInTheDocument();
     });
+
+    it.each(['.nick', 'nick.', 'ni..ck'])(
+      'rejects dot-rule violation "%s" before starting the quiz',
+      async (nick) => {
+        const user = userEvent.setup();
+        render(<QuizApp />);
+        await user.type(screen.getByLabelText(GATE_LABEL), nick);
+        await user.click(screen.getByRole('button', { name: START_LABEL }));
+        expect(screen.getByRole('alert')).toHaveTextContent(INSTAGRAM_FORMAT_ERROR);
+        expect(screen.queryByText(QUESTIONS[0].question)).not.toBeInTheDocument();
+      }
+    );
 
     it('clears the gate error on next input', async () => {
       const user = userEvent.setup();
@@ -191,10 +207,10 @@ describe('QuizApp', () => {
   });
 
   describe('submission (AC-3)', () => {
-    it('fires exactly one POST with the normalized handle and 12 raw answers', async () => {
+    it('fires exactly one POST with the canonical bare nick and 12 raw answers', async () => {
       const user = userEvent.setup();
       render(<QuizApp />);
-      await startQuiz(user, 'test.handle');
+      await startQuiz(user, '@Test.Handle');
       await answerQuestions(user, 0, 12);
       await screen.findByText(EXPECTED_TYPE_TITLE);
 
@@ -203,7 +219,7 @@ describe('QuizApp', () => {
       expect(url).toBe('/api/submit-quiz');
       expect(init.method).toBe('POST');
       const body = JSON.parse(init.body);
-      expect(body.instagram).toBe('@test.handle');
+      expect(body.instagram).toBe('test.handle');
       expect(body.answers).toHaveLength(12);
       body.answers.forEach((answer: Record<string, unknown>, index: number) => {
         expect(Object.keys(answer).sort()).toEqual(['option', 'question']);
@@ -293,6 +309,53 @@ describe('QuizApp', () => {
 
       await screen.findByText(EXPECTED_TYPE_TITLE);
       expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('instagram not found (GEO-24, ADR-0002 #5)', () => {
+    function notFoundResponse(): Promise<Partial<Response>> {
+      return Promise.resolve({
+        ok: false,
+        status: 400,
+        json: () =>
+          Promise.resolve({
+            success: false,
+            error: 'instagram_not_found',
+            message: INSTAGRAM_NOT_FOUND_ERROR,
+          }),
+      });
+    }
+
+    it('returns to an editable nick field with the not-found error, without retrying', async () => {
+      fetchMock.mockImplementation(notFoundResponse);
+      const user = userEvent.setup();
+      render(<QuizApp />);
+      await startQuiz(user, 'ghost.nick');
+      await answerQuestions(user, 0, 12);
+
+      const input = await screen.findByLabelText(GATE_LABEL);
+      expect(screen.getByRole('alert')).toHaveTextContent(INSTAGRAM_NOT_FOUND_ERROR);
+      expect(input).toHaveValue('ghost.nick');
+      expect(fetchMock).toHaveBeenCalledTimes(1); // a confirmed-missing nick is not retried
+    });
+
+    it('resubmits all 12 preserved answers with the corrected nick, skipping the questions', async () => {
+      fetchMock.mockImplementationOnce(notFoundResponse).mockImplementation(okResponse);
+      const user = userEvent.setup();
+      render(<QuizApp />);
+      await startQuiz(user, 'ghost.nick');
+      await answerQuestions(user, 0, 12);
+
+      const input = await screen.findByLabelText(GATE_LABEL);
+      await user.clear(input);
+      await user.type(input, 'real.nick');
+      await user.click(screen.getByRole('button', { name: START_LABEL }));
+
+      await screen.findByText(EXPECTED_TYPE_TITLE);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      const body = JSON.parse(fetchMock.mock.calls[1][1].body);
+      expect(body.instagram).toBe('real.nick');
+      expect(body.answers).toHaveLength(12);
     });
   });
 

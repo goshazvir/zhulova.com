@@ -1,13 +1,15 @@
 /**
- * Unit tests for POST /api/submit-quiz (GEO-17).
+ * Unit tests for POST /api/submit-quiz (GEO-17, extended by GEO-24).
  *
- * Written FIRST (TDD) from the acceptance criteria in GEO-17 and the API
- * contract in docs/architecture/quiz-opora.md §7 / ADR-0001 #6.
- * Supabase and Resend are mocked; the live-table round-trip is QA scope.
+ * Written FIRST (TDD) from the acceptance criteria in GEO-17/GEO-24 and the
+ * contracts in docs/architecture/quiz-opora.md §7, ADR-0001 #6, ADR-0002.
+ * Supabase, Resend and the Instagram existence check are mocked; the
+ * live-table round-trip is QA scope. No test contacts real Instagram.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { APIRoute } from 'astro';
 import { QUESTIONS } from '@utils/quiz/questions';
+import { INSTAGRAM_NOT_FOUND_ERROR } from '@utils/quiz/instagram';
 
 const {
   sendMock,
@@ -16,6 +18,7 @@ const {
   insertMock,
   fromMock,
   createClientMock,
+  checkNickMock,
   logErrorMock,
   logWarnMock,
   logInfoMock,
@@ -26,6 +29,7 @@ const {
   insertMock: vi.fn(),
   fromMock: vi.fn(),
   createClientMock: vi.fn(),
+  checkNickMock: vi.fn(),
   logErrorMock: vi.fn(),
   logWarnMock: vi.fn(),
   logInfoMock: vi.fn(),
@@ -46,6 +50,11 @@ vi.mock('@utils/logger', () => ({
   logError: logErrorMock,
   logWarn: logWarnMock,
   logInfo: logInfoMock,
+}));
+
+// The real module talks to Instagram — mocked everywhere (ADR-0002 #8)
+vi.mock('@utils/quiz/instagramCheck', () => ({
+  checkInstagramNick: checkNickMock,
 }));
 
 const TEST_ENV: Record<string, string> = {
@@ -119,6 +128,7 @@ beforeEach(() => {
   logInfoMock.mockReset();
 
   sendMock.mockReset().mockResolvedValue({ data: { id: 'email-1' }, error: null });
+  checkNickMock.mockReset().mockResolvedValue('exists');
   singleMock.mockReset().mockResolvedValue({ data: { id: 'row-1' }, error: null });
   selectMock.mockReset().mockReturnValue({ single: singleMock });
   insertMock.mockReset().mockReturnValue({ select: selectMock });
@@ -157,7 +167,7 @@ describe('POST /api/submit-quiz', () => {
       const row = insertedRow();
       expect(row).toMatchObject({
         quiz_slug: 'opora',
-        instagram_handle: '@test.handle',
+        instagram_handle: 'test.handle',
         score_internal: 14,
         score_pct: 39,
         band: '25',
@@ -208,19 +218,86 @@ describe('POST /api/submit-quiz', () => {
     });
   });
 
-  describe('instagram handle normalization (AC3)', () => {
-    it('normalizes a handle without @ to a leading @', async () => {
+  describe('instagram nick normalization (AC3, ADR-0002 #1)', () => {
+    it('stores the canonical bare lowercase nick when sent without @', async () => {
       const response = await callRoute({ instagram: 'viktoria.zh', answers: ALL_SEBE_ANSWERS });
 
       expect(response.status).toBe(200);
-      expect(insertedRow().instagram_handle).toBe('@viktoria.zh');
+      expect(insertedRow().instagram_handle).toBe('viktoria.zh');
     });
 
-    it('keeps a handle that already starts with @ unchanged', async () => {
-      const response = await callRoute({ instagram: '@viktoria.zh', answers: ALL_SEBE_ANSWERS });
+    it('strips the leading @ and lowercases before storing', async () => {
+      const response = await callRoute({ instagram: '@Viktoria.Zh', answers: ALL_SEBE_ANSWERS });
 
       expect(response.status).toBe(200);
-      expect(insertedRow().instagram_handle).toBe('@viktoria.zh');
+      expect(insertedRow().instagram_handle).toBe('viktoria.zh');
+    });
+
+    it('accepts a single-character nick (1-30 supersedes the old 2-30)', async () => {
+      const response = await callRoute({ instagram: 'a', answers: ALL_SEBE_ANSWERS });
+
+      expect(response.status).toBe(200);
+      expect(insertedRow().instagram_handle).toBe('a');
+    });
+  });
+
+  describe('instagram existence check (GEO-24, ADR-0002 #4/#5)', () => {
+    it('checks the canonical bare nick, not the raw input', async () => {
+      await callRoute({ instagram: '@Viktoria.Zh', answers: ALL_SEBE_ANSWERS });
+
+      expect(checkNickMock).toHaveBeenCalledTimes(1);
+      expect(checkNickMock).toHaveBeenCalledWith('viktoria.zh');
+    });
+
+    it('persists instagram_verified=exists with a check timestamp', async () => {
+      const response = await callRoute(VALID_PAYLOAD);
+
+      expect(response.status).toBe(200);
+      const row = insertedRow();
+      expect(row.instagram_verified).toBe('exists');
+      expect(typeof row.instagram_checked_at).toBe('string');
+      expect(new Date(row.instagram_checked_at as string).toString()).not.toBe('Invalid Date');
+    });
+
+    it('accepts an "unknown" outcome (fail-open) and persists it', async () => {
+      checkNickMock.mockResolvedValue('unknown');
+
+      const response = await callRoute(VALID_PAYLOAD);
+
+      expect(response.status).toBe(200);
+      const json = await response.json();
+      expect(json).toMatchObject({ success: true, resultType: 'sebe', scorePct: 100 });
+      expect(insertedRow().instagram_verified).toBe('unknown');
+    });
+
+    it('rejects a "missing" outcome with 400 instagram_not_found and persists nothing', async () => {
+      checkNickMock.mockResolvedValue('missing');
+
+      const response = await callRoute(VALID_PAYLOAD);
+
+      expect(response.status).toBe(400);
+      const json = await response.json();
+      expect(json.success).toBe(false);
+      expect(json.error).toBe('instagram_not_found');
+      expect(json.message).toBe(INSTAGRAM_NOT_FOUND_ERROR);
+      expect(insertMock).not.toHaveBeenCalled();
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it('treats an unexpectedly rejecting check as "unknown" (defensive fail-open)', async () => {
+      checkNickMock.mockRejectedValue(new Error('should never happen'));
+
+      const response = await callRoute(VALID_PAYLOAD);
+
+      expect(response.status).toBe(200);
+      expect(insertedRow().instagram_verified).toBe('unknown');
+    });
+
+    it('does not call the check when format validation already failed', async () => {
+      const response = await callRoute({ instagram: 'bad handle!', answers: ALL_SEBE_ANSWERS });
+
+      expect(response.status).toBe(400);
+      expect(checkNickMock).not.toHaveBeenCalled();
     });
   });
 
@@ -259,8 +336,12 @@ describe('POST /api/submit-quiz', () => {
         },
       },
       {
-        name: 'handle too short ("a")',
-        payload: { instagram: 'a', answers: ALL_SEBE_ANSWERS },
+        name: 'empty handle',
+        payload: { instagram: '', answers: ALL_SEBE_ANSWERS },
+      },
+      {
+        name: 'lone @',
+        payload: { instagram: '@', answers: ALL_SEBE_ANSWERS },
       },
       {
         name: 'handle too long (31 chars)',
@@ -269,6 +350,18 @@ describe('POST /api/submit-quiz', () => {
       {
         name: 'handle with invalid characters ("bad handle!")',
         payload: { instagram: 'bad handle!', answers: ALL_SEBE_ANSWERS },
+      },
+      {
+        name: 'leading dot (".nick")',
+        payload: { instagram: '.nick', answers: ALL_SEBE_ANSWERS },
+      },
+      {
+        name: 'trailing dot ("nick.")',
+        payload: { instagram: 'nick.', answers: ALL_SEBE_ANSWERS },
+      },
+      {
+        name: 'consecutive dots ("ni..ck")',
+        payload: { instagram: 'ni..ck', answers: ALL_SEBE_ANSWERS },
       },
       {
         name: 'missing instagram field',

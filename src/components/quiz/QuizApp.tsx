@@ -5,6 +5,10 @@ import Input from '@design-system/Input';
 import { QUESTIONS } from '@utils/quiz/questions';
 import { scoreQuiz } from '@utils/quiz/scoring';
 import type { QuizResult as QuizScore } from '@utils/quiz/scoring';
+import {
+  validateInstagramNick,
+  INSTAGRAM_NOT_FOUND_ERROR,
+} from '@utils/quiz/instagram';
 import QuizProgress from './QuizProgress';
 import QuizOptionCard from './QuizOptionCard';
 import QuizResult from './QuizResult';
@@ -18,18 +22,21 @@ interface QuizAppProps {
   bookingUrl?: string;
 }
 
-const HANDLE_PATTERN = /^@?[a-zA-Z0-9._]{2,30}$/;
 const GATE_ERROR = 'Впиши свій нік, щоб почати';
 const TOTAL = QUESTIONS.length;
 
 const FADE_CLASSES = 'motion-safe:animate-[quiz-fade_0.5s_ease_both]';
 const FOCUS_CLASSES = 'focus-visible:outline-gold-700';
 
+type SubmissionOutcome = 'ok' | 'instagram_not_found' | 'failed';
+
 async function postSubmission(payload: {
   instagram: string;
   answers: Array<{ question: number; option: number }>;
-}): Promise<boolean> {
-  // One automatic retry; a non-ok response counts as a failure (shaping §3/§7)
+}): Promise<SubmissionOutcome> {
+  // One automatic retry; a non-ok response counts as a failure (shaping §3/§7).
+  // A confirmed-missing Instagram account (ADR-0002 #5) is deterministic and
+  // never retried — the user must correct the nick instead.
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const response = await fetch('/api/submit-quiz', {
@@ -38,13 +45,19 @@ async function postSubmission(payload: {
         body: JSON.stringify(payload),
       });
       if (response.ok) {
-        return true;
+        return 'ok';
+      }
+      if (response.status === 400) {
+        const body = await response.json().catch(() => null);
+        if (body?.error === 'instagram_not_found') {
+          return 'instagram_not_found';
+        }
       }
     } catch {
       // Network failure — fall through to the retry / final failure
     }
   }
-  return false;
+  return 'failed';
 }
 
 /**
@@ -71,14 +84,25 @@ export default function QuizApp({ botUrl, bookingUrl }: QuizAppProps) {
 
   function handleStart(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    const trimmed = handle.trim();
-    if (!HANDLE_PATTERN.test(trimmed)) {
+    if (!handle.trim()) {
       setGateError(GATE_ERROR);
       inputRef.current?.focus();
       return;
     }
-    setInstagram(trimmed.startsWith('@') ? trimmed : `@${trimmed}`);
-    setScreen('question');
+    const result = validateInstagramNick(handle);
+    if (!result.valid) {
+      setGateError(result.error);
+      inputRef.current?.focus();
+      return;
+    }
+    setInstagram(result.nick);
+    // After an instagram_not_found rejection all 12 answers are preserved —
+    // a corrected nick resubmits directly instead of replaying the questions
+    if (answers.every((answer) => answer !== null)) {
+      void finishQuiz(answers, result.nick);
+    } else {
+      setScreen('question');
+    }
   }
 
   async function finishQuiz(finalAnswers: Array<number | null>, igHandle: string): Promise<void> {
@@ -93,7 +117,13 @@ export default function QuizApp({ botUrl, bookingUrl }: QuizAppProps) {
       instagram: igHandle,
       answers: complete.map((option, question) => ({ question, option })),
     });
-    if (!persisted) {
+    if (persisted === 'instagram_not_found') {
+      // Back to the editable nick field; answers stay in state for resubmit
+      setGateError(INSTAGRAM_NOT_FOUND_ERROR);
+      setScreen('intro');
+      return;
+    }
+    if (persisted === 'failed') {
       // Lead-loss event: submission failed after one retry; result still shown (D5)
       console.error('[quiz] lead lost: POST /api/submit-quiz failed after retry', {
         instagram: igHandle,

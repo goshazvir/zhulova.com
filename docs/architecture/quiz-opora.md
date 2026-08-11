@@ -85,6 +85,11 @@ create table public.quiz_submissions (
   score_pct smallint not null check (score_pct between 0 and 100),
   band text not null,              -- band key by min threshold: "70" | "45" | "25" | "0"
   result_type text not null check (result_type in ('mama','tato','rodyna','partner','kontrol','sebe')),
+  -- Best-effort Instagram existence check (GEO-24, ADR-0002):
+  -- 'unknown' = probe blocked/timed out — proves nothing about the account.
+  instagram_verified text not null default 'unknown'
+    check (instagram_verified in ('exists','missing','unknown')),
+  instagram_checked_at timestamptz,
   user_agent text,
   referrer text,
   created_at timestamptz not null default now()
@@ -95,8 +100,8 @@ alter table public.quiz_submissions enable row level security;
 create index quiz_submissions_created_at_idx on public.quiz_submissions (created_at desc);
 ```
 
-Run via Supabase SQL editor; keep this file as the documented migration
-(`docs/db/` if BA prefers a dedicated folder — this doc is authoritative until then).
+Run via Supabase SQL editor; the executable migrations live in
+`docs/db/quiz_submissions.sql` and `docs/db/bootstrap.sql` (kept in sync with this doc).
 
 **Founder visibility:** rows readable in Supabase Table Editor (sorted by `created_at`);
 CSV export available there natively. Additionally every submission triggers a **Resend email
@@ -110,14 +115,17 @@ explicitly out of scope for v1 (propose as follow-up if founder asks).
 
 ```ts
 {
-  instagram: string,                 // validated + normalized to @handle
+  instagram: string,                 // validated via shared instagram.ts → canonical bare lowercase nick (ADR-0002)
   answers: Array<{ question: number /* 0-11 */, option: number /* 0-3 */ }> // exactly 12, no duplicates
 }
 ```
 
 Server resolves `category`/`internal` from `questions.ts` (never trusts client scores),
-recomputes pct/band/type, inserts row, sends Resend notification. Responses:
-`200 {success, resultType, scorePct}` · `400` validation · `500` server error.
+runs the best-effort Instagram existence check (`instagramCheck.ts`, fail-open — see §5
+and ADR-0002), recomputes pct/band/type, inserts row, sends Resend notification. Responses:
+`200 {success, resultType, scorePct}` · `400` validation ·
+`400 {error: "instagram_not_found", message}` when the account is confirmed missing
+(the island returns to the nick field, answers preserved) · `500` server error.
 Persistence policy: DB insert is primary; Resend failure is non-fatal (logged). If DB fails
 but email succeeds → still `200` (lead captured via email, error logged). Both fail → `500`
 (island retries once). Structured logging via `@utils/logger` — follow `submit-lead.ts` patterns

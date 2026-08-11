@@ -5,6 +5,9 @@ import { createClient } from '@supabase/supabase-js';
 import { logError, logInfo, logWarn } from '@utils/logger';
 import { QUESTIONS } from '@utils/quiz/questions';
 import { scoreQuiz } from '@utils/quiz/scoring';
+import { validateInstagramNick, INSTAGRAM_NOT_FOUND_ERROR } from '@utils/quiz/instagram';
+import { checkInstagramNick } from '@utils/quiz/instagramCheck';
+import type { InstagramCheckOutcome } from '@utils/quiz/instagramCheck';
 
 // Render on-demand as a Vercel serverless function. In Astro 5 static mode
 // endpoints prerender by default, which a POST handler cannot do — without
@@ -30,13 +33,15 @@ const answerSchema = z.object({
 // Client sends only raw answer indices + handle. Any client-computed score
 // fields are stripped by Zod (unknown keys) — the server NEVER trusts them.
 const submitQuizSchema = z.object({
-  instagram: z
-    .string()
-    .regex(
-      /^@?[a-zA-Z0-9._]{2,30}$/,
-      'Instagram handle must be 2-30 characters: letters, digits, dots, underscores'
-    )
-    .transform((val) => (val.startsWith('@') ? val : `@${val}`)),
+  // Canonical bare lowercase nick via the shared validator (ADR-0002 #1/#2)
+  instagram: z.string().transform((val, ctx) => {
+    const result = validateInstagramNick(val);
+    if (!result.valid) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: result.error });
+      return z.NEVER;
+    }
+    return result.nick;
+  }),
   answers: z
     .array(answerSchema)
     .length(12, 'Exactly 12 answers are required')
@@ -123,6 +128,33 @@ export const POST: APIRoute = async ({ request }) => {
 
     const { instagram, answers } = parsed.data;
 
+    // Best-effort existence check (ADR-0002 #4/#5): fail-open — only a
+    // confirmed-missing account rejects; a blocked/timed-out probe (unknown)
+    // must never cost a lead. The module never throws, but a rejection here
+    // still maps to 'unknown' so the endpoint cannot 5xx on the check.
+    const instagramVerified: InstagramCheckOutcome = await checkInstagramNick(
+      instagram
+    ).catch(() => 'unknown' as const);
+    const instagramCheckedAt = new Date().toISOString();
+
+    if (instagramVerified === 'missing') {
+      logWarn('Instagram account confirmed missing — submission rejected', {
+        action: 'check_instagram',
+        duration: Date.now() - startTime,
+        errorCode: 'INSTAGRAM_NOT_FOUND',
+        httpStatus: 400,
+      }, endpoint);
+
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'instagram_not_found',
+          message: INSTAGRAM_NOT_FOUND_ERROR,
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Resolve category/internal from the canonical questions module and
     // recompute all scores server-side (ADR-0001 #3: client scores are
     // never trusted or read).
@@ -141,6 +173,8 @@ export const POST: APIRoute = async ({ request }) => {
       score_pct: result.pct,
       band: result.band,
       result_type: result.resultType,
+      instagram_verified: instagramVerified,
+      instagram_checked_at: instagramCheckedAt,
       user_agent: request.headers.get('user-agent') || null,
       referrer: request.headers.get('referer') || null,
     };
@@ -187,10 +221,10 @@ export const POST: APIRoute = async ({ request }) => {
       const { error: emailError } = await resend.emails.send({
         from: import.meta.env.RESEND_FROM_EMAIL,
         to: import.meta.env.NOTIFICATION_EMAIL,
-        subject: `New quiz submission: ${instagram}`,
+        subject: `New quiz submission: @${instagram}`,
         html: `
           <h2>New quiz submission (opora)</h2>
-          <p><strong>Instagram:</strong> ${instagram}</p>
+          <p><strong>Instagram:</strong> @${instagram} (${instagramVerified})</p>
           <p><strong>Score:</strong> ${result.pct}%</p>
           <p><strong>Result type:</strong> ${result.resultType}</p>
         `,

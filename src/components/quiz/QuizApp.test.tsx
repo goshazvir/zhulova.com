@@ -25,6 +25,10 @@ const START_LABEL = 'Почати тест';
 const BACK_LABEL = 'Назад';
 const COURSE_CTA_LABEL = 'Забираю курс собі';
 const BOOKING_CTA_LABEL = 'Записатись на діагностику вже зараз';
+const GIFT_HEADLINE = '🎁 Мій подарунок тобі';
+const GIFT_PARAGRAPH_1 =
+  'Я відкриваю тобі доступ до курсу «Опора на себе» — того самого, що коштує 9 €. Перші уроки лишаються з тобою, забирай як подарунок 💛';
+const GIFT_PARAGRAPH_2 = 'Я справді хочу, щоб якомога більше людей повернули собі себе.';
 
 function stubMatchMedia(matches: boolean): void {
   vi.stubGlobal(
@@ -380,6 +384,21 @@ describe('QuizApp', () => {
       expect(
         screen.getByRole('img', { name: `Рівень опори: ${EXPECTED_PCT_TEXT}` })
       ).toBeInTheDocument();
+    });
+
+    it('renders the gift block with the 🎁 headline and two-paragraph copy (GEO-28)', async () => {
+      const user = userEvent.setup();
+      render(<QuizApp />);
+      await startQuiz(user);
+      await answerQuestions(user, 0, 12);
+      await screen.findByText(EXPECTED_TYPE_TITLE);
+
+      expect(screen.getByText(GIFT_HEADLINE)).toBeInTheDocument();
+      const paragraphOne = screen.getByText(GIFT_PARAGRAPH_1);
+      const paragraphTwo = screen.getByText(GIFT_PARAGRAPH_2);
+      expect(paragraphOne.tagName).toBe('P');
+      expect(paragraphTwo.tagName).toBe('P');
+      expect(paragraphTwo).not.toBe(paragraphOne);
     });
 
     it('counts the percentage up to the final value when motion is allowed', async () => {

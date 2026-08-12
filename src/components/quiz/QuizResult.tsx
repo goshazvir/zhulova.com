@@ -14,8 +14,10 @@ const BAR_DELAY_MS = 120;
 
 const CTA_BODY =
   'Я зрозуміла, що багато хто втратив опору на себе, і це нормально. Ми живемо у світі, де коїться бозна що, і найголовніше тут не поїхати кукухою. Я зібрала основні речі, які повертають опору, і вмістила їх у курс «Опора на себе»: три дні по 20 хвилин, три маленькі кроки. Ми починаємо з тіла й доходимо до того, щоб ти нарешті відчула ґрунт під ногами. Я стала Майстром Рейкі й створила власну практику, яка заземляє та прибирає тривожність.';
-const GIFT_BODY =
-  'Я відкриваю тобі доступ на 48 годин до курсу «Опора на себе», який коштував 29 євро. Забирай його як подарунок, бо я справді хочу, щоб якомога більше людей повернули собі себе.';
+const GIFT_BODY_PARAGRAPHS = [
+  'Я відкриваю тобі доступ до курсу «Опора на себе» — того самого, що коштує 9 €. Перші уроки лишаються з тобою, забирай як подарунок 💛',
+  'Я справді хочу, щоб якомога більше людей повернули собі себе.',
+];
 const BONUS_BODY =
   'діагностична сесія зі мною особисто, щоб побачити, на що саме тобі варто спертись.';
 
@@ -135,8 +137,12 @@ export default function QuizResult({ result, botUrl, bookingUrl }: QuizResultPro
           {CTA_BODY}
         </p>
         <div className="mb-6 rounded-xl border border-gold-500/40 bg-white/10 p-5">
-          <p className="mb-2 font-serif text-[22px] italic text-gold-300">Мій подарунок тобі</p>
-          <p className="font-sans text-[15px] leading-relaxed text-white">{GIFT_BODY}</p>
+          <p className="mb-2 font-serif text-[22px] italic text-gold-300">🎁 Мій подарунок тобі</p>
+          {GIFT_BODY_PARAGRAPHS.map((paragraph) => (
+            <p key={paragraph} className="font-sans text-[15px] leading-relaxed text-white [&+p]:mt-3">
+              {paragraph}
+            </p>
+          ))}
         </div>
         <a href={botUrl} target="_blank" rel="noopener noreferrer" className={ctaClasses}>
           Забираю курс собі

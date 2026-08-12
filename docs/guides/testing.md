@@ -55,6 +55,7 @@ Supabase SQL editor: `select indexname from pg_indexes where tablename = 'quiz_s
 | `consultation-cta-buttons.spec.ts` | All CTA buttons open the consultation modal |
 | `quiz-opora.spec.ts` | Quiz funnel `/quiz/opora`: gate validation, 12-answer run with a single POST (payload asserted: bare-nick handle, 12 answers, no score fields), lead-loss path (API fails twice, result still renders), keyboard-only pass (Tab/Enter), axe scans of intro/question/result screens |
 | `opora.spec.ts` | Course landing `/courses/opora` sections and catalog links |
+| `promo-modal.spec.ts` | Gift promo modal: timed trigger (fake clock), CTA href = bot URL, axe scan of the open state, dismissal persists across reloads, never renders on excluded pages |
 | `opora-payment-pages.spec.ts` | Payment success/failure pages |
 | `courses-pages.spec.ts` | Courses catalog and detail pages |
 | `legal-pages.spec.ts` | Privacy policy and terms pages |
@@ -96,6 +97,18 @@ Supabase SQL editor: `select indexname from pg_indexes where tablename = 'quiz_s
   progress bars).
 - **Keep tests independent** — no shared state between tests; each test
   navigates and sets up its own routes.
+- **Promo modal in unrelated specs.** The gift promo modal fires after 12 s of
+  real time on non-excluded pages (`docs/architecture/promo-modal.md`), and the
+  Playwright `webServer` config always injects `PUBLIC_GIFT_BOT_URL`, so the
+  island is present in every E2E run. A test that idles on `/`, `/courses` or
+  `/contacts` past the trigger without the consultation modal open can get a
+  second `role=dialog` on the page. If a spec needs to idle that long, either
+  pre-seed `localStorage["zh_promo_gift_v1"]` with
+  `{"status":"converted","at":0,"shownCount":1}` via `addInitScript`, or scope
+  dialog locators by content. `promo-modal.spec.ts` itself fast-forwards the
+  trigger with `page.clock` advanced in 2 s slices (real pauses in between let
+  the `client:idle` island hydrate); a manually started dev server without
+  `PUBLIC_GIFT_BOT_URL` makes the island absent and the spec fail.
 - **Unit tests are written FIRST** (strict TDD). They must encode the
   acceptance criteria of the task, not restate the implementation.
 

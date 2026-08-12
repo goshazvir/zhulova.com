@@ -79,6 +79,50 @@ describe('Button Component', () => {
     });
   });
 
+  describe('Link rendering (href prop)', () => {
+    it('renders an anchor when href is provided', () => {
+      render(<Button href="https://t.me/example">Open bot</Button>);
+      const link = screen.getByRole('link', { name: /open bot/i });
+      expect(link).toHaveAttribute('href', 'https://t.me/example');
+      expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it('keeps variant and size classes on the anchor', () => {
+      render(
+        <Button href="/somewhere" variant="primary" size="lg">
+          Go
+        </Button>
+      );
+      const link = screen.getByRole('link');
+      expect(link).toHaveClass('bg-navy-900', 'px-8', 'py-4');
+    });
+
+    it('passes anchor attributes through (target, rel)', () => {
+      render(
+        <Button href="https://t.me/example" target="_blank" rel="noopener noreferrer">
+          External
+        </Button>
+      );
+      const link = screen.getByRole('link');
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    it('calls onClick when the link is clicked', async () => {
+      const user = userEvent.setup();
+      const handleClick = vi.fn((e: React.MouseEvent) => e.preventDefault());
+      render(
+        <Button href="https://t.me/example" onClick={handleClick}>
+          Track me
+        </Button>
+      );
+
+      await user.click(screen.getByRole('link'));
+
+      expect(handleClick).toHaveBeenCalledOnce();
+    });
+  });
+
   describe('Custom Props', () => {
     it('accepts custom className', () => {
       render(<Button className="custom-class">Button</Button>);

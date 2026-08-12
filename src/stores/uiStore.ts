@@ -16,6 +16,11 @@ interface UIState {
   openConsultationModal: () => void;
   closeConsultationModal: () => void;
 
+  // Promo modal state (gift promo, docs/architecture/promo-modal.md)
+  isPromoModalOpen: boolean;
+  openPromoModal: () => void;
+  closePromoModal: () => void;
+
   // Active navigation section
   activeSection: string;
   setActiveSection: (section: string) => void;
@@ -25,6 +30,7 @@ export const useUIStore = create<UIState>((set) => ({
   // Initial state
   isMobileMenuOpen: false,
   isConsultationModalOpen: false,
+  isPromoModalOpen: false,
   activeSection: 'home',
 
   // Mobile menu actions
@@ -39,6 +45,11 @@ export const useUIStore = create<UIState>((set) => ({
   openConsultationModal: () => set({ isConsultationModalOpen: true }),
 
   closeConsultationModal: () => set({ isConsultationModalOpen: false }),
+
+  // Promo modal actions
+  openPromoModal: () => set({ isPromoModalOpen: true }),
+
+  closePromoModal: () => set({ isPromoModalOpen: false }),
 
   // Active section actions
   setActiveSection: (section: string) => set({ activeSection: section }),

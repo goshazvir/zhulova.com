@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Modal from './index';
 
@@ -51,6 +51,25 @@ describe('Modal Component', () => {
     expect(handleClose).toHaveBeenCalledOnce();
   });
 
+  it('close button meets the 44x44px minimum tap target (design doc §4, binding)', () => {
+    render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test">
+        <div>Content</div>
+      </Modal>
+    );
+
+    // jsdom cannot compute layout, so assert the classes that guarantee
+    // a >=44px hit area (min-w-11/min-h-11 = 44px) with a centered icon.
+    const closeButton = screen.getByLabelText(/закрити|close/i);
+    expect(closeButton).toHaveClass(
+      'min-w-11',
+      'min-h-11',
+      'inline-flex',
+      'items-center',
+      'justify-center'
+    );
+  });
+
   it('calls onClose when backdrop is clicked', async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
@@ -69,6 +88,110 @@ describe('Modal Component', () => {
       await user.click(backdrop);
       expect(handleClose).toHaveBeenCalled();
     }
+  });
+
+  it('moves focus into the dialog on open', () => {
+    render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test">
+        <button type="button">Action</button>
+      </Modal>
+    );
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog.contains(document.activeElement)).toBe(true);
+  });
+
+  it('returns focus to the previously focused element on close', () => {
+    const trigger = document.createElement('button');
+    trigger.textContent = 'Open modal';
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const { rerender } = render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test">
+        <button type="button">Action</button>
+      </Modal>
+    );
+    expect(document.activeElement).not.toBe(trigger);
+
+    rerender(
+      <Modal isOpen={false} onClose={mockOnClose} title="Test">
+        <button type="button">Action</button>
+      </Modal>
+    );
+
+    expect(document.activeElement).toBe(trigger);
+    trigger.remove();
+  });
+
+  it('traps Tab within the dialog (last → first)', async () => {
+    const user = userEvent.setup();
+    render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test">
+        <button type="button">Last action</button>
+      </Modal>
+    );
+
+    const closeButton = screen.getByLabelText(/закрити/i);
+    const lastButton = screen.getByText('Last action');
+
+    lastButton.focus();
+    await user.tab();
+
+    expect(document.activeElement).toBe(closeButton);
+  });
+
+  it('traps Shift+Tab within the dialog (first → last)', async () => {
+    const user = userEvent.setup();
+    render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test">
+        <button type="button">Last action</button>
+      </Modal>
+    );
+
+    const closeButton = screen.getByLabelText(/закрити/i);
+    const lastButton = screen.getByText('Last action');
+
+    closeButton.focus();
+    await user.tab({ shift: true });
+
+    expect(document.activeElement).toBe(lastButton);
+  });
+
+  describe('entry animation (animateEntry)', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('starts hidden and becomes visible after an animation frame when animateEntry is set', () => {
+      vi.useFakeTimers();
+      render(
+        <Modal isOpen={true} onClose={mockOnClose} title="Test" animateEntry>
+          <div>Content</div>
+        </Modal>
+      );
+
+      const panel = screen.getByTestId('modal-panel');
+      expect(panel).toHaveClass('opacity-0', 'scale-95');
+
+      act(() => {
+        vi.advanceTimersByTime(50); // flush requestAnimationFrame
+      });
+
+      expect(panel).toHaveClass('opacity-100', 'scale-100');
+    });
+
+    it('renders fully visible immediately when animateEntry is not set', () => {
+      render(
+        <Modal isOpen={true} onClose={mockOnClose} title="Test">
+          <div>Content</div>
+        </Modal>
+      );
+
+      const panel = screen.getByTestId('modal-panel');
+      expect(panel).toHaveClass('opacity-100', 'scale-100');
+      expect(panel).not.toHaveClass('opacity-0');
+    });
   });
 
   it('has proper ARIA attributes', () => {

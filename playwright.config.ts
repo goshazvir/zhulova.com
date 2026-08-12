@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { GIFT_BOT_URL } from './tests/e2e/promo-gift-env';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -74,5 +75,11 @@ export default defineConfig({
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    env: {
+      ...process.env,
+      // The promo modal island is only rendered when this var is set;
+      // keep the value in sync with the assertion in promo-modal.spec.ts.
+      PUBLIC_GIFT_BOT_URL: GIFT_BOT_URL,
+    },
   },
 });

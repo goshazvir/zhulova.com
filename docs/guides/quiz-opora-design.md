@@ -257,9 +257,10 @@ Body copy from `ARCH[type]` in `questions.ts` (verbatim from reference).
 - **Body** `mb-6`: `font-sans text-[15px] leading-relaxed text-navy-100 max-w-[44ch]`
   (12.46:1 ✓) — long course paragraph verbatim from reference.
 - **Gift sub-panel** `mb-6`: `rounded-xl border border-gold-500/40 bg-white/10 p-5`:
-  - Heading `mb-2`: `font-serif italic text-[22px] text-gold-300`: `Мій подарунок тобі`
+  - Heading `mb-2`: `font-serif italic text-[22px] text-gold-300`: `🎁 Мій подарунок тобі`
     (11.92:1 on navy-900 ✓; the translucent overlay only lightens the bg, ratio stays above this).
-  - Body: `font-sans text-[15px] leading-relaxed text-white`.
+  - Body: two paragraphs (GEO-28 copy), each `font-sans text-[15px] leading-relaxed text-white`,
+    second paragraph spaced with `mt-3`.
 - **Primary CTA link**: `Забираю курс собі` — gold link-button per §3.2
   (navy-900 on gold-500 = 7.76:1 ✓), full-width on mobile: `w-full sm:w-auto`.
 - **Bonus box** `mt-5`: `rounded-lg border border-gold-500/45 bg-gold-500/15 p-4 font-sans text-sm font-semibold leading-relaxed text-gold-100`

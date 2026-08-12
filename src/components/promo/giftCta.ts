@@ -1,6 +1,7 @@
 import { track } from '@vercel/analytics';
 import { useUIStore } from '../../stores/uiStore';
 import { isPathExcluded } from './promoTrigger';
+import { trackEvent } from '../../lib/analytics';
 
 /**
  * Persistent gift CTA (header/footer/mobile menu) — GEO-31.
@@ -24,5 +25,6 @@ export function openGiftPromoModal(): void {
     closeConsultationModal();
   }
   track('promo_gift_manual_open');
+  trackEvent('promo_modal_shown', { trigger_type: 'manual' });
   openPromoModal();
 }

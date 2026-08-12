@@ -1,5 +1,6 @@
 ---
 import { socialLinks } from '@/data/homePageContent';
+import { shouldShowGiftCta } from '@/components/promo/giftCta';
 import MobileMenu from './MobileMenu';
 
 interface Props {
@@ -13,6 +14,12 @@ const currentPath = Astro.url.pathname;
 const isHomePage = currentPath === '/' || currentPath === '';
 const isCoursesPage = currentPath.startsWith('/courses');
 const isContactsPage = currentPath.startsWith('/contacts');
+
+// GEO-31: persistent gift CTA — same two gates as the modal island itself
+// (BaseLayout.astro): env var fail-safe + isPathExcluded(). Styling follows
+// GEO-32's Designer note (text-gold-800 instead of the note's gold-700, for
+// WCAG AA contrast — see the GEO-33 implementation comment for the numbers).
+const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_BOT_URL);
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-navy-100">
@@ -148,6 +155,24 @@ const isContactsPage = currentPath.startsWith('/contacts');
         </a>
       </div>
 
+      <!-- Gift CTA (GEO-31 persistent access) — styled per GEO-32's note -->
+      {showGiftCta && (
+        <button
+          id="header-gift-cta"
+          type="button"
+          class="hidden md:inline-flex items-center gap-1.5 ml-4 rounded-full bg-gold-100 px-3 py-1.5 text-sm font-medium text-gold-800 transition-colors hover:bg-gold-200 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2"
+        >
+          <svg class="h-4 w-4 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M20.625 11.505v8.25a1.5 1.5 0 0 1-1.5 1.5H4.875a1.5 1.5 0 0 1-1.5-1.5v-8.25m8.25-6.375A2.625 2.625 0 1 0 9 7.755h2.625m0-2.625v2.625m0-2.625a2.625 2.625 0 1 1 2.625 2.625h-2.625m0 0v13.5M3 11.505h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.622-.504-1.125-1.125-1.125H3c-.621 0-1.125.503-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+            />
+          </svg>
+          Забери подарунок
+        </button>
+      )}
+
       <!-- Mobile Menu Button -->
       <button
         id="mobile-menu-button"
@@ -166,11 +191,12 @@ const isContactsPage = currentPath.startsWith('/contacts');
 </header>
 
 <!-- Mobile Menu Component - only hydrates on mobile screens -->
-<MobileMenu client:media="(max-width: 768px)" variant={variant} />
+<MobileMenu client:media="(max-width: 768px)" variant={variant} showGiftCta={showGiftCta} />
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
   import { scrollToSection, initSectionTracking } from '@/utils/scrollAnimations';
+  import { openGiftPromoModal } from '@/components/promo/giftCta';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -179,6 +205,14 @@ const isContactsPage = currentPath.startsWith('/contacts');
     if (mobileMenuButton) {
       mobileMenuButton.addEventListener('click', () => {
         useUIStore.getState().toggleMobileMenu();
+      });
+    }
+
+    // Gift CTA (GEO-31 persistent access)
+    const headerGiftCtaButton = document.getElementById('header-gift-cta');
+    if (headerGiftCtaButton) {
+      headerGiftCtaButton.addEventListener('click', () => {
+        openGiftPromoModal();
       });
     }
 

@@ -88,3 +88,29 @@ test.describe('gift promo modal', () => {
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 });
+
+test.describe('persistent gift CTA (GEO-31)', () => {
+  test('header CTA opens the modal immediately, bypassing the frequency cap', async ({ page }) => {
+    // Desktop layout: the header CTA is hidden below the md breakpoint.
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+
+    // Seed a cap-ineligible state (just dismissed — well within the 7-day reshow window),
+    // so the passive auto-trigger would not be allowed to re-show this modal.
+    await page.evaluate(() => {
+      window.localStorage.setItem(
+        'zh_promo_gift_v1',
+        JSON.stringify({ status: 'dismissed', at: Date.now(), shownCount: 1 })
+      );
+    });
+    await page.reload();
+
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+
+    await page.getByRole('button', { name: /забери подарунок/i }).click();
+
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText(DIALOG_TITLE)).toBeVisible();
+  });
+});

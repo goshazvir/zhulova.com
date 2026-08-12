@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import PromoModal from '../components/promo/PromoModal/index';
+import { isPathExcluded } from '../components/promo/promoTrigger';
 
 interface Props {
   title: string;
@@ -20,6 +22,13 @@ const {
 } = Astro.props;
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://zhulova.com';
+
+// Gift promo modal: island is only rendered when the bot URL is configured
+// (fail-safe: never a broken CTA) and the page is not on the exclusion list.
+// Build-time exclusion ships zero promo JS on excluded pages; the island
+// re-checks the pathname at fire time for View Transitions navigation.
+const giftBotUrl = import.meta.env.PUBLIC_GIFT_BOT_URL;
+const showPromoModal = Boolean(giftBotUrl) && !isPathExcluded(Astro.url.pathname);
 const canonicalURL = canonical || new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageURL = new URL(image, siteUrl).toString();
 ---
@@ -105,6 +114,9 @@ const ogImageURL = new URL(image, siteUrl).toString();
   </head>
   <body class="antialiased bg-white text-navy-900">
     <slot />
+
+    <!-- Gift promo modal - timed auto-open, see docs/architecture/promo-modal.md -->
+    {showPromoModal && <PromoModal client:idle botUrl={giftBotUrl} />}
 
     <!-- Vercel Analytics - tracks page views and user behavior -->
     <Analytics client:load />

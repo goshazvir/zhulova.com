@@ -1,10 +1,32 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-interface ButtonProps extends ComponentProps<'button'> {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+type ButtonVariant = 'primary' | 'secondary' | 'outline';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface CommonProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   children: ReactNode;
 }
+
+/** Renders a <button> by default, or an <a> with identical styling when `href` is set. */
+type ButtonProps =
+  | (CommonProps & ComponentProps<'button'> & { href?: undefined })
+  | (CommonProps & ComponentProps<'a'> & { href: string });
+
+const baseClasses = 'font-medium rounded-lg transition-colors focus:ring-2 focus:ring-offset-2';
+
+const variantClasses: Record<ButtonVariant, string> = {
+  primary: 'bg-navy-900 text-white hover:bg-navy-800 focus:ring-gold-500',
+  secondary: 'bg-gold-500 text-navy-900 hover:bg-gold-400 focus:ring-gold-300',
+  outline: 'bg-white text-navy-900 border-2 border-navy-900 hover:bg-navy-50 focus:ring-gold-500',
+};
+
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-6 py-3 text-base',
+  lg: 'px-8 py-4 text-lg',
+};
 
 export default function Button({
   variant = 'primary',
@@ -13,25 +35,20 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseClasses = 'font-medium rounded-lg transition-colors focus:ring-2 focus:ring-offset-2';
+  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
-  const variantClasses = {
-    primary: 'bg-navy-900 text-white hover:bg-navy-800 focus:ring-gold-500',
-    secondary: 'bg-gold-500 text-navy-900 hover:bg-gold-400 focus:ring-gold-300',
-    outline: 'bg-white text-navy-900 border-2 border-navy-900 hover:bg-navy-50 focus:ring-gold-500',
-  };
+  if (props.href !== undefined) {
+    const anchorProps = props as ComponentProps<'a'>;
+    return (
+      <a className={`inline-block text-center ${classes}`} {...anchorProps}>
+        {children}
+      </a>
+    );
+  }
 
-  const sizeClasses = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
-  };
-
+  const buttonProps = props as ComponentProps<'button'>;
   return (
-    <button
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
-      {...props}
-    >
+    <button className={classes} {...buttonProps}>
       {children}
     </button>
   );

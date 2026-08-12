@@ -220,4 +220,34 @@ export const promoConfig = {
 
 ## 7. Final behavior (implementation)
 
-*To be appended by Frontend Dev in GEO-27.*
+Implemented in GEO-27. File map:
+
+| Piece | Location |
+|---|---|
+| Config (values from §6, unchanged) | `src/config/promo.ts` |
+| Pure trigger / capping / storage logic | `src/components/promo/promoTrigger.ts` (+ unit tests) |
+| React island | `src/components/promo/PromoModal/index.tsx` (+ unit tests) |
+| Mount point | `src/layouts/BaseLayout.astro` — `client:idle`, after `<slot />` |
+| E2E | `tests/e2e/promo-modal.spec.ts` (chromium) |
+
+### How it behaves
+
+- **Rendering gate (build time):** the island is emitted only when `PUBLIC_GIFT_BOT_URL` is set AND `Astro.url.pathname` is not excluded (`isPathExcluded`, shared with the runtime check). Excluded pages ship zero promo JS.
+- **Trigger:** the island polls once per second. It fires when `elapsed ≥ 12s`, or `elapsed ≥ 6s` with max scroll depth ≥ 50% (§1). Scroll depth is tracked with a single passive listener; nothing is mounted before firing (zero CLS).
+- **Fire-time guards (§1, §3, CTO §5):** the tick is skipped — and retried next second — while the consultation modal or mobile menu is open, or while focus is in an input/textarea/select/contenteditable. The pathname is re-checked at fire time to cover View Transitions navigation onto an excluded page.
+- **Frequency capping (§2):** stored under `zh_promo_gift_v1` as `{status, at, shownCount}`. `converted` and `shownCount ≥ 3` never re-show; `dismissed` re-shows after 7 days, `shown` (no interaction) after 3 days. localStorage failures (Safari private mode, quota) fall back to an in-memory record — degrades to once per pageview.
+- **Dismiss/convert:** all four dismiss affordances (X, ESC, backdrop, «Дякую, не зараз») write `dismissed` + `track('promo_gift_dismissed')`. The CTA is a real `<a>` to the bot (new tab, `noopener noreferrer`), writes `converted` + `track('promo_gift_cta_click')`, then closes. Showing writes `shown` + `track('promo_gift_shown')`.
+
+### Design-system extensions (no forks)
+
+- **`Modal`**: added focus management — initial focus into the dialog, Tab/Shift-Tab trap, focus return to the previously focused element on close (§ a11y checklist; both modals benefit). Added opt-in `animateEntry` prop: backdrop fade + panel fade/scale 0.96→1, 300 ms ease-out. Callers gate it — the promo island passes `animateEntry={!prefersReducedMotion()}` (reuses `src/components/quiz/motion.ts`).
+- **`Button`**: added `href` support — renders an `<a>` with identical styling (discriminated union on `href`), per §5 "extend Button, don't nest interactives".
+
+### Deviations from §5
+
+- Text dismiss uses `text-navy-500 hover:text-navy-700` (spec suggested `navy-400/600`) — the darker shades per the contrast note in the a11y checklist.
+
+### Coverage
+
+- Unit (vitest): trigger rule boundaries, path exclusion (segment-boundary prefix match), capping windows, record marking, storage fallback, island fire/defer/guard behavior, Modal focus trap + return, Button `href` rendering.
+- E2E (chromium, Playwright clock API): appears after the trigger, CTA href/target/rel, axe scan of the open state (0 critical), text dismiss, no reappearance after reload, never renders on an excluded page.

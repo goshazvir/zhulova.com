@@ -13,6 +13,7 @@ import {
   markDismissed,
   markShown,
   shouldFire,
+  type PromoStorage,
 } from '../promoTrigger';
 
 /**
@@ -50,10 +51,12 @@ export default function PromoModal({ botUrl }: PromoModalProps) {
   const isOpen = useUIStore((state) => state.isPromoModalOpen);
   const openPromoModal = useUIStore((state) => state.openPromoModal);
   const closePromoModal = useUIStore((state) => state.closePromoModal);
-  const storageRef = useRef(createPromoStorage());
+  // Lazy init: keep a single storage instance without re-running the factory on every render
+  const storageRef = useRef<PromoStorage | null>(null);
+  if (storageRef.current === null) storageRef.current = createPromoStorage();
+  const storage = storageRef.current;
 
   useEffect(() => {
-    const storage = storageRef.current;
     if (!isEligible(storage.read(), Date.now())) return;
 
     const startedAt = Date.now();
@@ -90,17 +93,15 @@ export default function PromoModal({ botUrl }: PromoModalProps) {
     }, POLL_INTERVAL_MS);
 
     return stop;
-  }, [openPromoModal]);
+  }, [openPromoModal, storage]);
 
   const handleDismiss = () => {
-    const storage = storageRef.current;
     storage.write(markDismissed(storage.read(), Date.now()));
     track('promo_gift_dismissed');
     closePromoModal();
   };
 
   const handleCtaClick = () => {
-    const storage = storageRef.current;
     storage.write(markConverted(storage.read(), Date.now()));
     track('promo_gift_cta_click');
     closePromoModal();

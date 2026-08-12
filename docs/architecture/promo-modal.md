@@ -241,6 +241,7 @@ Implemented in GEO-27. File map:
 ### Design-system extensions (no forks)
 
 - **`Modal`**: added focus management — initial focus into the dialog, Tab/Shift-Tab trap, focus return to the previously focused element on close (§ a11y checklist; both modals benefit). Added opt-in `animateEntry` prop: backdrop fade + panel fade/scale 0.96→1, 300 ms ease-out. Callers gate it — the promo island passes `animateEntry={!prefersReducedMotion()}` (reuses `src/components/quiz/motion.ts`).
+- **`Modal` close X tap target (§4, binding):** verified against the 44 px rule and extended — the X button was 36×36 px on mobile (`p-2` + 20 px icon); now `min-w-11 min-h-11 inline-flex items-center justify-center` guarantees ≥44×44 px at all breakpoints with the icon centered. Negative margins (`-my-1 -mr-2`) absorb the extra 8 px so header height and the icon's visual position are unchanged. The text dismiss («Дякую, не зараз») already met 44 px via `py-3`. Both modals benefit; covered by a Modal unit test asserting the sizing classes.
 - **`Button`**: added `href` support — renders an `<a>` with identical styling (discriminated union on `href`), per §5 "extend Button, don't nest interactives".
 
 ### Deviations from §5
@@ -249,5 +250,5 @@ Implemented in GEO-27. File map:
 
 ### Coverage
 
-- Unit (vitest): trigger rule boundaries, path exclusion (segment-boundary prefix match), capping windows, record marking, storage fallback, island fire/defer/guard behavior, Modal focus trap + return, Button `href` rendering.
+- Unit (vitest): trigger rule boundaries, path exclusion (segment-boundary prefix match), capping windows, record marking, storage fallback, island fire/defer/guard behavior, Modal focus trap + return, Modal close-button 44 px tap-target classes, Button `href` rendering.
 - E2E (chromium, Playwright clock API): appears after the trigger, CTA href/target/rel, axe scan of the open state (0 critical), text dismiss, no reappearance after reload, never renders on an excluded page.

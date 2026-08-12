@@ -161,8 +161,18 @@ describe('createPromoStorage — localStorage wrapper with in-memory fallback', 
   });
 
   it('reads null on well-formed JSON that is not a promo record', () => {
+    localStorage.clear();
     localStorage.setItem(promoConfig.storageKey, JSON.stringify({ status: 'weird' }));
     expect(createPromoStorage().read()).toBeNull();
+  });
+
+  it('falls back to the in-memory copy when the stored record is invalid', () => {
+    localStorage.clear();
+    const storage = createPromoStorage();
+    storage.write(sample);
+    // Another tab / extension corrupts the stored value after our write
+    localStorage.setItem(promoConfig.storageKey, JSON.stringify({ status: 'weird' }));
+    expect(storage.read()).toEqual(sample);
   });
 
   it('falls back to in-memory storage when localStorage is unavailable', () => {

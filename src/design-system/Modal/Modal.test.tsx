@@ -51,6 +51,25 @@ describe('Modal Component', () => {
     expect(handleClose).toHaveBeenCalledOnce();
   });
 
+  it('close button meets the 44x44px minimum tap target (design doc §4, binding)', () => {
+    render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test">
+        <div>Content</div>
+      </Modal>
+    );
+
+    // jsdom cannot compute layout, so assert the classes that guarantee
+    // a >=44px hit area (min-w-11/min-h-11 = 44px) with a centered icon.
+    const closeButton = screen.getByLabelText(/закрити|close/i);
+    expect(closeButton).toHaveClass(
+      'min-w-11',
+      'min-h-11',
+      'inline-flex',
+      'items-center',
+      'justify-center'
+    );
+  });
+
   it('calls onClose when backdrop is clicked', async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
@@ -146,13 +165,13 @@ describe('Modal Component', () => {
 
     it('starts hidden and becomes visible after an animation frame when animateEntry is set', () => {
       vi.useFakeTimers();
-      const { container } = render(
+      render(
         <Modal isOpen={true} onClose={mockOnClose} title="Test" animateEntry>
           <div>Content</div>
         </Modal>
       );
 
-      const panel = container.querySelector('.max-w-lg');
+      const panel = screen.getByTestId('modal-panel');
       expect(panel).toHaveClass('opacity-0', 'scale-95');
 
       act(() => {
@@ -163,13 +182,13 @@ describe('Modal Component', () => {
     });
 
     it('renders fully visible immediately when animateEntry is not set', () => {
-      const { container } = render(
+      render(
         <Modal isOpen={true} onClose={mockOnClose} title="Test">
           <div>Content</div>
         </Modal>
       );
 
-      const panel = container.querySelector('.max-w-lg');
+      const panel = screen.getByTestId('modal-panel');
       expect(panel).toHaveClass('opacity-100', 'scale-100');
       expect(panel).not.toHaveClass('opacity-0');
     });

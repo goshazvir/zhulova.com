@@ -135,7 +135,7 @@ export default function Modal({ isOpen, onClose, title, children, animateEntry =
       {/* Modal Container */}
       <div className="flex min-h-full items-center justify-center p-3 sm:p-4 py-8 sm:py-12">
         {/* Modal Panel - Soft Luxury Glass */}
-        <div className={`relative bg-gradient-to-br from-white to-sage-50 border border-gold-200 shadow-2xl shadow-gold-500/15 rounded-xl sm:rounded-2xl max-w-lg w-full transform transition-all duration-300 ease-out ${entryClasses}`}>
+        <div data-testid="modal-panel" className={`relative bg-gradient-to-br from-white to-sage-50 border border-gold-200 shadow-2xl shadow-gold-500/15 rounded-xl sm:rounded-2xl max-w-lg w-full transform transition-all duration-300 ease-out ${entryClasses}`}>
           {/* Header - Gold Top Line + Gradient */}
           <div className="relative flex items-center justify-between gap-3 p-4 sm:p-6 border-b border-gold-200/30 border-t-2 sm:border-t-4 border-t-gold-400 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-r from-transparent via-gold-50/30 to-transparent">
             <h2 id="modal-title" className="text-lg sm:text-2xl font-serif font-bold text-navy-900 leading-tight">
@@ -144,7 +144,7 @@ export default function Modal({ isOpen, onClose, title, children, animateEntry =
             <button
               type="button"
               onClick={onClose}
-              className="flex-shrink-0 text-navy-400 hover:text-gold-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-full p-2 hover:bg-gold-50/50 -mr-1"
+              className="flex-shrink-0 min-w-11 min-h-11 inline-flex items-center justify-center text-navy-400 hover:text-gold-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-full hover:bg-gold-50/50 -my-1 -mr-2"
               aria-label="Закрити модальне вікно"
             >
               <svg

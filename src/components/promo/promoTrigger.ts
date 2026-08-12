@@ -92,7 +92,8 @@ export function createPromoStorage(
         const raw = getStorage().getItem(key);
         if (raw === null) return memory;
         const parsed: unknown = JSON.parse(raw);
-        return isPromoRecord(parsed) ? parsed : null;
+        // Invalid stored value degrades to the in-memory copy, same as the catch path
+        return isPromoRecord(parsed) ? parsed : memory;
       } catch {
         return memory;
       }

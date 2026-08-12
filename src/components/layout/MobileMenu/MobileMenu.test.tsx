@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MobileMenu from './index';
+import { openGiftPromoModal } from '@/components/promo/giftCta';
 
 // Mock scrollToSection
 vi.mock('@/utils/scrollAnimations', () => ({
@@ -31,6 +32,11 @@ let mockStoreState = createMockStore();
 // Mock useUIStore
 vi.mock('@/stores/uiStore', () => ({
   useUIStore: (selector: (state: typeof mockStoreState) => unknown) => selector(mockStoreState),
+}));
+
+// Mock the gift CTA manual-open handler (GEO-31)
+vi.mock('@/components/promo/giftCta', () => ({
+  openGiftPromoModal: vi.fn(),
 }));
 
 describe('MobileMenu Component', () => {
@@ -285,6 +291,56 @@ describe('MobileMenu Component', () => {
 
       const closeButton = screen.getByRole('button', { name: /закрити меню/i });
       expect(closeButton).toBeInTheDocument();
+    });
+  });
+
+  describe('Gift CTA (GEO-31 persistent access)', () => {
+    it('renders the gift CTA when showGiftCta is true', () => {
+      mockStoreState = createMockStore({ isMobileMenuOpen: true });
+      render(<MobileMenu showGiftCta />);
+
+      expect(screen.getByRole('button', { name: /безкоштовний урок/i })).toBeInTheDocument();
+    });
+
+    it('does not render the gift CTA when showGiftCta is false', () => {
+      mockStoreState = createMockStore({ isMobileMenuOpen: true });
+      render(<MobileMenu showGiftCta={false} />);
+
+      expect(screen.queryByRole('button', { name: /безкоштовний урок/i })).not.toBeInTheDocument();
+    });
+
+    it('does not render the gift CTA by default (prop omitted)', () => {
+      mockStoreState = createMockStore({ isMobileMenuOpen: true });
+      render(<MobileMenu />);
+
+      expect(screen.queryByRole('button', { name: /безкоштовний урок/i })).not.toBeInTheDocument();
+    });
+
+    it('renders the gift CTA regardless of nav variant', () => {
+      mockStoreState = createMockStore({ isMobileMenuOpen: true });
+      render(<MobileMenu variant="legal" showGiftCta />);
+
+      expect(screen.getByRole('button', { name: /безкоштовний урок/i })).toBeInTheDocument();
+    });
+
+    it('clicking the gift CTA opens the promo modal and closes the mobile menu', async () => {
+      const closeMobileMenu = vi.fn();
+      mockStoreState = createMockStore({ isMobileMenuOpen: true, closeMobileMenu });
+      render(<MobileMenu showGiftCta />);
+
+      await userEvent.click(screen.getByRole('button', { name: /безкоштовний урок/i }));
+
+      expect(openGiftPromoModal).toHaveBeenCalledTimes(1);
+      expect(closeMobileMenu).toHaveBeenCalledTimes(1);
+    });
+
+    it('gift CTA is focusable and keyboard-activatable (native button semantics)', () => {
+      mockStoreState = createMockStore({ isMobileMenuOpen: true });
+      render(<MobileMenu showGiftCta />);
+
+      const cta = screen.getByRole('button', { name: /безкоштовний урок/i });
+      expect(cta.tagName).toBe('BUTTON');
+      expect(cta).toHaveAttribute('type', 'button');
     });
   });
 });

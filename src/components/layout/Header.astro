@@ -1,5 +1,6 @@
 ---
 import { socialLinks } from '@/data/homePageContent';
+import { shouldShowGiftCta } from '@/components/promo/giftCta';
 import MobileMenu from './MobileMenu';
 
 interface Props {
@@ -13,6 +14,11 @@ const currentPath = Astro.url.pathname;
 const isHomePage = currentPath === '/' || currentPath === '';
 const isCoursesPage = currentPath.startsWith('/courses');
 const isContactsPage = currentPath.startsWith('/contacts');
+
+// GEO-31: persistent gift CTA — same two gates as the modal island itself
+// (BaseLayout.astro): env var fail-safe + isPathExcluded(). Placeholder
+// placement/style pending GEO-32 (Designer).
+const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_BOT_URL);
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-navy-100">
@@ -105,6 +111,16 @@ const isContactsPage = currentPath.startsWith('/contacts');
 
       <!-- Social Media Icons (Desktop) -->
       <div class="hidden md:flex items-center space-x-4">
+        <!-- Gift CTA (GEO-31 persistent access) — placeholder styling pending GEO-32 -->
+        {showGiftCta && (
+          <button
+            id="header-gift-cta"
+            type="button"
+            class="text-navy-700 hover:text-gold-600 font-medium transition-colors whitespace-nowrap"
+          >
+            🎁 Безкоштовний урок
+          </button>
+        )}
         <a
           href={socialLinks.youtube}
           target="_blank"
@@ -166,11 +182,12 @@ const isContactsPage = currentPath.startsWith('/contacts');
 </header>
 
 <!-- Mobile Menu Component - only hydrates on mobile screens -->
-<MobileMenu client:media="(max-width: 768px)" variant={variant} />
+<MobileMenu client:media="(max-width: 768px)" variant={variant} showGiftCta={showGiftCta} />
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
   import { scrollToSection, initSectionTracking } from '@/utils/scrollAnimations';
+  import { openGiftPromoModal } from '@/components/promo/giftCta';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -179,6 +196,14 @@ const isContactsPage = currentPath.startsWith('/contacts');
     if (mobileMenuButton) {
       mobileMenuButton.addEventListener('click', () => {
         useUIStore.getState().toggleMobileMenu();
+      });
+    }
+
+    // Gift CTA (GEO-31 persistent access)
+    const headerGiftCtaButton = document.getElementById('header-gift-cta');
+    if (headerGiftCtaButton) {
+      headerGiftCtaButton.addEventListener('click', () => {
+        openGiftPromoModal();
       });
     }
 

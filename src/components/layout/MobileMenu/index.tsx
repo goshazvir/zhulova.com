@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { scrollToSection } from '@/utils/scrollAnimations';
+import { openGiftPromoModal } from '@/components/promo/giftCta';
 
 interface Props {
   variant?: 'main' | 'legal';
+  /** GEO-31: persistent gift CTA — gated server-side by Header.astro (env var + isPathExcluded). */
+  showGiftCta?: boolean;
 }
 
-export default function MobileMenu({ variant = 'main' }: Props) {
+export default function MobileMenu({ variant = 'main', showGiftCta = false }: Props) {
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const activeSection = useUIStore((state) => state.activeSection);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
@@ -56,6 +59,11 @@ export default function MobileMenu({ variant = 'main' }: Props) {
   const getPageNavItemClasses = (isActive: boolean) => {
     const baseClasses = "block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors";
     return `${baseClasses} ${isActive ? 'bg-gold-50 text-gold-600 font-semibold' : 'text-navy-700 hover:bg-navy-50 hover:text-gold-600'}`;
+  };
+
+  const handleGiftCtaClick = () => {
+    openGiftPromoModal();
+    closeMobileMenu();
   };
 
   if (!isMobileMenuOpen) return null;
@@ -194,6 +202,19 @@ export default function MobileMenu({ variant = 'main' }: Props) {
               </ul>
             )}
           </nav>
+
+          {/* Gift CTA (GEO-31 persistent access) — placeholder styling pending GEO-32 */}
+          {showGiftCta && (
+            <div className="px-4 pb-4">
+              <button
+                type="button"
+                onClick={handleGiftCtaClick}
+                className="block w-full text-center px-4 py-3 rounded-lg font-medium bg-gold-50 text-gold-600 hover:bg-gold-100 transition-colors"
+              >
+                🎁 Безкоштовний урок
+              </button>
+            </div>
+          )}
 
           {/* Social Media Links */}
           <div className="p-4 border-t border-navy-100">

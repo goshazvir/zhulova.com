@@ -1,5 +1,6 @@
 ---
 import { footerContent, socialLinks } from '@/data/homePageContent';
+import { shouldShowGiftCta } from '@/components/promo/giftCta';
 import { Image } from 'astro:assets';
 
 interface Props {
@@ -11,6 +12,11 @@ const { variant = 'main' } = Astro.props;
 // Check if on home page for conditional logo link
 const currentPath = Astro.url.pathname;
 const isHomePage = currentPath === '/' || currentPath === '';
+
+// GEO-31: persistent gift CTA — same two gates as the modal island itself
+// (BaseLayout.astro): env var fail-safe + isPathExcluded(). Placeholder
+// placement/style pending GEO-32 (Designer).
+const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_BOT_URL);
 ---
 
 <footer class="bg-navy-900 text-white">
@@ -49,6 +55,16 @@ const isHomePage = currentPath === '/' || currentPath === '';
           >
             {footerContent.ctaText}
           </button>
+          <!-- Gift CTA (GEO-31 persistent access) — secondary, placeholder styling pending GEO-32 -->
+          {showGiftCta && (
+            <button
+              id="footer-gift-cta"
+              type="button"
+              class="block text-sm text-navy-600 hover:text-gold-600 underline underline-offset-4 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded"
+            >
+              🎁 Або забери перший урок безкоштовно
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -218,6 +234,7 @@ const isHomePage = currentPath === '/' || currentPath === '';
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
+  import { openGiftPromoModal } from '@/components/promo/giftCta';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -225,6 +242,14 @@ const isHomePage = currentPath === '/' || currentPath === '';
     if (footerCTAButton) {
       footerCTAButton.addEventListener('click', () => {
         useUIStore.getState().openConsultationModal();
+      });
+    }
+
+    // Gift CTA (GEO-31 persistent access)
+    const footerGiftCtaButton = document.getElementById('footer-gift-cta');
+    if (footerGiftCtaButton) {
+      footerGiftCtaButton.addEventListener('click', () => {
+        openGiftPromoModal();
       });
     }
   });

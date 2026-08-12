@@ -112,4 +112,26 @@ Acceptance criteria (Given/When/Then):
 
 ## 7. Implementation (appended after GEO-31 ships)
 
-*Pending.*
+**Status:** Wiring/logic shipped (GEO-33). Visual styling is a placeholder — final markup/classes still pending GEO-32's style note (in progress at time of writing); this section will be updated with any follow-up styling diff.
+
+### What shipped
+
+- `src/components/promo/giftCta.ts` (new) — the single source of truth for both gating and the manual-open handler, unit-tested in `giftCta.test.ts`:
+  - `shouldShowGiftCta(pathname, giftBotUrl)` — same two gates as `BaseLayout`'s own `showPromoModal`: env-var fail-safe + `isPathExcluded()`. Computed server-side in `Header.astro` and `Footer.astro` (per page load), not re-checked client-side — consistent with the rest of the header/footer nav (no View Transitions on this site).
+  - `openGiftPromoModal()` — closes the consultation modal first if open (both are single-focus overlays, resolves the open question from §4), tracks `promo_gift_manual_open` (distinct from the auto-trigger's `promo_gift_shown`), then calls `useUIStore.getState().openPromoModal()`. Deliberately does not read or write the `zh_promo_gift_v1` cap record — the manual path is a full, unconditional bypass, and leaving the auto-trigger's own stored state untouched keeps the two paths independent (confirmed by the new Playwright case below).
+- **Header** (`Header.astro`): a `#header-gift-cta` button next to the desktop social icons (`hidden md:flex`), wired via the existing inline `<script>` (same pattern as `#mobile-menu-button`). `showGiftCta` is also passed down to `MobileMenu` as a prop.
+- **Mobile menu** (`MobileMenu/index.tsx`, React): a `showGiftCta` prop renders a full-width CTA button above the social links; click calls `openGiftPromoModal()` then `closeMobileMenu()`. Decoupled from the `variant` prop — legal pages are already in `promoConfig.excludedPaths`, so `showGiftCta` is `false` there regardless.
+- **Footer** (`Footer.astro`): a `#footer-gift-cta` text link directly under the existing `#footer-cta-button`, wired the same way, styled as an underlined text link so it reads as clearly secondary to the consultation CTA block.
+- Idempotency (AC: clicking while already open) is free — `openPromoModal()` is `set({ isPromoModalOpen: true })`, so a repeat call is a no-op state update, not a duplicate mount or error.
+- Keyboard access is free — both CTAs are native `<button type="button">` elements (no `href="#"` link hack), so Enter/Space activation and focus are handled by the browser; the existing `Modal` focus-trap/return (GEO-27) applies unchanged since it's the same modal instance.
+
+### Tests
+
+- `src/components/promo/giftCta.test.ts` (19 cases) — `shouldShowGiftCta` env-var + exclusion gating, `openGiftPromoModal` tracking/consultation-modal-close/idempotency.
+- `MobileMenu.test.tsx` — 6 new cases for the gift CTA (render gating, click behavior, keyboard semantics).
+- `tests/e2e/promo-modal.spec.ts` — new `persistent gift CTA (GEO-31)` describe block: seeds a `dismissed` (cap-ineligible) record in `zh_promo_gift_v1`, clicks the header CTA, confirms the modal opens immediately — proving the manual bypass independent of the auto-trigger's own frequency cap.
+- `Header.astro` / `Footer.astro` themselves are not unit-tested directly (matches the existing convention — no `.astro` container testing is set up in this repo); their thin `<script>` wiring is covered by the e2e case above, same as the pre-existing `#footer-cta-button` wiring.
+
+### Known follow-up
+
+- Final placement/classes/copy for both CTAs await GEO-32's style note; current copy ("🎁 Безкоштовний урок" / "🎁 Або забери перший урок безкоштовно") is a placeholder, not yet confirmed by Designer.

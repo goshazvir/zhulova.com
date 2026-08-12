@@ -39,51 +39,73 @@ import { caseStudies } from '@/data/homePageContent';
       <!-- Scrollable Cards Container -->
       <div
         id="case-studies-carousel"
-        class="flex overflow-x-auto gap-4 sm:gap-6 snap-x snap-mandatory scroll-smooth pb-4 -mx-2 px-2 sm:-mx-4 sm:px-4 lg:mx-0 lg:px-0"
+        role="group"
+        aria-roledescription="карусель"
+        aria-label="Історії трансформації клієнтів"
+        tabindex="0"
+        class="flex overflow-x-auto gap-4 sm:gap-6 snap-x snap-mandatory scroll-smooth pb-4 -mx-2 px-2 sm:-mx-4 sm:px-4 lg:mx-0 lg:px-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-2xl"
         style="scrollbar-width: thin; scrollbar-color: #D4AF37 #F5F5F5;"
       >
         {caseStudies.map((study, index) => (
           <div
-            class="flex-shrink-0 w-[calc(100%-1rem)] sm:w-[70%] lg:w-[calc(40%-12px)] snap-start bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-gold-200 transition-all"
+            class="group flex-shrink-0 w-[calc(100%-1rem)] sm:w-[70%] lg:w-[calc(40%-12px)] snap-start bg-white border border-gold-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-gold-300 transition-all duration-300"
             data-animate
             style={`animation-delay: ${index * 100}ms`}
           >
-            <div class="p-5 sm:p-6">
-              {/* Header */}
+            <div class="p-5 sm:p-7">
+              {/* Header — client identity + premium result metric */}
               <div class="mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-gray-100">
-                <h3 class="text-xl font-serif font-bold text-navy-900 mb-1">
-                  {study.clientName}
-                </h3>
-                <p class="text-gold-800 font-medium text-sm mb-3">
-                  {study.profession}
-                </p>
-                {/* Key Result - Hero */}
-                <div class="flex items-center gap-2 bg-gold-50 rounded-lg px-3 py-2 border border-gold-200">
-                  <svg class="w-5 h-5 text-gold-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                  </svg>
-                  <span class="font-bold text-gold-800 text-sm">+{study.incomeGrowth} дохід за {study.timeInMentorship}</span>
+                <div class="flex items-start justify-between gap-4">
+                  <div class="min-w-0">
+                    <h3 class="text-xl font-serif font-bold text-navy-900 mb-1 truncate">
+                      {study.clientName}
+                    </h3>
+                    <p class="text-navy-600 font-medium text-sm">
+                      {study.profession}
+                    </p>
+                  </div>
+                  {/* Premium metric — serif multiplier, hairline-framed */}
+                  <div class="flex flex-col items-end flex-shrink-0 pl-4 border-l border-gold-100">
+                    <span class="font-serif font-bold leading-none text-navy-900 text-3xl sm:text-4xl">
+                      <span class="text-gold-600 align-super text-xl sm:text-2xl">×</span>{study.incomeGrowth.replace(/x/i, '')}
+                    </span>
+                    <span class="mt-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-gold-800">
+                      зростання доходу
+                    </span>
+                  </div>
                 </div>
+                <p class="mt-4 text-xs font-medium uppercase tracking-wider text-navy-600">
+                  {study.timeInMentorship} · {study.sessionsCount} сесій
+                </p>
               </div>
 
-              {/* Results - Hero Section */}
+              {/* Results — elevated hierarchy */}
               <div class="mb-5 sm:mb-6">
-                <h4 class="text-lg font-serif font-bold text-navy-900 mb-3 sm:mb-4 flex items-center gap-2">
-                  <span class="text-xl">✨</span>
+                <h4 class="text-lg font-serif font-bold text-navy-900 mb-3 sm:mb-4 flex items-center gap-2.5">
+                  {/* Refined gold icon chip replaces the ✨ emoji */}
+                  <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 shadow-sm ring-1 ring-gold-200 flex-shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path d="M10 1.5l2.02 4.79 5.2.44-3.95 3.42 1.19 5.08L10 12.98 5.54 15.73l1.19-5.08L2.78 7.23l5.2-.44L10 1.5z"/>
+                    </svg>
+                  </span>
                   Результати
                 </h4>
-                <div class="border-l-4 sm:border-l-[6px] border-gold-400 pl-3 sm:pl-4 sm:bg-gradient-to-r sm:from-gold-50/30 sm:to-transparent py-2">
-                  <ul class="space-y-2.5">
+                <div class="rounded-r-xl border-l-4 sm:border-l-[6px] border-gold-400 pl-3.5 sm:pl-4 bg-gradient-to-r from-gold-50/60 to-transparent py-2.5">
+                  <ul class="space-y-3">
                     {/* Show only 2 results on mobile, 3 on desktop */}
                     {study.after.achievements.slice(0, 2).map((achievement) => (
                       <li class="flex items-start gap-2.5 sm:hidden">
-                        <span class="text-gold-600 flex-shrink-0 font-bold leading-relaxed">•</span>
+                        <svg class="w-[18px] h-[18px] text-gold-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
                         <span class="text-navy-800 font-medium leading-relaxed">{achievement}</span>
                       </li>
                     ))}
                     {study.after.achievements.slice(0, 3).map((achievement) => (
                       <li class="hidden sm:flex items-start gap-2.5">
-                        <span class="text-gold-600 flex-shrink-0 font-bold leading-relaxed">•</span>
+                        <svg class="w-[18px] h-[18px] text-gold-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
                         <span class="text-navy-800 font-medium leading-relaxed">{achievement}</span>
                       </li>
                     ))}

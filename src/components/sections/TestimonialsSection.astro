@@ -1,10 +1,19 @@
 ---
 import { testimonials } from '@/data/homePageContent';
+
+// The track renders the testimonials twice so the continuous auto-scroll can
+// loop seamlessly (when scroll passes the halfway point we subtract half the
+// track width — the content there is identical, so there is no visible jump).
+// The second pass is decorative and hidden from assistive tech.
+const passes = [
+  { clone: false },
+  { clone: true },
+];
 ---
 
 <section id="testimonials" class="py-20 bg-gradient-to-br from-white to-sage-50" data-animate>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
+    <div class="text-center mb-12">
       <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy-900 mb-4">
         Що кажуть мої клієнти
       </h2>
@@ -13,40 +22,255 @@ import { testimonials } from '@/data/homePageContent';
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {testimonials.map((testimonial, index) => (
-        <div
-          class="bg-white border border-gray-200 rounded-lg p-8 hover:border-gold-200 transition-all"
-          data-animate
-          style={`animation-delay: ${index * 150}ms`}
+    <div class="relative" data-tst-root>
+      {/* Controls */}
+      <div class="flex items-center justify-between gap-4 mb-6">
+        <button
+          type="button"
+          data-tst-toggle
+          aria-pressed="false"
+          class="hidden lg:inline-flex items-center gap-2 text-sm font-medium text-navy-600 hover:text-gold-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 rounded-full px-3 py-2 transition-colors"
         >
-          {/* Quote Icon */}
-          <div class="mb-6">
-            <svg class="w-8 h-8 text-gold-600 opacity-40" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          <svg data-tst-icon-pause class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M6 4h3v12H6zM11 4h3v12h-3z" />
+          </svg>
+          <svg data-tst-icon-play class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M6 4l10 6-10 6z" />
+          </svg>
+          <span data-tst-toggle-label>Пауза</span>
+        </button>
+
+        <div class="flex items-center gap-3 ml-auto">
+          <button
+            type="button"
+            data-tst-prev
+            aria-label="Попередній відгук"
+            class="w-11 h-11 inline-flex items-center justify-center rounded-full bg-white border border-gray-200 text-navy-600 hover:border-gold-400 hover:text-gold-600 shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-          </div>
-
-          {/* Quote */}
-          <blockquote class="mb-6">
-            <p class="text-lg text-navy-800 leading-relaxed">
-              {testimonial.quote}
-            </p>
-          </blockquote>
-
-          {/* Author */}
-          <div class="pt-6 border-t border-gray-100">
-            <cite class="not-italic">
-              <div class="font-semibold text-navy-900 mb-1">
-                {testimonial.clientName}
-              </div>
-              <div class="text-sm text-navy-600">
-                {testimonial.role}
-              </div>
-            </cite>
-          </div>
+          </button>
+          <button
+            type="button"
+            data-tst-next
+            aria-label="Наступний відгук"
+            class="w-11 h-11 inline-flex items-center justify-center rounded-full bg-white border border-gray-200 text-navy-600 hover:border-gold-400 hover:text-gold-600 shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
-      ))}
+      </div>
+
+      {/* Edge fades */}
+      <div class="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-16 bg-gradient-to-r from-white to-transparent z-10"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-16 bg-gradient-to-l from-sage-50 to-transparent z-10"></div>
+
+      {/* Viewport */}
+      <div
+        data-tst-viewport
+        role="group"
+        aria-roledescription="карусель"
+        aria-label="Відгуки клієнтів"
+        tabindex="0"
+        class="tst-viewport overflow-x-auto scroll-smooth focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-4 focus-visible:ring-offset-white rounded-2xl"
+      >
+        <div data-tst-track class="flex gap-6 py-4">
+          {passes.map((pass) =>
+            testimonials.map((testimonial) => (
+              <div
+                class="tst-card flex-shrink-0 w-[85%] sm:w-[46%] lg:w-[31.5%] bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:border-gold-200 hover:shadow-md transition-all"
+                aria-hidden={pass.clone ? 'true' : undefined}
+              >
+                <div class="mb-6">
+                  <svg class="w-8 h-8 text-gold-600 opacity-40" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                </div>
+
+                <blockquote class="mb-6">
+                  <p class="text-lg text-navy-800 leading-relaxed">
+                    {testimonial.quote}
+                  </p>
+                </blockquote>
+
+                <div class="pt-6 border-t border-gray-100">
+                  <cite class="not-italic">
+                    <div class="font-semibold text-navy-900 mb-1">
+                      {testimonial.clientName}
+                    </div>
+                    <div class="text-sm text-navy-600">
+                      {testimonial.role}
+                    </div>
+                  </cite>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Slim, on-brand scrollbar; hidden on desktop where auto-scroll drives it. */
+  .tst-viewport {
+    scrollbar-width: thin;
+    scrollbar-color: #e8cf74 transparent;
+  }
+  .tst-viewport::-webkit-scrollbar {
+    height: 6px;
+  }
+  .tst-viewport::-webkit-scrollbar-thumb {
+    background: #e8cf74;
+    border-radius: 9999px;
+  }
+  @media (min-width: 1024px) {
+    .tst-viewport {
+      scrollbar-width: none;
+    }
+    .tst-viewport::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  type Cleanup = () => void;
+
+  function initTestimonialsCarousel(): Cleanup | void {
+    const root = document.querySelector<HTMLElement>('[data-tst-root]');
+    const viewport = document.querySelector<HTMLElement>('[data-tst-viewport]');
+    const track = document.querySelector<HTMLElement>('[data-tst-track]');
+    if (!root || !viewport || !track) return;
+
+    const toggle = root.querySelector<HTMLButtonElement>('[data-tst-toggle]');
+    const toggleLabel = root.querySelector<HTMLElement>('[data-tst-toggle-label]');
+    const iconPause = root.querySelector<HTMLElement>('[data-tst-icon-pause]');
+    const iconPlay = root.querySelector<HTMLElement>('[data-tst-icon-play]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-tst-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-tst-next]');
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SPEED = 32; // px/second — slow, continuous
+
+    let userPaused = false;
+    let hoverPaused = false;
+    let interactPaused = false;
+    let interactTimer: number | undefined;
+    let rafId = 0;
+    let lastTs: number | null = null;
+
+    const isPaused = () =>
+      userPaused || hoverPaused || interactPaused || document.hidden || reduceMotion;
+
+    const halfWidth = () => viewport.scrollWidth / 2;
+
+    // Keep scrollLeft within the first copy so looping stays seamless in both
+    // directions (manual prev can push us below 0).
+    const normalize = () => {
+      const half = halfWidth();
+      if (half <= 0) return;
+      if (viewport.scrollLeft >= half) viewport.scrollLeft -= half;
+      else if (viewport.scrollLeft < 0) viewport.scrollLeft += half;
+    };
+
+    const step = (ts: number) => {
+      if (lastTs === null) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      if (!isPaused()) {
+        viewport.scrollLeft += SPEED * dt;
+        normalize();
+      }
+      rafId = window.requestAnimationFrame(step);
+    };
+
+    // Pause briefly while the user actively scrolls/swipes, then resume.
+    const nudgeInteract = () => {
+      interactPaused = true;
+      if (interactTimer) window.clearTimeout(interactTimer);
+      interactTimer = window.setTimeout(() => {
+        interactPaused = false;
+        normalize();
+      }, 1200);
+    };
+
+    const cardStep = () => {
+      const card = track.querySelector<HTMLElement>('.tst-card');
+      const gap = 24; // gap-6
+      return card ? card.offsetWidth + gap : viewport.clientWidth * 0.8;
+    };
+
+    const onPrev = () => {
+      viewport.scrollBy({ left: -cardStep(), behavior: 'smooth' });
+      nudgeInteract();
+    };
+    const onNext = () => {
+      viewport.scrollBy({ left: cardStep(), behavior: 'smooth' });
+      nudgeInteract();
+    };
+
+    const reflectToggle = () => {
+      if (!toggle) return;
+      toggle.setAttribute('aria-pressed', String(userPaused));
+      if (toggleLabel) toggleLabel.textContent = userPaused ? 'Відтворити' : 'Пауза';
+      iconPause?.classList.toggle('hidden', userPaused);
+      iconPlay?.classList.toggle('hidden', !userPaused);
+    };
+
+    const onToggle = () => {
+      userPaused = !userPaused;
+      reflectToggle();
+    };
+
+    // Wiring
+    const onEnter = () => (hoverPaused = true);
+    const onLeave = () => (hoverPaused = false);
+    const onFocusIn = () => (hoverPaused = true);
+    const onFocusOut = () => {
+      if (!root.contains(document.activeElement)) hoverPaused = false;
+    };
+
+    root.addEventListener('mouseenter', onEnter);
+    root.addEventListener('mouseleave', onLeave);
+    root.addEventListener('focusin', onFocusIn);
+    root.addEventListener('focusout', onFocusOut);
+    viewport.addEventListener('pointerdown', nudgeInteract);
+    viewport.addEventListener('wheel', nudgeInteract, { passive: true });
+    prevBtn?.addEventListener('click', onPrev);
+    nextBtn?.addEventListener('click', onNext);
+    toggle?.addEventListener('click', onToggle);
+
+    if (reduceMotion) {
+      // Nothing moves — hide the pause/play control; native scroll + arrows stay.
+      toggle?.classList.add('hidden');
+    } else {
+      reflectToggle();
+      rafId = window.requestAnimationFrame(step);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      if (interactTimer) window.clearTimeout(interactTimer);
+      root.removeEventListener('mouseenter', onEnter);
+      root.removeEventListener('mouseleave', onLeave);
+      root.removeEventListener('focusin', onFocusIn);
+      root.removeEventListener('focusout', onFocusOut);
+      viewport.removeEventListener('pointerdown', nudgeInteract);
+      viewport.removeEventListener('wheel', nudgeInteract);
+      prevBtn?.removeEventListener('click', onPrev);
+      nextBtn?.removeEventListener('click', onNext);
+      toggle?.removeEventListener('click', onToggle);
+    };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initTestimonialsCarousel(), { once: true });
+  } else {
+    initTestimonialsCarousel();
+  }
+</script>

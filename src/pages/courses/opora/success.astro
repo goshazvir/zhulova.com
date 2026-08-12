@@ -41,7 +41,12 @@ const botUrl: string = import.meta.env.PUBLIC_OPORA_BOT_URL || '/contacts';
         відкрити його й почати.
       </p>
 
-      <CtaButton href={botUrl}>Відкрити бота й забрати курс</CtaButton>
+      <CtaButton
+        href={botUrl}
+        analyticsCta={{ cta_id: 'opora_bot_open', cta_location: 'success_page' }}
+      >
+        Відкрити бота й забрати курс
+      </CtaButton>
 
       <p class="mt-6 text-sm text-navy-500">
         Бот не відкрився?

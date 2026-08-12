@@ -2,6 +2,11 @@ import { useEffect } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { scrollToSection } from '@/utils/scrollAnimations';
 import { openGiftPromoModal } from '@/components/promo/giftCta';
+import { trackEvent } from '@lib/analytics';
+
+function trackExternalLinkClick(url: string): void {
+  trackEvent('external_link_click', { link_domain: new URL(url).hostname, link_url: url });
+}
 
 interface Props {
   variant?: 'main' | 'legal';
@@ -234,6 +239,7 @@ export default function MobileMenu({ variant = 'main', showGiftCta = false }: Pr
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
+                onClick={(e) => trackExternalLinkClick(e.currentTarget.href)}
                 className="text-navy-700 hover:text-gold-600 transition-colors"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -245,6 +251,7 @@ export default function MobileMenu({ variant = 'main', showGiftCta = false }: Pr
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
+                onClick={(e) => trackExternalLinkClick(e.currentTarget.href)}
                 className="text-navy-700 hover:text-gold-600 transition-colors"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -256,6 +263,7 @@ export default function MobileMenu({ variant = 'main', showGiftCta = false }: Pr
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Telegram"
+                onClick={(e) => trackExternalLinkClick(e.currentTarget.href)}
                 className="text-navy-700 hover:text-gold-600 transition-colors"
               >
                 <svg

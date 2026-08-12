@@ -51,12 +51,18 @@ import { motivationalQuote } from '@/data/homePageContent';
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
+  import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     const quoteCTA = document.getElementById('quote-cta');
     if (quoteCTA) {
       quoteCTA.addEventListener('click', () => {
+        trackEvent('cta_click', {
+          cta_id: 'quote-cta',
+          cta_text: quoteCTA.textContent?.trim(),
+          cta_location: 'motivational_quote',
+        });
         useUIStore.getState().openConsultationModal();
       });
     }

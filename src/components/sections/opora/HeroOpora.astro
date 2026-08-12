@@ -20,7 +20,7 @@ const { href } = Astro.props;
         Бо сила волі тут ні до чого. За три дні розберемось, чому тебе так виснажує й тривожить, і ти забереш собі практики спокою, зменшення внутрішнього критика і вибудуєш дорослий план, від якого голова не болить.
       </p>
       <div class="mt-8">
-        <CtaButton href={href}>ЗАБРАТИ ЗА 9 €</CtaButton>
+        <CtaButton href={href} analyticsCheckout={{ course_id: 'opora', price: '9 EUR' }}>ЗАБРАТИ ЗА 9 €</CtaButton>
         <p class="mt-3 text-sm text-navy-500">
           Один платіж. Доступ одразу після оплати й лишається назавжди.
         </p>

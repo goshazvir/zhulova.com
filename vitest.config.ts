@@ -35,6 +35,7 @@ export default defineConfig({
       '@components': resolve(__dirname, './src/components'),
       '@design-system': resolve(__dirname, './src/design-system'),
       '@layouts': resolve(__dirname, './src/layouts'),
+      '@lib': resolve(__dirname, './src/lib'),
       '@stores': resolve(__dirname, './src/stores'),
       '@types': resolve(__dirname, './src/types'),
       '@utils': resolve(__dirname, './src/utils'),

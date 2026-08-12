@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import PromoModal from '../components/promo/PromoModal/index';
 import { isPathExcluded } from '../components/promo/promoTrigger';
+import AnalyticsScripts from '../components/Analytics.astro';
 
 interface Props {
   title: string;
@@ -39,6 +40,10 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- GA4 + Google Ads unified tag, Meta Pixel bootstrap, Clarity heatmap -->
+    <!-- Consent Mode v2 defaults are set here, before any other script runs -->
+    <AnalyticsScripts />
 
     <!-- Primary Meta Tags -->
     <title>{title}</title>

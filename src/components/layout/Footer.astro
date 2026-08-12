@@ -144,6 +144,7 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube"
+              data-external-link
               class="text-navy-300 hover:text-gold-400 transition-colors"
             >
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -155,6 +156,7 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
+              data-external-link
               class="text-navy-300 hover:text-gold-400 transition-colors"
             >
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -166,6 +168,7 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Telegram"
+              data-external-link
               class="text-navy-300 hover:text-gold-400 transition-colors"
             >
               <svg
@@ -185,6 +188,7 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
+              data-external-link
               class="text-navy-300 hover:text-gold-400 transition-colors"
             >
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -196,6 +200,7 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
+              data-external-link
               class="text-navy-300 hover:text-gold-400 transition-colors"
             >
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -247,12 +252,18 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
 <script>
   import { useUIStore } from '@/stores/uiStore';
   import { openGiftPromoModal } from '@/components/promo/giftCta';
+  import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     const footerCTAButton = document.getElementById('footer-cta-button');
     if (footerCTAButton) {
       footerCTAButton.addEventListener('click', () => {
+        trackEvent('cta_click', {
+          cta_id: 'footer-cta-button',
+          cta_text: footerCTAButton.textContent?.trim(),
+          cta_location: 'footer',
+        });
         useUIStore.getState().openConsultationModal();
       });
     }
@@ -264,5 +275,15 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
         openGiftPromoModal();
       });
     }
+
+    // External social links (spec §3 external_link_click)
+    document.querySelectorAll<HTMLAnchorElement>('a[data-external-link]').forEach((link) => {
+      link.addEventListener('click', () => {
+        trackEvent('external_link_click', {
+          link_domain: new URL(link.href).hostname,
+          link_url: link.href,
+        });
+      });
+    });
   });
 </script>

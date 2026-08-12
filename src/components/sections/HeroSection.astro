@@ -95,6 +95,7 @@ import heroImageSrc from '@/assets/images/hero-viktoria-luxury.webp';
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
+  import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -102,6 +103,11 @@ import heroImageSrc from '@/assets/images/hero-viktoria-luxury.webp';
     const ctaButton = document.getElementById('hero-cta-button');
     if (ctaButton) {
       ctaButton.addEventListener('click', () => {
+        trackEvent('cta_click', {
+          cta_id: 'hero-cta-button',
+          cta_text: ctaButton.textContent?.trim(),
+          cta_location: 'hero',
+        });
         useUIStore.getState().openConsultationModal();
       });
     }

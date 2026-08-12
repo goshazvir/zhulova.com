@@ -26,7 +26,12 @@ const checkoutUrl: string = import.meta.env.PUBLIC_OPORA_CHECKOUT_URL || '#';
         хвилину.
       </p>
 
-      <CtaButton href={checkoutUrl}>Спробувати ще раз</CtaButton>
+      <CtaButton
+        href={checkoutUrl}
+        analyticsCta={{ cta_id: 'checkout_retry', cta_location: 'error_page' }}
+      >
+        Спробувати ще раз
+      </CtaButton>
 
       <p class="mt-6 text-sm text-navy-500">
         Не виходить?

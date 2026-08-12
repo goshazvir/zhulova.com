@@ -2,10 +2,11 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Footer from '@components/layout/Footer.astro';
 import QuizApp from '@components/quiz/QuizApp';
+import { DIAGNOSTIC_BOOKING_URL } from '@/config/booking';
 
-// CTA targets; the island applies fallbacks (/contacts, calendly) when unset
+// CTA targets; the island applies a /contacts fallback for the bot URL when unset
 const botUrl: string | undefined = import.meta.env.PUBLIC_OPORA_BOT_URL;
-const bookingUrl: string | undefined = import.meta.env.PUBLIC_DIAGNOSTIC_BOOKING_URL;
+const bookingUrl: string = DIAGNOSTIC_BOOKING_URL;
 ---
 
 <BaseLayout

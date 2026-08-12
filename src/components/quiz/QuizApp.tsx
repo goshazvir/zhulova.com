@@ -275,7 +275,7 @@ export default function QuizApp({ botUrl, bookingUrl }: QuizAppProps) {
       <QuizResult
         result={result}
         botUrl={botUrl || '/contacts'}
-        bookingUrl={bookingUrl || 'https://calendly.com/'}
+        bookingUrl={bookingUrl || 'https://calendly.com/viktoriazhulova/30min'}
       />
     );
   }

@@ -33,8 +33,8 @@ links to `/courses/opora`, and can *never* resurrect the «ГРОШІ КОЖЕН
 
 ## 2. Testimonials — auto-scrolling carousel
 
-**Requirement:** slow continuous rotation, pause on hover, keyboard navigation,
-mobile-responsive, smooth (no jarring jumps), manual control.
+**Requirement:** slow continuous rotation, keyboard navigation, mobile-responsive,
+smooth (no jarring jumps), manual control.
 
 **Decision — continuous marquee over a native scroll container:**
 - `TestimonialsSection.astro` renders the testimonials **twice** into one flex
@@ -43,17 +43,30 @@ mobile-responsive, smooth (no jarring jumps), manual control.
   there is byte-identical, so the loop is seamless with **no visible jump**.
 - The second (cloned) pass is `aria-hidden` so screen readers read each
   testimonial once.
+- Auto-scroll logic lives in `testimonialsCarousel.ts` (unit-tested in
+  `testimonialsCarousel.test.ts`) and is imported by the `.astro` component's
+  client script, rather than living inline.
 - **Pause** on: hover, `focusin` (keyboard users), active pointer/wheel
   interaction (1.2 s cooldown), and `document.hidden`.
 - **Manual control:** prev/next buttons (44×44 targets) scroll one card;
   the viewport is a focusable (`tabindex=0`) `role="group"` region so arrow
   keys scroll it natively.
-- **WCAG 2.2.2 (Pause, Stop, Hide):** an explicit **Пауза/Відтворити** toggle
-  (desktop) with `aria-pressed` — a keyboard-reachable stop mechanism, not just
-  hover.
 - **`prefers-reduced-motion`:** no rAF is started; the carousel becomes a static,
-  natively-scrollable strip and the pause toggle is hidden.
+  natively-scrollable strip.
 - Edge gradient fades signal more content; slim on-brand scrollbar on mobile.
+  The fade wrapper is scoped to the viewport only (not the controls row above
+  it), so it never visually overlaps the prev/next arrows.
+
+**GEO-35 update — pause/play toggle removed:** the explicit **Пауза/Відтворити**
+button (added for WCAG 2.2.2, a keyboard-reachable stop mechanism distinct from
+hover) was removed per founder request to simplify the controls to prev/next
+only. The remaining pause triggers — hover, focus-within, pointer/wheel
+interaction, and `prefers-reduced-motion` — still let every input method halt
+the motion, and the prev/next arrows give full manual control regardless of
+auto-scroll state, but there is no longer a persistent, explicit stop toggle.
+Automated tooling (axe, Lighthouse) does not flag this — SC 2.2.2 for
+non-essential moving content is a manual-review criterion — so if it resurfaces
+in a future audit, this is the known, accepted trade-off and rationale.
 
 **Content note (founder-blocked):** the DoD asks for *2–4 new genuine
 testimonials (founder to provide)*. The carousel ships working with the current

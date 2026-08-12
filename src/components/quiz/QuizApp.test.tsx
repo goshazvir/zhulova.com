@@ -280,7 +280,7 @@ describe('QuizApp', () => {
       );
       expect(screen.getByRole('link', { name: BOOKING_CTA_LABEL })).toHaveAttribute(
         'href',
-        'https://calendly.com/'
+        'https://calendly.com/viktoriazhulova/30min'
       );
     });
   });

@@ -1,6 +1,7 @@
 ---
 import { footerContent, socialLinks } from '@/data/homePageContent';
 import { shouldShowGiftCta } from '@/components/promo/giftCta';
+import { DIAGNOSTIC_BOOKING_URL } from '@/config/booking';
 import { Image } from 'astro:assets';
 
 interface Props {
@@ -49,14 +50,17 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
             Запишіться на безкоштовну діагностичну сесію та отримайте персональний план розвитку.
           </p>
           <div class="space-y-3">
-            <button
+            <!-- GEO-42: diagnostic session CTA links directly to Calendly (new tab), not the lead-form modal -->
+            <a
               id="footer-cta-button"
-              type="button"
-              class="bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500"
-              aria-label="Записатись на діагностику"
+              href={DIAGNOSTIC_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500"
+              aria-label="Записатись на діагностику (відкривається в новій вкладці)"
             >
               {footerContent.ctaText}
-            </button>
+            </a>
             <!-- Gift CTA (GEO-31 persistent access) — secondary, styled per GEO-32's note -->
             {showGiftCta && (
               <p class="text-center lg:text-left">
@@ -250,12 +254,12 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
 </footer>
 
 <script>
-  import { useUIStore } from '@/stores/uiStore';
   import { openGiftPromoModal } from '@/components/promo/giftCta';
   import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
+    // GEO-42: diagnostic CTA is now a direct Calendly link; still track the click
     const footerCTAButton = document.getElementById('footer-cta-button');
     if (footerCTAButton) {
       footerCTAButton.addEventListener('click', () => {
@@ -264,7 +268,6 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
           cta_text: footerCTAButton.textContent?.trim(),
           cta_location: 'footer',
         });
-        useUIStore.getState().openConsultationModal();
       });
     }
 

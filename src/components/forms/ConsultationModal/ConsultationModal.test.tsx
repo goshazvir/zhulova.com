@@ -3,6 +3,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ConsultationModal from './index';
 import { useUIStore } from '@/stores/uiStore';
+import { trackEvent } from '@lib/analytics';
+import { createUtmStorage } from '@lib/utm';
+
+vi.mock('@lib/analytics', () => ({ trackEvent: vi.fn() }));
 
 // Mock the fetch API
 global.fetch = vi.fn();
@@ -14,6 +18,7 @@ describe('ConsultationModal Component', () => {
       isConsultationModalOpen: false,
       closeConsultationModal: vi.fn(),
     });
+    window.sessionStorage.clear();
     vi.clearAllMocks();
   });
 
@@ -146,6 +151,32 @@ describe('ConsultationModal Component', () => {
     // Check for error message
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
+  });
+
+  it('attaches stored first-touch UTM params to the consultation_lead event (spec §4, AC6)', async () => {
+    const utmStorage = createUtmStorage();
+    utmStorage.write({ utm_source: 'facebook', utm_medium: 'cpc', utm_campaign: 'launch' });
+
+    const user = userEvent.setup();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true }),
+    });
+
+    useUIStore.setState({ isConsultationModalOpen: true });
+    render(<ConsultationModal />);
+
+    await user.type(screen.getByLabelText(/ім'я/i), 'Тест');
+    await user.type(screen.getByLabelText(/телефон/i), '+380501234567');
+    await user.click(screen.getByRole('button', { name: /відправити заявку/i }));
+
+    await waitFor(() => {
+      expect(trackEvent).toHaveBeenCalledWith('consultation_lead', {
+        utm_source: 'facebook',
+        utm_medium: 'cpc',
+        utm_campaign: 'launch',
+      });
     });
   });
 });

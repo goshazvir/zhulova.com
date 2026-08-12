@@ -4,6 +4,7 @@ import Modal from '@design-system/Modal';
 import Input from '@design-system/Input';
 import Button from '@design-system/Button';
 import { trackEvent } from '@lib/analytics';
+import { createUtmStorage, getStoredUtmParams } from '@lib/utm';
 
 interface FormData {
   name: string;
@@ -59,7 +60,12 @@ export default function ConsultationModal() {
 
       setSubmitStatus('success');
       trackEvent('form_submit', { form_id: 'consultation', form_location: 'consultation_modal' });
-      trackEvent('consultation_lead', {});
+      const utm = getStoredUtmParams(createUtmStorage());
+      trackEvent('consultation_lead', {
+        utm_source: utm.utm_source,
+        utm_medium: utm.utm_medium,
+        utm_campaign: utm.utm_campaign,
+      });
       resetForm();
 
       // Auto-close modal after 3 seconds

@@ -68,6 +68,9 @@ export interface CourseCheckoutClickParams {
 export interface ConsultationLeadParams {
   value?: number;
   currency?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
 }
 
 export interface PurchaseParams {

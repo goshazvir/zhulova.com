@@ -203,15 +203,22 @@ export default function MobileMenu({ variant = 'main', showGiftCta = false }: Pr
             )}
           </nav>
 
-          {/* Gift CTA (GEO-31 persistent access) — placeholder styling pending GEO-32 */}
+          {/* Gift CTA (GEO-31 persistent access) — styled per GEO-32's note */}
           {showGiftCta && (
-            <div className="px-4 pb-4">
+            <div className="mt-2 border-t border-navy-100 px-4 pt-2 pb-4">
               <button
                 type="button"
                 onClick={handleGiftCtaClick}
-                className="block w-full text-center px-4 py-3 rounded-lg font-medium bg-gold-50 text-gold-600 hover:bg-gold-100 transition-colors"
+                className="flex w-full items-center gap-2 rounded-lg bg-gold-50 px-4 py-3 text-left font-medium text-gold-800 transition-colors hover:bg-gold-100"
               >
-                🎁 Безкоштовний урок
+                <svg className="h-5 w-5 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M20.625 11.505v8.25a1.5 1.5 0 0 1-1.5 1.5H4.875a1.5 1.5 0 0 1-1.5-1.5v-8.25m8.25-6.375A2.625 2.625 0 1 0 9 7.755h2.625m0-2.625v2.625m0-2.625a2.625 2.625 0 1 1 2.625 2.625h-2.625m0 0v13.5M3 11.505h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.622-.504-1.125-1.125-1.125H3c-.621 0-1.125.503-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+                  />
+                </svg>
+                Забери подарунок
               </button>
             </div>
           )}

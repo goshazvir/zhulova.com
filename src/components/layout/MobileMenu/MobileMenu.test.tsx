@@ -299,28 +299,28 @@ describe('MobileMenu Component', () => {
       mockStoreState = createMockStore({ isMobileMenuOpen: true });
       render(<MobileMenu showGiftCta />);
 
-      expect(screen.getByRole('button', { name: /безкоштовний урок/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /забери подарунок/i })).toBeInTheDocument();
     });
 
     it('does not render the gift CTA when showGiftCta is false', () => {
       mockStoreState = createMockStore({ isMobileMenuOpen: true });
       render(<MobileMenu showGiftCta={false} />);
 
-      expect(screen.queryByRole('button', { name: /безкоштовний урок/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /забери подарунок/i })).not.toBeInTheDocument();
     });
 
     it('does not render the gift CTA by default (prop omitted)', () => {
       mockStoreState = createMockStore({ isMobileMenuOpen: true });
       render(<MobileMenu />);
 
-      expect(screen.queryByRole('button', { name: /безкоштовний урок/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /забери подарунок/i })).not.toBeInTheDocument();
     });
 
     it('renders the gift CTA regardless of nav variant', () => {
       mockStoreState = createMockStore({ isMobileMenuOpen: true });
       render(<MobileMenu variant="legal" showGiftCta />);
 
-      expect(screen.getByRole('button', { name: /безкоштовний урок/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /забери подарунок/i })).toBeInTheDocument();
     });
 
     it('clicking the gift CTA opens the promo modal and closes the mobile menu', async () => {
@@ -328,7 +328,7 @@ describe('MobileMenu Component', () => {
       mockStoreState = createMockStore({ isMobileMenuOpen: true, closeMobileMenu });
       render(<MobileMenu showGiftCta />);
 
-      await userEvent.click(screen.getByRole('button', { name: /безкоштовний урок/i }));
+      await userEvent.click(screen.getByRole('button', { name: /забери подарунок/i }));
 
       expect(openGiftPromoModal).toHaveBeenCalledTimes(1);
       expect(closeMobileMenu).toHaveBeenCalledTimes(1);
@@ -338,7 +338,7 @@ describe('MobileMenu Component', () => {
       mockStoreState = createMockStore({ isMobileMenuOpen: true });
       render(<MobileMenu showGiftCta />);
 
-      const cta = screen.getByRole('button', { name: /безкоштовний урок/i });
+      const cta = screen.getByRole('button', { name: /забери подарунок/i });
       expect(cta.tagName).toBe('BUTTON');
       expect(cta).toHaveAttribute('type', 'button');
     });

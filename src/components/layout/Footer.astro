@@ -14,8 +14,9 @@ const currentPath = Astro.url.pathname;
 const isHomePage = currentPath === '/' || currentPath === '';
 
 // GEO-31: persistent gift CTA — same two gates as the modal island itself
-// (BaseLayout.astro): env var fail-safe + isPathExcluded(). Placeholder
-// placement/style pending GEO-32 (Designer).
+// (BaseLayout.astro): env var fail-safe + isPathExcluded(). Styling follows
+// GEO-32's Designer note (text-navy-600 instead of the note's navy-400, for
+// WCAG AA contrast — see the GEO-33 implementation comment for the numbers).
 const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_BOT_URL);
 ---
 
@@ -47,24 +48,35 @@ const showGiftCta = shouldShowGiftCta(currentPath, import.meta.env.PUBLIC_GIFT_B
           <p class="text-lg text-navy-700">
             Запишіться на безкоштовну діагностичну сесію та отримайте персональний план розвитку.
           </p>
-          <button
-            id="footer-cta-button"
-            type="button"
-            class="bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500"
-            aria-label="Записатись на діагностику"
-          >
-            {footerContent.ctaText}
-          </button>
-          <!-- Gift CTA (GEO-31 persistent access) — secondary, placeholder styling pending GEO-32 -->
-          {showGiftCta && (
+          <div class="space-y-3">
             <button
-              id="footer-gift-cta"
+              id="footer-cta-button"
               type="button"
-              class="block text-sm text-navy-600 hover:text-gold-600 underline underline-offset-4 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded"
+              class="bg-gold-500 text-navy-900 px-8 py-4 text-lg font-medium rounded-lg hover:bg-gold-400 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-gold-500"
+              aria-label="Записатись на діагностику"
             >
-              🎁 Або забери перший урок безкоштовно
+              {footerContent.ctaText}
             </button>
-          )}
+            <!-- Gift CTA (GEO-31 persistent access) — secondary, styled per GEO-32's note -->
+            {showGiftCta && (
+              <p class="text-center lg:text-left">
+                <button
+                  id="footer-gift-cta"
+                  type="button"
+                  class="inline-flex items-center gap-1.5 text-sm text-navy-600 underline underline-offset-4 transition-colors hover:text-gold-600 focus:rounded focus:outline-none focus:ring-2 focus:ring-gold-400/50"
+                >
+                  <svg class="h-4 w-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M20.625 11.505v8.25a1.5 1.5 0 0 1-1.5 1.5H4.875a1.5 1.5 0 0 1-1.5-1.5v-8.25m8.25-6.375A2.625 2.625 0 1 0 9 7.755h2.625m0-2.625v2.625m0-2.625a2.625 2.625 0 1 1 2.625 2.625h-2.625m0 0v13.5M3 11.505h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.622-.504-1.125-1.125-1.125H3c-.621 0-1.125.503-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+                    />
+                  </svg>
+                  Або забери 2 уроки в подарунок
+                </button>
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

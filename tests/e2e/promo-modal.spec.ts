@@ -107,7 +107,7 @@ test.describe('persistent gift CTA (GEO-31)', () => {
 
     await expect(page.getByRole('dialog')).toHaveCount(0);
 
-    await page.getByRole('button', { name: /безкоштовний урок/i }).click();
+    await page.getByRole('button', { name: /забери подарунок/i }).click();
 
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();

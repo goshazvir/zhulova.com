@@ -9,6 +9,7 @@ import {
   validateInstagramNick,
   INSTAGRAM_NOT_FOUND_ERROR,
 } from '@utils/quiz/instagram';
+import { trackEvent } from '@lib/analytics';
 import QuizProgress from './QuizProgress';
 import QuizOptionCard from './QuizOptionCard';
 import QuizResult from './QuizResult';
@@ -128,6 +129,9 @@ export default function QuizApp({ botUrl, bookingUrl }: QuizAppProps) {
       console.error('[quiz] lead lost: POST /api/submit-quiz failed after retry', {
         instagram: igHandle,
       });
+      trackEvent('form_submit_error', { form_id: 'quiz', error_type: 'submit_failed' });
+    } else {
+      trackEvent('form_submit', { form_id: 'quiz', form_location: 'quiz_opora' });
     }
 
     try {
@@ -271,7 +275,7 @@ export default function QuizApp({ botUrl, bookingUrl }: QuizAppProps) {
       <QuizResult
         result={result}
         botUrl={botUrl || '/contacts'}
-        bookingUrl={bookingUrl || 'https://calendly.com/'}
+        bookingUrl={bookingUrl || 'https://calendly.com/viktoriazhulova/30min'}
       />
     );
   }

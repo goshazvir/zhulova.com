@@ -1,20 +1,46 @@
 ---
+import type { CtaClickParams, CourseCheckoutClickParams } from '@lib/analytics';
+
 interface Props {
   href: string;
   size?: 'md' | 'lg';
   class?: string;
+  /** Fires `trackEvent('cta_click', analyticsParams)` on click when set (spec §3). */
+  analyticsCta?: CtaClickParams;
+  /** Fires `trackEvent('course_checkout_click', analyticsParams)` on click when set (spec §3). */
+  analyticsCheckout?: CourseCheckoutClickParams;
 }
-const { href, size = 'lg', class: className = '' } = Astro.props;
+const { href, size = 'lg', class: className = '', analyticsCta, analyticsCheckout } = Astro.props;
 const sizeClasses = size === 'lg' ? 'px-8 py-4 text-lg' : 'px-6 py-3 text-base';
 // Open external checkout links (e.g. WayForPay) in a new tab; keep internal
 // links and the '#' fallback in the same tab.
 const isExternal = href.startsWith('http');
+
+const analyticsEvent = analyticsCheckout ? 'course_checkout_click' : analyticsCta ? 'cta_click' : undefined;
+const analyticsParams = analyticsCheckout ?? analyticsCta;
 ---
 <a
   href={href}
   target={isExternal ? '_blank' : undefined}
   rel={isExternal ? 'noopener noreferrer' : undefined}
   class={`inline-flex items-center justify-center gap-2 rounded-lg font-medium bg-gold-500 text-navy-900 transition-colors hover:bg-gold-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-600 ${sizeClasses} ${className}`}
+  data-analytics-event={analyticsEvent}
+  data-analytics-params={analyticsParams ? JSON.stringify(analyticsParams) : undefined}
 >
   <slot />
 </a>
+
+<script>
+  import { trackEvent, type AnalyticsEventName, type AnalyticsEventMap } from '@lib/analytics';
+
+  document.querySelectorAll<HTMLAnchorElement>('a[data-analytics-event]').forEach((el) => {
+    const eventName = el.dataset.analyticsEvent as AnalyticsEventName | undefined;
+    if (!eventName) return;
+    el.addEventListener('click', () => {
+      const params = el.dataset.analyticsParams
+        ? (JSON.parse(el.dataset.analyticsParams) as AnalyticsEventMap[typeof eventName])
+        : ({} as AnalyticsEventMap[typeof eventName]);
+      trackEvent(eventName, params);
+    });
+  });
+</script>

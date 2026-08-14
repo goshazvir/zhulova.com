@@ -129,20 +129,21 @@ test.describe('Consultation CTA Buttons', () => {
       await expect(modal).toBeVisible({ timeout: 5000 });
     });
 
-    test('Footer CTA button "Записатись на діагностику" should open modal', async ({ page }) => {
+    test('Footer CTA "Записатись на діагностику" links to Calendly in a new tab', async ({
+      page,
+    }) => {
       // Scroll to footer
       await page.locator('footer').scrollIntoViewIfNeeded();
 
-      // Find footer CTA button by text
-      const footerButton = page.getByRole('button', { name: /записатись на діагностику/i });
-      await expect(footerButton).toBeVisible();
+      // Diagnostic CTA is now a direct Calendly link (GEO-42), not the lead-form modal
+      const footerLink = page.getByRole('link', { name: /записатись на діагностику/i });
+      await expect(footerLink).toBeVisible();
+      await expect(footerLink).toHaveAttribute('href', /calendly\.com\/.+/);
+      await expect(footerLink).toHaveAttribute('target', '_blank');
+      await expect(footerLink).toHaveAttribute('rel', /noopener/);
 
-      // Click button
-      await footerButton.click();
-
-      // Verify modal opened
-      const modal = page.getByRole('dialog');
-      await expect(modal).toBeVisible({ timeout: 5000 });
+      // No modal should open
+      await expect(page.getByRole('dialog')).toHaveCount(0);
     });
   });
 

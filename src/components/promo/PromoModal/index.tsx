@@ -5,6 +5,7 @@ import Button from '../../../design-system/Button';
 import { Text } from '../../../design-system/Typography';
 import { useUIStore } from '../../../stores/uiStore';
 import { prefersReducedMotion } from '../../quiz/motion';
+import { trackEvent } from '../../../lib/analytics';
 import {
   createPromoStorage,
   isEligible,
@@ -88,6 +89,7 @@ export default function PromoModal({ botUrl }: PromoModalProps) {
 
       storage.write(markShown(storage.read(), Date.now()));
       track('promo_gift_shown');
+      trackEvent('promo_modal_shown', { trigger_type: 'auto', delay_ms: Date.now() - startedAt });
       openPromoModal();
       stop();
     }, POLL_INTERVAL_MS);
@@ -98,12 +100,16 @@ export default function PromoModal({ botUrl }: PromoModalProps) {
   const handleDismiss = () => {
     storage.write(markDismissed(storage.read(), Date.now()));
     track('promo_gift_dismissed');
+    // Modal's onClose covers the X button, overlay click and Escape alike —
+    // it does not surface which one fired, so this is the one accurate value.
+    trackEvent('promo_modal_dismiss', { dismiss_method: 'modal_close' });
     closePromoModal();
   };
 
   const handleCtaClick = () => {
     storage.write(markConverted(storage.read(), Date.now()));
     track('promo_gift_cta_click');
+    trackEvent('promo_modal_click', { modal_variant: 'gift' });
     closePromoModal();
   };
 

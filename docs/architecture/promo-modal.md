@@ -56,6 +56,18 @@ Deferral (per CTO overlap rules): if the trigger fires while `isConsultationModa
 
 ## 2. Frequency capping
 
+### Quick reference
+
+| Scenario | Behavior |
+|---|---|
+| **After dismissal** (explicit close) | Do not re-show for **7 days** |
+| **After viewing** (shown but not clicked) | Do not re-show for **3 days** |
+| **After conversion** (CTA click) | **Never re-show** (user is in the funnel) |
+| **Lifetime limit** | Maximum **3 shows** total per visitor |
+| **Storage** | `localStorage["zh_promo_gift_v1"]` with in-memory fallback |
+
+---
+
 State schema (fixed by CTO): `localStorage["zh_promo_gift_v1"] = { status: 'shown' | 'dismissed' | 'converted', at: <epoch ms>, shownCount: number }`.
 
 Lifecycle: on open → write `{status:'shown', at: now, shownCount: prev+1}`; on any dismiss affordance → `status:'dismissed'`, update `at`; on CTA click → `status:'converted'`, update `at`.

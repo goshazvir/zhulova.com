@@ -159,6 +159,7 @@ import { caseStudies } from '@/data/homePageContent';
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
+  import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -166,6 +167,11 @@ import { caseStudies } from '@/data/homePageContent';
     const caseStudiesCTA = document.getElementById('case-studies-cta');
     if (caseStudiesCTA) {
       caseStudiesCTA.addEventListener('click', () => {
+        trackEvent('cta_click', {
+          cta_id: 'case-studies-cta',
+          cta_text: caseStudiesCTA.textContent?.trim(),
+          cta_location: 'case_studies',
+        });
         useUIStore.getState().openConsultationModal();
       });
     }

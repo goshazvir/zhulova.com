@@ -90,6 +90,7 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
+  import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
@@ -160,6 +161,11 @@ import { personalQuestions, businessQuestions } from '@/data/homePageContent';
     const questionsCTA = document.getElementById('questions-cta');
     if (questionsCTA) {
       questionsCTA.addEventListener('click', () => {
+        trackEvent('cta_click', {
+          cta_id: 'questions-cta',
+          cta_text: questionsCTA.textContent?.trim(),
+          cta_location: 'questions',
+        });
         useUIStore.getState().openConsultationModal();
       });
     }

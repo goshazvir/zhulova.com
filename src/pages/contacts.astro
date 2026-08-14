@@ -192,12 +192,18 @@ import { socialLinks } from '@/data/homePageContent';
 
 <script>
   import { useUIStore } from '@/stores/uiStore';
+  import { trackEvent } from '@/lib/analytics';
 
   // Initialize on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     const contactsCTAButton = document.getElementById('contacts-cta-button');
     if (contactsCTAButton) {
       contactsCTAButton.addEventListener('click', () => {
+        trackEvent('cta_click', {
+          cta_id: 'contacts-cta-button',
+          cta_text: contactsCTAButton.textContent?.trim(),
+          cta_location: 'contacts_page',
+        });
         useUIStore.getState().openConsultationModal();
       });
     }

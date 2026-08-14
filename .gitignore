@@ -58,6 +58,8 @@ playwright-report/
 .env.local
 .env.*.local
 .env.production
+.env.vercel
+.env.backup-old-supabase
 
 # IDEs
 .vscode/

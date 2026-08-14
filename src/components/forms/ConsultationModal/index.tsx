@@ -3,6 +3,8 @@ import { useUIStore } from '@/stores/uiStore';
 import Modal from '@design-system/Modal';
 import Input from '@design-system/Input';
 import Button from '@design-system/Button';
+import { trackEvent } from '@lib/analytics';
+import { createUtmStorage, getStoredUtmParams } from '@lib/utm';
 
 interface FormData {
   name: string;
@@ -57,6 +59,13 @@ export default function ConsultationModal() {
       }
 
       setSubmitStatus('success');
+      trackEvent('form_submit', { form_id: 'consultation', form_location: 'consultation_modal' });
+      const utm = getStoredUtmParams(createUtmStorage());
+      trackEvent('consultation_lead', {
+        utm_source: utm.utm_source,
+        utm_medium: utm.utm_medium,
+        utm_campaign: utm.utm_campaign,
+      });
       resetForm();
 
       // Auto-close modal after 3 seconds
@@ -66,6 +75,7 @@ export default function ConsultationModal() {
       }, 3000);
     } catch (error) {
       setSubmitStatus('error');
+      trackEvent('form_submit_error', { form_id: 'consultation', error_type: 'request_failed' });
       setErrorMessage(error instanceof Error ? error.message : 'Щось пішло не так. Спробуйте пізніше.');
     }
   };

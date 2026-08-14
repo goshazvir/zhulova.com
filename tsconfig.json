@@ -7,6 +7,7 @@
       "@components/*": ["src/components/*"],
       "@design-system/*": ["src/design-system/*"],
       "@layouts/*": ["src/layouts/*"],
+      "@lib/*": ["src/lib/*"],
       "@stores/*": ["src/stores/*"],
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],

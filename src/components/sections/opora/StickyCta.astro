@@ -10,6 +10,6 @@ const { href } = Astro.props;
     <p class="text-sm font-medium text-navy-900">
       <span class="font-serif">Опора на себе</span> · 9 €
     </p>
-    <CtaButton href={href} size="md">Забрати</CtaButton>
+    <CtaButton href={href} size="md" analyticsCheckout={{ course_id: 'opora', price: '9 EUR' }}>Забрати</CtaButton>
   </div>
 </div>

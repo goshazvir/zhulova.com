@@ -905,10 +905,16 @@ section {
 
 .testi-card {
   background: var(--surface);
-  padding: 36px 32px;
+  border: 1px solid var(--line);
+  padding: 28px 28px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+.testi-screenshot {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--line);
 }
 .testi-stars {
   color: var(--gold);

@@ -200,14 +200,15 @@ test.describe('Consultation CTA Buttons', () => {
       await modal.getByLabel(/ім'я/i).fill('Тест');
 
       // Fill invalid phone
-      await modal.getByLabel(/телефон/i).fill('invalid');
+      const phoneInput = modal.getByLabel(/телефон/i);
+      await expect(phoneInput).toBeVisible({ timeout: 10000 });
+      await phoneInput.fill('invalid');
 
       // Try to submit
       await modal.getByRole('button', { name: /відправити заявку/i }).click();
 
       // Phone field should have validation error
       // Note: Actual validation is done by Zod schema, error message appears in UI
-      const phoneInput = modal.getByLabel(/телефон/i);
       await expect(phoneInput).toBeVisible();
     });
 

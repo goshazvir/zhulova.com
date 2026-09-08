@@ -1,0 +1,27 @@
+---
+import GeoPageTemplate from '../../components/reiki/GeoPageTemplate.astro';
+
+const bodyHtml = `<p>I'm based in Cannes, so this is the one place on the coast where you have a choice: I come to you — an apartment in La Californie, a villa in Super-Cannes, a hotel room on the Croisette — or you come to my space in the centre, ten minutes from the Palais and the station. Either way the session is the same: 45 minutes, fully clothed, hands resting lightly on the body, nothing asked of you. In English, Russian or Ukrainian.</p>
+<p>Most of the people I see here are international residents and visitors who came for what they'd tried elsewhere and hadn't found: someone who works in their language, comes to them, and doesn't talk in the language of chakras and vibrations.</p>
+<h2>Where sessions happen in Cannes</h2><p><strong>In your home.</strong> Le Suquet, La Californie, Super-Cannes, the Basse Californie, Le Cannet, La Bocca — all within the included travel area. You need a bed and a door that closes.</p>
+<p><strong>In your hotel.</strong> The Croisette hotels, the Carlton, the Martinez, the Majestic and the smaller ones behind them. I arrive as a visitor; nobody needs to know why. The shutters down at 3 pm is one of the best rooms on the coast for this.</p>
+<p><strong>On your yacht.</strong> Port Canto, the Vieux Port, or at anchor in the bay and off the Îles de Lérins — tender pickup from the quay is fine.</p>
+<p><strong>At my space.</strong> A quiet room in central Cannes. Come to me if you'd rather not have anyone in your home, or if you're passing through. Same price.</p>
+<h2>Who comes, and for what</h2><p>Residents who moved here for a partner's job in Sophia or a business in Monaco and haven't quite landed. Visitors during the Festival, MIPIM and the Lions who are running on four hours' sleep and want the fifth day to be different from the first. Families in the villas behind the town. Founders who sold and moved and still can't sleep. People who tried the spa on the Croisette and want something that works on the state rather than the muscles.</p>
+<h2>What a session is</h2><p>Forty-five minutes lying on your back, fully clothed. Hands resting lightly on or just above the body from head to feet, in a set sequence. No conversation during, nothing to believe, nothing to do. Most people drop into deep rest within ten minutes; many fall asleep. At the end I let you lie for a moment, then leave you to it. Sleep that night is usually the first thing people notice.</p>
+<h2>Cannes, specifically</h2><p>Cannes has a rhythm — the festivals, the summer, the empty weeks of November — and sessions follow it. In festival weeks, same-day slots are the most useful thing I offer. In summer, the yacht sessions and the Arrival Reset for people flying in. In the quiet months, The Renewal for residents who finally have the time. If you land at Nice on a Friday, Terminal 2 to a Cannes hotel is about forty minutes on the A8; a session at 7 pm that evening is ideal.</p>
+<h2>Prices</h2>
+<div class="pk"><div><b>Single session</b><span>€180</span> · 45 minutes, at your home, hotel or yacht</div><div><b>Arrival Reset</b><span>€180</span> · within 48 hours of landing</div><div><b>Your Week Here</b><span>€480</span> · three sessions during a stay</div><div><b>The Renewal</b><span>€640</span> · four sessions over a month — most chosen</div><div><b>The Immersion</b><span>€1 120</span> · eight sessions over two to three months</div><div><b>Distance</b><span>€180</span> · the same session from anywhere</div></div>
+<p>Card, transfer or cash. Free rescheduling with 24 hours' notice. Children's sessions shorter and priced by age. Reiki is complementary — it sits alongside your doctor's care, never instead, and I'll ask about anything medical before we book.</p>`;
+const otherCities = [{"slug":"reiki-nice","name":"Nice"},{"slug":"reiki-antibes","name":"Antibes"},{"slug":"reiki-monaco","name":"Monaco"},{"slug":"reiki-saint-tropez","name":"Saint-Tropez"},{"slug":"reiki-mougins-valbonne","name":"Mougins & Valbonne"}];
+---
+
+<GeoPageTemplate
+  title="Reiki in Cannes | Private Sessions in English"
+  description="Reiki in Cannes, in English — 45-minute private sessions at your apartment, villa or hotel on the Croisette, or at my space in the centre. From €180, same-day often possible."
+  h1="Reiki in Cannes — Private Sessions in English, at Your Home or Mine"
+  bodyHtml={bodyHtml}
+  city="Cannes"
+  slug="reiki-cannes"
+  otherCities={otherCities}
+/>

@@ -1,9 +1,7 @@
 ---
-import '../styles/global.css';
+import '../styles/en-reiki.css';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import PromoModal from '../components/promo/PromoModal/index';
-import { isPathExcluded } from '../components/promo/promoTrigger';
 import AnalyticsScripts from '../components/Analytics.astro';
 
 interface Props {
@@ -12,6 +10,7 @@ interface Props {
   image?: string;
   canonical?: string;
   noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
 }
 
 const {
@@ -20,29 +19,21 @@ const {
   image = '/images/og-default.jpg',
   canonical,
   noindex = false,
+  jsonLd,
 } = Astro.props;
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://zhulova.com';
-
-// Gift promo modal: island is only rendered when the bot URL is configured
-// (fail-safe: never a broken CTA) and the page is not on the exclusion list.
-// Build-time exclusion ships zero promo JS on excluded pages; the island
-// re-checks the pathname at fire time for View Transitions navigation.
-const giftBotUrl = import.meta.env.PUBLIC_GIFT_BOT_URL;
-const showPromoModal = Boolean(giftBotUrl) && !isPathExcluded(Astro.url.pathname);
 const canonicalURL = canonical || new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageURL = new URL(image, siteUrl).toString();
 ---
 
 <!doctype html>
-<html lang="uk">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- GA4 + Google Ads unified tag, Meta Pixel bootstrap, Clarity heatmap -->
-    <!-- Consent Mode v2 defaults are set here, before any other script runs -->
     <AnalyticsScripts />
 
     <!-- Primary Meta Tags -->
@@ -55,8 +46,8 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <link rel="canonical" href={canonicalURL} />
 
     <!-- hreflang -->
-    <link rel="alternate" hreflang="uk" href={`${siteUrl}/`} />
     <link rel="alternate" hreflang="en" href={`${siteUrl}/en/`} />
+    <link rel="alternate" hreflang="uk" href={`${siteUrl}/`} />
     <link rel="alternate" hreflang="x-default" href={`${siteUrl}/`} />
 
     <!-- Favicons -->
@@ -65,7 +56,7 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="theme-color" content="#0C0F0A" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -73,7 +64,7 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
-    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -82,56 +73,51 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={ogImageURL} />
 
-    <!-- JSON-LD Structured Data -->
-    <script is:inline type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Вікторія Жульова",
-      "jobTitle": "Сертифікований коуч",
-      "description": description,
-      "url": siteUrl,
-      "image": ogImageURL,
-      "sameAs": [
-        "https://www.youtube.com/@%D0%9A%D0%BE%D1%83%D1%87%D0%92%D0%B8%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D1%8F",
-        "https://www.instagram.com/viktoria_revolution/",
-        "https://www.facebook.com/profile.php?id=61572253897749",
-        "https://www.tiktok.com/@viktoria_coach2"
-      ]
-    })} />
+    <!-- JSON-LD -->
+    {jsonLd && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
 
-    <!-- Preconnect for fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <!-- Google Fonts - non-blocking async load (optimized: removed unused Playfair 600) -->
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@700&display=swap"
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@700&display=swap"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@700&display=swap"
       />
     </noscript>
   </head>
-  <body class="antialiased bg-white text-navy-900">
+  <body>
     <slot />
 
-    <!-- Gift promo modal - timed auto-open, see docs/architecture/promo-modal.md -->
-    {showPromoModal && <PromoModal client:idle botUrl={giftBotUrl} />}
-
-    <!-- Vercel Analytics - tracks page views and user behavior -->
     <Analytics client:load />
-
-    <!-- Vercel Speed Insights - monitors Core Web Vitals performance -->
     <SpeedInsights client:load />
+
+    <!-- Scroll animations -->
+    <script is:inline>
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(en) {
+          if (en.isIntersecting) {
+            en.target.classList.add('visible');
+            observer.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+    }
+    </script>
   </body>
 </html>

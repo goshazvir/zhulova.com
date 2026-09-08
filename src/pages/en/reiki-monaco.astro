@@ -1,0 +1,27 @@
+---
+import GeoPageTemplate from '../../components/reiki/GeoPageTemplate.astro';
+
+const bodyHtml = `<p>Monaco is an hour from Cannes by car or train, and I come on request — with a small travel addition we agree before booking, so there are no surprises. The session is the same 45 minutes, fully clothed, at your apartment or hotel, in English, Russian or Ukrainian. And it's discreet in the way Monaco needs things to be: I arrive as a visitor, I don't discuss who I see, and nothing about the session is visible from outside the door.</p>
+<p>If you searched "reiki monaco" you'll have found very little in English — one practitioner on the east side of the coast and a handful in French. That's why I come.</p>
+<h2>Where sessions happen in Monaco</h2><p><strong>Apartments.</strong> Monte-Carlo, the Carré d'Or, Larvotto, Fontvieille, La Condamine, the towers above the Port. Concierge buildings are fine — I'm a visitor.</p>
+<p><strong>Hotels.</strong> The Hermitage, the Hôtel de Paris, the Métropole, the Monte-Carlo Bay. A room with a bed; the rest doesn't matter.</p>
+<p><strong>Beausoleil, Cap d'Ail, Roquebrune.</strong> Just outside the Principality and included in the same travel arrangement.</p>
+<p><strong>On board.</strong> Port Hercule, or at anchor off Larvotto. Tender from the port.</p>
+<h2>Who comes, and for what</h2><p>People for whom discretion isn't a preference but a requirement — executives, athletes, families with a name. Residents who moved here for the obvious reasons and found that their sleep didn't come with them. Athletes between competitions who know how to rest a muscle and not the system running it. And the people who live between Monaco and London or Dubai and want sessions that continue at a distance, which mine do.</p>
+<h2>What a session is</h2><p>Forty-five minutes lying on your back, fully clothed. Hands resting lightly on or just above the body from head to feet, in a set sequence. No conversation during, nothing to believe, nothing to do. Most people drop into deep rest within ten minutes; many fall asleep. At the end I let you lie for a moment, then leave you to it. Sleep that night is usually the first thing people notice.</p>
+<h2>Monaco, specifically</h2><p>Monaco's particular thing is that everyone is functioning. Nobody looks tired. The people who come to me here are, almost without exception, doing well by every external measure and closer to empty than they'd say — and they're the most sceptical clients I have, which suits me. The session doesn't need belief. It needs 45 minutes and a closed door, both of which Monaco has in abundance.</p>
+<h2>Prices</h2>
+<div class="pk"><div><b>Single session</b><span>€180</span> · 45 minutes, at your home, hotel or yacht</div><div><b>Arrival Reset</b><span>€180</span> · within 48 hours of landing</div><div><b>Your Week Here</b><span>€480</span> · three sessions during a stay</div><div><b>The Renewal</b><span>€640</span> · four sessions over a month — most chosen</div><div><b>The Immersion</b><span>€1 120</span> · eight sessions over two to three months</div><div><b>Distance</b><span>€180</span> · the same session from anywhere</div></div>
+<p>Card, transfer or cash. Free rescheduling with 24 hours' notice. Children's sessions shorter and priced by age. Reiki is complementary — it sits alongside your doctor's care, never instead, and I'll ask about anything medical before we book.</p>`;
+const otherCities = [{"slug":"reiki-cannes","name":"Cannes"},{"slug":"reiki-nice","name":"Nice"},{"slug":"reiki-antibes","name":"Antibes"},{"slug":"reiki-saint-tropez","name":"Saint-Tropez"},{"slug":"reiki-mougins-valbonne","name":"Mougins & Valbonne"}];
+---
+
+<GeoPageTemplate
+  title="Reiki in Monaco | Discreet English Sessions at Home"
+  description="Reiki in Monaco — discreet private sessions in English at your apartment in Monte-Carlo, Fontvieille or Larvotto, or at your hotel. From Cannes, with a small travel addition agreed in advance."
+  h1="Reiki in Monaco — Discreet Sessions in English, at Your Apartment"
+  bodyHtml={bodyHtml}
+  city="Monaco"
+  slug="reiki-monaco"
+  otherCities={otherCities}
+/>

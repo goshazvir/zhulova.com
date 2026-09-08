@@ -1,0 +1,26 @@
+---
+import GeoPageTemplate from '../../components/reiki/GeoPageTemplate.astro';
+
+const bodyHtml = `<p>Nice is thirty minutes from Cannes on the train and forty on the A8, and it's included in the travel area — so a session in Nice costs the same as one in Cannes: €180 for 45 minutes at your home or hotel, in English, Russian or Ukrainian. I don't have a space in Nice; I come to you.</p>
+<p>If you searched "reiki nice" you'll have found a dozen French practitioners in cabinets around the centre, most of them good and all of them working in French. What I offer is different in three ways: I work in your language, I come to your home, and I don't ask you to believe anything. The nervous system does the work whether or not you do.</p>
+<h2>Where sessions happen in Nice</h2><p><strong>Apartments and villas.</strong> The Carré d'Or, Cimiez, Mont Boron, the Port, Fabron, the hills above the Promenade — all fine. Cap de Nice, Villefranche and Beaulieu are a short step further and still included.</p>
+<p><strong>Hotels.</strong> The Negresco, the Promenade hotels, the smaller ones in the old town. A room with a bed and a closed door.</p>
+<p><strong>At the airport end.</strong> If you've landed at Terminal 2 and are staying in Nice before moving on, the Arrival Reset in your hotel that evening is the single most useful thing I do for people passing through.</p>
+<h2>Who comes, and for what</h2><p>People who chose Nice over Cannes for the city rather than the resort — the English-speaking families in Cimiez, the founders with a company in London and a flat near the Port, the retirees on Mont Boron who came for the light and found they'd brought their nervous system with them. And the people who live between Nice and somewhere else and need sessions that continue from London or Dubai, which mine do.</p>
+<h2>What a session is</h2><p>Forty-five minutes lying on your back, fully clothed. Hands resting lightly on or just above the body from head to feet, in a set sequence. No conversation during, nothing to believe, nothing to do. Most people drop into deep rest within ten minutes; many fall asleep. At the end I let you lie for a moment, then leave you to it. Sleep that night is usually the first thing people notice.</p>
+<h2>Nice, specifically</h2><p>Nice has more of an English-speaking community than anywhere on the coast except Monaco, and that shows in what people bring: relocation that's gone fine on paper, work that follows them home, children in the International School who are doing brilliantly and falling apart at 6 pm. The sessions are at home for a reason — a body that's just had 45 minutes of deep rest shouldn't then drive the Promenade in August.</p>
+<h2>Prices</h2>
+<div class="pk"><div><b>Single session</b><span>€180</span> · 45 minutes, at your home, hotel or yacht</div><div><b>Arrival Reset</b><span>€180</span> · within 48 hours of landing</div><div><b>Your Week Here</b><span>€480</span> · three sessions during a stay</div><div><b>The Renewal</b><span>€640</span> · four sessions over a month — most chosen</div><div><b>The Immersion</b><span>€1 120</span> · eight sessions over two to three months</div><div><b>Distance</b><span>€180</span> · the same session from anywhere</div></div>
+<p>Card, transfer or cash. Free rescheduling with 24 hours' notice. Children's sessions shorter and priced by age. Reiki is complementary — it sits alongside your doctor's care, never instead, and I'll ask about anything medical before we book.</p>`;
+const otherCities = [{"slug":"reiki-cannes","name":"Cannes"},{"slug":"reiki-antibes","name":"Antibes"},{"slug":"reiki-monaco","name":"Monaco"},{"slug":"reiki-saint-tropez","name":"Saint-Tropez"},{"slug":"reiki-mougins-valbonne","name":"Mougins & Valbonne"}];
+---
+
+<GeoPageTemplate
+  title="Reiki in Nice | English-Speaking Home Sessions"
+  description="Reiki in Nice, in English — private 45-minute sessions at your apartment, villa or hotel from the Promenade to Mont Boron and Cimiez. €180, travel included."
+  h1="Reiki in Nice — English-Speaking Sessions at Your Home or Hotel"
+  bodyHtml={bodyHtml}
+  city="Nice"
+  slug="reiki-nice"
+  otherCities={otherCities}
+/>

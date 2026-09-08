@@ -1,0 +1,65 @@
+---
+import EnBaseLayout from '../../layouts/EnBaseLayout.astro';
+import ReikiHeader from '../../components/reiki/ReikiHeader.astro';
+import ReikiMobileMenu from '../../components/reiki/ReikiMobileMenu.tsx';
+import HeroSection from '../../components/reiki/HeroSection.astro';
+import CitiesMarquee from '../../components/reiki/CitiesMarquee.astro';
+import RecognitionSection from '../../components/reiki/RecognitionSection.astro';
+import OutcomesSection from '../../components/reiki/OutcomesSection.astro';
+import AboutSection from '../../components/reiki/AboutSection.astro';
+import ReikiSymbolsSection from '../../components/reiki/ReikiSymbolsSection.tsx';
+import SessionFlowSection from '../../components/reiki/SessionFlowSection.astro';
+import QuoteBand from '../../components/reiki/QuoteBand.astro';
+import PackagesSection from '../../components/reiki/PackagesSection.astro';
+import TestimonialsSection from '../../components/reiki/TestimonialsSection.astro';
+import FaqSection from '../../components/reiki/FaqSection.astro';
+import BookingSection from '../../components/reiki/BookingSection.astro';
+import JournalPreview from '../../components/reiki/JournalPreview.astro';
+import ReikiFooter from '../../components/reiki/ReikiFooter.astro';
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HealthAndBeautyBusiness",
+  "name": "Reiki Riviera — Viktoria Zhulova",
+  "description": "Private, English-speaking Reiki sessions for internationals on the French Riviera.",
+  "url": "https://zhulova.com/en/",
+  "telephone": "+380634543338",
+  "email": "viktoriazhulova@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Cannes",
+    "addressRegion": "Alpes-Maritimes",
+    "addressCountry": "FR"
+  },
+  "areaServed": ["Nice", "Cannes", "Antibes", "Monaco", "Saint-Tropez", "Mougins"],
+  "priceRange": "€€",
+  "founder": {
+    "@type": "Person",
+    "name": "Viktoria Zhulova",
+    "knowsLanguage": ["en", "ru", "uk"]
+  }
+};
+---
+
+<EnBaseLayout
+  title="Reiki on the French Riviera — Viktoria Zhulova"
+  description="Private, English-speaking Reiki sessions for internationals on the French Riviera."
+  jsonLd={jsonLd}
+>
+  <ReikiHeader />
+  <ReikiMobileMenu client:media="(max-width: 1024px)" />
+  <HeroSection />
+  <CitiesMarquee />
+  <RecognitionSection />
+  <OutcomesSection />
+  <AboutSection />
+  <ReikiSymbolsSection client:visible />
+  <SessionFlowSection />
+  <QuoteBand />
+  <PackagesSection />
+  <TestimonialsSection />
+  <FaqSection />
+  <BookingSection />
+  <JournalPreview />
+  <ReikiFooter />
+</EnBaseLayout>

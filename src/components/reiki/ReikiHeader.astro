@@ -1,0 +1,38 @@
+---
+// ReikiHeader.astro — Sticky dark header with gold CTA
+---
+<header id="main-header">
+  <nav>
+    <a href="/en/" class="brand">Viktoria <em>Zhulova</em></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#outcomes">Results</a></li>
+      <li><a href="#reiki">Reiki</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#journal">Journal</a></li>
+    </ul>
+    <a href="#book" class="nav-cta">Book</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<script is:inline>
+(function() {
+  var header = document.getElementById('main-header');
+  if (header) {
+    window.addEventListener('scroll', function() {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    });
+  }
+  var btn = document.getElementById('hamburger-btn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      var nav = document.getElementById('mob-nav');
+      if (nav) nav.classList.add('open');
+    });
+  }
+})();
+</script>

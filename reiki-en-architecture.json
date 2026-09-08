@@ -1,0 +1,338 @@
+{
+  "project": "zhulova.com — EN Reiki Riviera Section",
+  "branch": "feature/reiki-en",
+  "baseBranch": "master",
+
+  "overview": {
+    "summary": "Add a complete English-language Reiki section at /en/ — independent audience from the Ukrainian coaching site (/). Dark midnight theme (Cormorant Garamond + Inter), gold+sage palette, Three.js Reiki symbols animation, 54 journal articles as Astro content collection, 6 geo landing pages, booking form → existing Supabase backend with source:'reiki-en'.",
+    "constraints": [
+      "NO language switcher in nav — only hreflang in <head>",
+      "Pixel-perfect match to /Users/george_pc2/Desktop/reiki-riviera-prototype-v2.html",
+      "Static SSG (output: 'static') — same as existing site",
+      "Zero impact on existing Ukrainian pages",
+      "Three.js for Reiki symbols section — bundled as React island or inline script"
+    ]
+  },
+
+  "fileTree": {
+    "src/layouts/": {
+      "ReikiLayout.astro": "Dark-theme base layout for all /en/ pages. lang='en', midnight bg, Cormorant Garamond + Inter fonts, reiki-specific OG/meta, hreflang tags, JSON-LD (LocalBusiness schema for Reiki practitioner)"
+    },
+    "src/components/reiki/": {
+      "ReikiHeader.astro": "Fixed dark header with brand 'Viktoria Zhulova', nav links (About/Results/Reiki/Packages/FAQ/Journal), Book CTA button, hamburger menu",
+      "ReikiMobileMenu.tsx": "React island (client:media max-width:1024px) — fullscreen dark mobile nav overlay",
+      "ReikiFooter.astro": "Dark footer with copyright, email, Instagram placeholder, privacy link, hreflang link to UA version, medical disclaimer",
+      "HeroSection.astro": "Full-viewport hero with eyebrow, name, role, offer text, dual CTA (Book + See packages), photo placeholder + stats grid, ambient gold gradient",
+      "CitiesMarquee.astro": "Infinite CSS-animated marquee of Riviera cities with gold dots",
+      "RecognitionSection.astro": "Pain-points grid (4 items) with numbered cards, gold left-border hover",
+      "OutcomesSection.astro": "6-column outcomes grid with hover gold top-line, medical disclaimer",
+      "AboutSection.astro": "2-col grid: photo placeholder + bio text + credentials grid (Training/Background/Languages/Location)",
+      "ReikiSymbolsSection.tsx": "React island (client:visible) — Three.js particle animation cycling through Cho Ku Rei / Sei He Ki / Hon Sha Ze Sho Nen. Kanji block + explanatory text overlay. Uses custom WebGL shaders for morphing particles.",
+      "SessionFlowSection.astro": "4-step flow grid (WhatsApp chat → 45min session → closing → location options)",
+      "QuoteBand.astro": "Full-width gold-accented blockquote band",
+      "PackagesSection.astro": "Two groups: 'If you're visiting' (2 packages) + 'If you live here' (3 packages). Featured card styling. Package buttons scroll to booking form and pre-select dropdown.",
+      "TestimonialsSection.astro": "2-col testimonials grid with star ratings, serif italic quotes",
+      "FaqSection.astro": "Accordion FAQ with <details>/<summary>, gold + icon rotation",
+      "BookingSection.astro": "2-col: form (phone/request/email/package select + consent) + side text. Form is static HTML, submission handled by BookingForm React island.",
+      "BookingForm.tsx": "React island (client:idle) — handles form submission to /api/submit-lead with source:'reiki-en', shows success state, WhatsApp fallback link",
+      "JournalPreview.astro": "Grid of 6 latest journal cards with tag/title/excerpt/read-time/arrow",
+      "ScrollAnimations.ts": "Intersection Observer for .fade-up elements (same pattern as existing site)"
+    },
+    "src/pages/en/": {
+      "index.astro": "Main Reiki landing page — assembles all sections from components/reiki/",
+      "privacy-policy.astro": "English privacy policy page using ReikiLayout",
+      "journal/": {
+        "index.astro": "Journal listing page — all published articles, filterable by tag",
+        "[...slug].astro": "Dynamic article pages from reiki-journal content collection"
+      },
+      "[city].astro": "Dynamic geo pages for 6 cities — generated from static paths array"
+    },
+    "src/content/": {
+      "reiki-journal/": {
+        "_description": "54 markdown files generated from articles.json, each with frontmatter (title, meta_title, meta_description, keyword, tag, cta, read, publishDate, published) and markdown body"
+      },
+      "config.ts": "Extended with reikiJournalCollection definition"
+    },
+    "src/data/": {
+      "reikiContent.ts": "Static content data: hero text, pain points, outcomes, about bio, session flow steps, packages (names/prices/descriptions), testimonials, FAQ items, cities list for marquee",
+      "reikiGeoPages.ts": "Geo page data for 6 cities: slug, title, meta, hero overrides, local content"
+    },
+    "src/styles/": {
+      "reiki.css": "Reiki-specific CSS custom properties (--midnight, --deep, --surface, --gold, --sage, --text vars) and component styles that can't be expressed in Tailwind. Imported only in ReikiLayout.astro — zero impact on UA pages."
+    },
+    "public/images/reiki/": {
+      "_description": "Hero portrait, about portrait, OG image for /en/. WebP format, optimized with Sharp."
+    },
+    "tests/e2e/": {
+      "reiki-en.spec.ts": "Playwright E2E: page loads, all sections render, form submission, mobile menu, scroll animations, Three.js canvas present",
+      "reiki-visual.spec.ts": "Playwright visual regression: screenshots compared against prototype baseline for hero, packages, journal sections",
+      "reiki-geo.spec.ts": "E2E for all 6 geo city pages",
+      "reiki-journal.spec.ts": "E2E for journal listing + individual article pages"
+    }
+  },
+
+  "routingPlan": {
+    "staticPages": [
+      { "path": "/en/", "source": "src/pages/en/index.astro", "description": "Main Reiki Riviera landing page" },
+      { "path": "/en/privacy-policy/", "source": "src/pages/en/privacy-policy.astro", "description": "English privacy policy" },
+      { "path": "/en/journal/", "source": "src/pages/en/journal/index.astro", "description": "Journal listing page (all 54 articles)" }
+    ],
+    "dynamicPages": [
+      {
+        "pattern": "/en/journal/[slug]/",
+        "source": "src/pages/en/journal/[...slug].astro",
+        "description": "54 individual article pages from reiki-journal content collection",
+        "example": "/en/journal/how-to-deal-with-jet-lag-after-travel/"
+      },
+      {
+        "pattern": "/en/[city]/",
+        "source": "src/pages/en/[city].astro",
+        "description": "6 geo landing pages with getStaticPaths()",
+        "cities": [
+          "/en/reiki-cannes/",
+          "/en/reiki-nice/",
+          "/en/reiki-antibes/",
+          "/en/reiki-monaco/",
+          "/en/reiki-saint-tropez/",
+          "/en/reiki-mougins-valbonne/"
+        ]
+      }
+    ],
+    "apiEndpoints": [
+      {
+        "path": "/api/submit-lead",
+        "method": "POST",
+        "change": "Existing endpoint — reiki form sends { source: 'reiki-en', phone, email, request, package } — no backend changes needed, just different payload shape"
+      }
+    ],
+    "hreflang": {
+      "strategy": "Inject in ReikiLayout <head>: <link rel='alternate' hreflang='en' href='https://zhulova.com/en/' /> and <link rel='alternate' hreflang='uk' href='https://zhulova.com/' /> on both layouts. BaseLayout.astro gets the reciprocal tag.",
+      "x-default": "https://zhulova.com/"
+    },
+    "sitemap": {
+      "note": "@astrojs/sitemap will auto-discover all /en/ pages. No config changes needed — it crawls all generated pages."
+    }
+  },
+
+  "componentList": [
+    { "name": "ReikiLayout", "type": "Astro", "file": "src/layouts/ReikiLayout.astro", "hydration": "none", "description": "Base layout for all EN pages" },
+    { "name": "ReikiHeader", "type": "Astro", "file": "src/components/reiki/ReikiHeader.astro", "hydration": "none", "description": "Dark fixed header" },
+    { "name": "ReikiMobileMenu", "type": "React", "file": "src/components/reiki/ReikiMobileMenu.tsx", "hydration": "client:media=\"(max-width: 1024px)\"", "description": "Mobile nav overlay" },
+    { "name": "ReikiFooter", "type": "Astro", "file": "src/components/reiki/ReikiFooter.astro", "hydration": "none", "description": "Dark footer" },
+    { "name": "HeroSection", "type": "Astro", "file": "src/components/reiki/HeroSection.astro", "hydration": "none", "description": "Full-viewport hero" },
+    { "name": "CitiesMarquee", "type": "Astro", "file": "src/components/reiki/CitiesMarquee.astro", "hydration": "none", "description": "CSS-animated city marquee" },
+    { "name": "RecognitionSection", "type": "Astro", "file": "src/components/reiki/RecognitionSection.astro", "hydration": "none", "description": "Pain points grid" },
+    { "name": "OutcomesSection", "type": "Astro", "file": "src/components/reiki/OutcomesSection.astro", "hydration": "none", "description": "Results grid" },
+    { "name": "AboutSection", "type": "Astro", "file": "src/components/reiki/AboutSection.astro", "hydration": "none", "description": "Bio + credentials" },
+    { "name": "ReikiSymbolsSection", "type": "React", "file": "src/components/reiki/ReikiSymbolsSection.tsx", "hydration": "client:visible", "description": "Three.js particle animation — WebGL shaders, 300 particles morphing between 3 Reiki symbols" },
+    { "name": "SessionFlowSection", "type": "Astro", "file": "src/components/reiki/SessionFlowSection.astro", "hydration": "none", "description": "4-step process" },
+    { "name": "QuoteBand", "type": "Astro", "file": "src/components/reiki/QuoteBand.astro", "hydration": "none", "description": "Blockquote band" },
+    { "name": "PackagesSection", "type": "Astro", "file": "src/components/reiki/PackagesSection.astro", "hydration": "none", "description": "5 pricing packages in 2 groups" },
+    { "name": "TestimonialsSection", "type": "Astro", "file": "src/components/reiki/TestimonialsSection.astro", "hydration": "none", "description": "Client testimonials" },
+    { "name": "FaqSection", "type": "Astro", "file": "src/components/reiki/FaqSection.astro", "hydration": "none", "description": "FAQ accordion" },
+    { "name": "BookingSection", "type": "Astro", "file": "src/components/reiki/BookingSection.astro", "hydration": "none", "description": "Booking form container" },
+    { "name": "BookingForm", "type": "React", "file": "src/components/reiki/BookingForm.tsx", "hydration": "client:idle", "description": "Form logic: validation, submit to /api/submit-lead, success state, WhatsApp link" },
+    { "name": "JournalPreview", "type": "Astro", "file": "src/components/reiki/JournalPreview.astro", "hydration": "none", "description": "6-card journal grid on homepage" }
+  ],
+
+  "tailwindThemeExtension": {
+    "description": "Extend existing tailwind.config.mjs with reiki dark theme colors. These are additive — no existing tokens change.",
+    "colors": {
+      "reiki": {
+        "midnight": "#0C0F0A",
+        "deep": "#131914",
+        "surface": "#1A201B",
+        "surface2": "#222A23",
+        "surface3": "#2B342C",
+        "gold": "#C9A84C",
+        "gold-light": "#E2CC7E",
+        "gold-dim": "rgba(201,168,76,0.15)",
+        "gold-glow": "rgba(201,168,76,0.06)",
+        "sage": "#7A9B6D",
+        "sage-dim": "rgba(122,155,109,0.12)",
+        "text": "#E8E4DC",
+        "text-secondary": "rgba(232,228,220,0.6)",
+        "text-muted": "rgba(232,228,220,0.35)",
+        "line": "rgba(232,228,220,0.08)",
+        "line-strong": "rgba(232,228,220,0.15)"
+      }
+    },
+    "fontFamily": {
+      "reiki-serif": ["Cormorant Garamond", "Georgia", "serif"],
+      "reiki-sans": ["Inter", "system-ui", "sans-serif"],
+      "reiki-jp": ["Noto Serif JP", "serif"]
+    },
+    "note": "Reiki pages use CSS custom properties (var(--midnight) etc.) in src/styles/reiki.css for the prototype-matched values. Tailwind tokens are a convenience layer for components that prefer utility classes. Both approaches coexist."
+  },
+
+  "contentCollectionSchema": {
+    "collection": "reiki-journal",
+    "directory": "src/content/reiki-journal/",
+    "schema": {
+      "title": { "type": "z.string()", "description": "Article title (from articles.json 'title')" },
+      "metaTitle": { "type": "z.string()", "description": "SEO <title> tag (from 'meta_title')" },
+      "metaDescription": { "type": "z.string()", "description": "SEO meta description (from 'meta_description')" },
+      "keyword": { "type": "z.string()", "description": "Primary SEO keyword" },
+      "tag": { "type": "z.string()", "description": "Content category tag — one of: Arrival, Body, Burnout, Distance, Expats, Family, Founders, Inner life, Local, Nervous system, Practice, Trust, Visiting" },
+      "cta": { "type": "z.enum(['arrival','child','distance','home','immersion','packages','renewal','single','week'])", "description": "Which CTA/package to highlight at article end" },
+      "readTime": { "type": "z.string()", "description": "Read time in minutes (e.g. '6')" },
+      "publishDate": { "type": "z.date()", "description": "Publish date for scheduled publishing. Launch batch (first 8 articles) get launch date. Remaining 46 articles get sequential dates, 1/day after launch." },
+      "published": { "type": "z.boolean().default(true)", "description": "Filter unpublished articles at build time" }
+    },
+    "generation": {
+      "script": "scripts/generate-reiki-journal.ts",
+      "description": "Node script that reads /Users/george_pc2/Desktop/reiki-riviera-journal/articles.json and generates 54 .md files in src/content/reiki-journal/. Each file: YAML frontmatter (mapped fields + computed publishDate) + markdown body. Launch batch: articles 0-7 get publishDate = LAUNCH_DATE. Articles 8-53 get publishDate = LAUNCH_DATE + (index - 7) days."
+    },
+    "configUpdate": {
+      "file": "src/content/config.ts",
+      "change": "Add reikiJournalCollection alongside existing coursesCollection, export in collections object"
+    }
+  },
+
+  "geoPages": {
+    "strategy": "Single [city].astro template with getStaticPaths() returning 6 entries. Each entry carries city-specific props (title, meta, hero text, local details) from src/data/reikiGeoPages.ts.",
+    "cities": [
+      { "slug": "reiki-cannes", "path": "/en/reiki-cannes/", "source": "Desktop/reiki-riviera-journal/reiki-cannes/index.html" },
+      { "slug": "reiki-nice", "path": "/en/reiki-nice/", "source": "Desktop/reiki-riviera-journal/reiki-nice/index.html" },
+      { "slug": "reiki-antibes", "path": "/en/reiki-antibes/", "source": "Desktop/reiki-riviera-journal/reiki-antibes/index.html" },
+      { "slug": "reiki-monaco", "path": "/en/reiki-monaco/", "source": "Desktop/reiki-riviera-journal/reiki-monaco/index.html" },
+      { "slug": "reiki-saint-tropez", "path": "/en/reiki-saint-tropez/", "source": "Desktop/reiki-riviera-journal/reiki-saint-tropez/index.html" },
+      { "slug": "reiki-mougins-valbonne", "path": "/en/reiki-mougins-valbonne/", "source": "Desktop/reiki-riviera-journal/reiki-mougins-valbonne/index.html" }
+    ],
+    "design": "Same dark midnight theme as main /en/ page but with city-specific LocalBusiness JSON-LD schema, adapted hero headline, and city-relevant FAQs"
+  },
+
+  "threeJsIntegration": {
+    "approach": "React island component (ReikiSymbolsSection.tsx) with client:visible directive. Three.js imported as npm dependency (add 'three' to package.json). Symbol point data stored in a separate .ts file for code-splitting.",
+    "details": {
+      "particles": 300,
+      "symbols": ["Cho Ku Rei", "Sei He Ki", "Hon Sha Ze Sho Nen"],
+      "animation": "Continuous cycle: scatter → morph to symbol → hold → scatter → next symbol. ~10.4s per cycle, 31.2s total loop.",
+      "shaders": "Custom vertex/fragment shaders for particle morphing with turbulence, twinkling, and gold/sage color mixing",
+      "performance": "requestAnimationFrame loop, frustumCulled=false, maxPixelRatio=2, resize handler"
+    },
+    "dependencies": ["three@^0.128.0 || ^0.164.0"]
+  },
+
+  "formIntegration": {
+    "endpoint": "/api/submit-lead (existing)",
+    "payload": {
+      "name": "optional (not in reiki form)",
+      "phone": "required",
+      "email": "required",
+      "message": "mapped from 'request' field",
+      "source": "reiki-en",
+      "package": "selected package name or 'Not sure yet'"
+    },
+    "whatsappFallback": "https://wa.me/380634543338",
+    "contactEmail": "viktoriazhulova@gmail.com",
+    "validation": "Zod schema in BookingForm.tsx — phone required, email format, consent checkbox"
+  },
+
+  "seoStrategy": {
+    "hreflang": {
+      "enPages": "<link rel='alternate' hreflang='en' href='https://zhulova.com/en/' />",
+      "ukPages": "<link rel='alternate' hreflang='uk' href='https://zhulova.com/' />",
+      "xDefault": "<link rel='alternate' hreflang='x-default' href='https://zhulova.com/' />",
+      "placement": "Both BaseLayout.astro and ReikiLayout.astro <head>"
+    },
+    "jsonLd": {
+      "mainPage": "LocalBusiness + Person schema — Reiki practitioner in Cannes",
+      "articles": "Article schema with author, datePublished, keywords",
+      "geoPages": "LocalBusiness schema with city-specific areaServed"
+    },
+    "robots": "All /en/ pages indexable. Sitemap auto-generated by @astrojs/sitemap.",
+    "ogImages": "Custom OG image for /en/ (dark theme branded). Article pages use shared OG or article-specific."
+  },
+
+  "testPlan": {
+    "unit": {
+      "framework": "Vitest + React Testing Library (existing setup)",
+      "tests": [
+        "BookingForm.tsx — form validation, submit success/error, source:'reiki-en' in payload",
+        "ReikiMobileMenu.tsx — open/close, nav link clicks",
+        "ReikiSymbolsSection.tsx — renders canvas, Three.js initialization (mock WebGL context)"
+      ]
+    },
+    "e2e": {
+      "framework": "Playwright (existing setup)",
+      "files": {
+        "reiki-en.spec.ts": [
+          "Page loads at /en/ with status 200",
+          "All 12 sections render (hero, cities, recognition, outcomes, about, reiki, flow, quote, packages, testimonials, FAQ, booking)",
+          "Header scroll effect (add scrolled class after 40px)",
+          "Mobile menu opens and closes",
+          "Package button scrolls to booking and pre-selects dropdown",
+          "Form submission succeeds (mock /api/submit-lead)",
+          "WhatsApp link has correct phone number",
+          "hreflang tags present in <head>",
+          "No console errors",
+          "Accessibility: axe-core scan passes"
+        ],
+        "reiki-visual.spec.ts": [
+          "Hero section screenshot matches baseline",
+          "Packages section screenshot matches baseline",
+          "Journal section screenshot matches baseline",
+          "Mobile viewport (375px) full-page screenshot matches baseline",
+          "Note: Baselines generated from prototype render, threshold 0.1% pixel diff"
+        ],
+        "reiki-geo.spec.ts": [
+          "All 6 geo pages load with 200",
+          "Each has correct <title> and meta description",
+          "Each has city-specific LocalBusiness JSON-LD",
+          "Booking form present on each"
+        ],
+        "reiki-journal.spec.ts": [
+          "/en/journal/ loads and shows article cards",
+          "Individual article page loads (/en/journal/how-to-deal-with-jet-lag-after-travel/)",
+          "Article has correct meta tags from frontmatter",
+          "CTA section renders at article bottom",
+          "Tag filtering works on listing page"
+        ]
+      }
+    },
+    "performance": {
+      "lighthouse": "Run on /en/ — target 90+ performance, 95+ accessibility",
+      "bundleSize": "Three.js adds ~150KB (gzipped ~50KB) — only loaded on /en/ pages via client:visible (code-split). Monitor total JS stays under 100KB limit for pages without Three.js."
+    }
+  },
+
+  "implementationOrder": [
+    "1. Create feature/reiki-en branch from master",
+    "2. Extend tailwind.config.mjs with reiki color tokens",
+    "3. Create src/styles/reiki.css with CSS custom properties",
+    "4. Create ReikiLayout.astro (dark theme base layout)",
+    "5. Create ReikiHeader.astro + ReikiMobileMenu.tsx + ReikiFooter.astro",
+    "6. Create src/data/reikiContent.ts with all static content from prototype",
+    "7. Build all section components (Hero → Cities → Recognition → Outcomes → About → Flow → Quote → Packages → Testimonials → FAQ → Booking → Journal preview)",
+    "8. Create ReikiSymbolsSection.tsx with Three.js (install three package)",
+    "9. Create BookingForm.tsx (form submission to /api/submit-lead)",
+    "10. Assemble src/pages/en/index.astro",
+    "11. Run generate-reiki-journal.ts script to create 54 .md files from articles.json",
+    "12. Update src/content/config.ts with reiki-journal collection",
+    "13. Create journal pages: src/pages/en/journal/index.astro + [...slug].astro",
+    "14. Create geo pages: src/pages/en/[city].astro + src/data/reikiGeoPages.ts",
+    "15. Create src/pages/en/privacy-policy.astro",
+    "16. Add hreflang tags to both BaseLayout.astro and ReikiLayout.astro",
+    "17. Write E2E tests (reiki-en.spec.ts, reiki-visual.spec.ts, reiki-geo.spec.ts, reiki-journal.spec.ts)",
+    "18. Write unit tests for React islands",
+    "19. Run full build (astro check && astro build) — verify zero type errors",
+    "20. Run Playwright tests — verify all pass",
+    "21. Run Lighthouse on /en/ — verify 90+ performance"
+  ],
+
+  "dependencyChanges": {
+    "add": {
+      "three": "^0.164.0",
+      "@types/three": "^0.164.0"
+    },
+    "note": "All other dependencies already present (React, Tailwind, Zod, Supabase client, Playwright)"
+  },
+
+  "configChanges": {
+    "astro.config.mjs": "No changes needed — static output + Vercel adapter already handles /en/ routes. Sitemap integration auto-discovers new pages.",
+    "tailwind.config.mjs": "Add reiki color palette + font families under theme.extend",
+    "tsconfig.json": "No changes — existing path aliases (@components, @layouts, etc.) cover new files",
+    "package.json": "Add 'three' and '@types/three' dependencies. Add script: 'generate:reiki-journal' for article generation."
+  }
+}

@@ -1,0 +1,91 @@
+---
+import EnBaseLayout from '../../layouts/EnBaseLayout.astro';
+import ReikiHeader from '../../components/reiki/ReikiHeader.astro';
+import ReikiMobileMenu from '../../components/reiki/ReikiMobileMenu.tsx';
+import HeroSection from '../../components/reiki/HeroSection.astro';
+import CitiesMarquee from '../../components/reiki/CitiesMarquee.astro';
+import RecognitionSection from '../../components/reiki/RecognitionSection.astro';
+import OutcomesSection from '../../components/reiki/OutcomesSection.astro';
+import AboutSection from '../../components/reiki/AboutSection.astro';
+import CertificatesSection from '../../components/reiki/CertificatesSection.astro';
+import ReikiSymbolsSection from '../../components/reiki/ReikiSymbolsSection.tsx';
+import SessionFlowSection from '../../components/reiki/SessionFlowSection.astro';
+import QuoteBand from '../../components/reiki/QuoteBand.astro';
+import PackagesSection from '../../components/reiki/PackagesSection.astro';
+import TestimonialsSection from '../../components/reiki/TestimonialsSection.astro';
+import FaqSection from '../../components/reiki/FaqSection.astro';
+import BookingSection from '../../components/reiki/BookingSection.astro';
+import JournalPreview from '../../components/reiki/JournalPreview.astro';
+import ReikiFooter from '../../components/reiki/ReikiFooter.astro';
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "HealthAndBeautyBusiness",
+    "name": "Reiki Riviera — Viktoria Zhulova",
+    "description": "Private, English-speaking Reiki sessions for internationals on the French Riviera.",
+    "url": "https://zhulova.com/en/",
+    "telephone": "+380****3338",
+    "email": "viktoriazhulova@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Cannes",
+      "addressRegion": "Alpes-Maritimes",
+      "addressCountry": "FR"
+    },
+    "areaServed": ["Nice", "Cannes", "Antibes", "Monaco", "Saint-Tropez", "Mougins"],
+    "priceRange": "€€",
+    "founder": {
+      "@type": "Person",
+      "name": "Viktoria Zhulova",
+      "knowsLanguage": ["en", "ru", "uk"]
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Is Reiki a substitute for medical or psychological treatment?", "acceptedAnswer": {"@type": "Answer", "text": "No. Reiki is a relaxation-focused energy practice and is offered alongside — never in place of — the care of your doctor or therapist. I don't diagnose or treat any medical condition."}},
+      {"@type": "Question", "name": "What does a session actually feel like?", "acceptedAnswer": {"@type": "Answer", "text": "Most people describe warmth, a sense of heaviness or lightness in the body, or simply falling into a very deep rest. Some feel very little in the moment and notice the effect over the following day or two — both are common."}},
+      {"@type": "Question", "name": "Do I need to believe in energy work for it to be worthwhile?", "acceptedAnswer": {"@type": "Answer", "text": "No. I ask clients to stay open, not convinced. Many of the people I work with are analytical by profession and approach it the same way — as an experience to test, not a belief to adopt."}},
+      {"@type": "Question", "name": "Can sessions happen at my villa or on my yacht?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — this is the most requested format. I bring everything needed; all you need is a quiet room or deck and about an hour."}},
+      {"@type": "Question", "name": "Do you work with children?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, with a gentler, shorter format designed for children who are anxious or struggling to settle — always alongside, not instead of, any medical or psychological care they're already receiving."}},
+      {"@type": "Question", "name": "I'm only here for a week — can you come to my hotel?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Hotel rooms, rented villas and yachts at anchor are all fine; I bring everything. Same-day and next-day slots are often possible — write on WhatsApp and I'll tell you honestly what's free."}},
+      {"@type": "Question", "name": "Is it a good idea on the day I land?", "acceptedAnswer": {"@type": "Answer", "text": "It's one of the best times. A session in the first 24–48 hours tends to settle the nervous system and bring sleep back that night — that's exactly what the Arrival Reset is for."}},
+      {"@type": "Question", "name": "How do I pay, and what if plans change?", "acceptedAnswer": {"@type": "Answer", "text": "Card via a secure link, bank transfer or cash — whichever is easiest. Packages are paid before the first session. Rescheduling is free with 24 hours' notice."}},
+      {"@type": "Question", "name": "How does booking work?", "acceptedAnswer": {"@type": "Answer", "text": "Leave your phone number, email and a few words about what's on your mind in the form below. I'll reply personally on WhatsApp within 24 hours to find a time."}}
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://zhulova.com/en/"}
+    ]
+  }
+];
+---
+
+<EnBaseLayout
+  title="Reiki on the French Riviera — Viktoria Zhulova"
+  description="Private Reiki sessions in English on the French Riviera — Nice, Cannes, Antibes, Monaco, Saint-Tropez. Usui Reiki Ryoho Level II. In-home, villa and yacht sessions. Book same-day."
+  jsonLd={jsonLd}
+>
+  <ReikiHeader />
+  <ReikiMobileMenu client:media="(max-width: 1024px)" />
+  <HeroSection />
+  <CitiesMarquee />
+  <RecognitionSection />
+  <OutcomesSection />
+  <AboutSection />
+  <CertificatesSection />
+  <ReikiSymbolsSection client:visible />
+  <SessionFlowSection />
+  <QuoteBand />
+  <PackagesSection />
+  <TestimonialsSection />
+  <FaqSection />
+  <BookingSection />
+  <JournalPreview />
+  <ReikiFooter />
+</EnBaseLayout>

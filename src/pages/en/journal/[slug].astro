@@ -1,0 +1,103 @@
+---
+import EnBaseLayout from '../../../layouts/EnBaseLayout.astro';
+import ReikiHeader from '../../../components/reiki/ReikiHeader.astro';
+import ReikiMobileMenu from '../../../components/reiki/ReikiMobileMenu.tsx';
+import ReikiFooter from '../../../components/reiki/ReikiFooter.astro';
+import { getPublishedSlugs, getArticleBySlug } from '../../../lib/articles';
+
+export function getStaticPaths() {
+  const slugs = getPublishedSlugs();
+  return slugs.map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const article = getArticleBySlug(slug!);
+
+if (!article) {
+  return Astro.redirect('/en/journal/');
+}
+
+// Convert markdown body to HTML (simple conversion)
+function markdownToHtml(md: string): string {
+  let html = md;
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Paragraphs
+  html = html.split('\n\n').map((block) => {
+    block = block.trim();
+    if (!block) return '';
+    if (block.startsWith('<h') || block.startsWith('<ul') || block.startsWith('<ol')) return block;
+    if (block.startsWith('- ')) {
+      const items = block.split('\n').map(line => `<li>${line.replace(/^- /, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    }
+    return `<p>${block}</p>`;
+  }).join('\n');
+  return html;
+}
+
+const bodyHtml = markdownToHtml(article.body);
+
+const ctaMap: Record<string, { title: string; desc: string; link: string }> = {
+  arrival: { title: 'The Arrival Reset', desc: 'One session in your first 48 hours — to land in your body, not just at the airport.', link: '#book' },
+  single: { title: 'Single Session', desc: 'A first, unhurried introduction — or a stand-alone reset before a demanding week.', link: '#book' },
+  week: { title: 'Your Week Here', desc: 'Three sessions spaced across a week or two — for a holiday that actually restores something.', link: '#book' },
+  renewal: { title: 'The Renewal', desc: 'Four sessions over 3–5 weeks to let the effect build.', link: '#book' },
+  immersion: { title: 'The Immersion', desc: 'A sustained container for a real transition.', link: '#book' },
+  packages: { title: 'See all packages', desc: 'Choose the shape that fits your stay.', link: '/en/#packages' },
+  distance: { title: 'Distance session', desc: 'The same 45-minute session without the geography.', link: '#book' },
+  child: { title: "Children's sessions", desc: "Gentler, shorter format for children who are anxious or struggling to settle.", link: '#book' },
+  home: { title: 'Sessions at home', desc: 'At your villa, yacht, or hotel room — whichever keeps it unhurried.', link: '#book' },
+};
+const cta = ctaMap[article.cta] || ctaMap.packages;
+
+const siteUrl = 'https://zhulova.com';
+const articleUrl = `${siteUrl}/en/journal/${slug}/`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": article.title,
+  "author": { "@type": "Person", "name": "Viktoria Zhulova" },
+  "publisher": { "@type": "Person", "name": "Viktoria Zhulova", "url": "https://zhulova.com/en/" },
+  "datePublished": article.publishDate,
+  "description": article.meta_description,
+  "keywords": article.keyword,
+  "mainEntityOfPage": articleUrl,
+  "image": "https://zhulova.com/images/reiki/hero-viktoria.webp",
+  "inLanguage": "en"
+};
+---
+
+<EnBaseLayout
+  title={article.meta_title}
+  description={article.meta_description}
+  jsonLd={jsonLd}
+  ogType="article"
+>
+  <ReikiHeader />
+  <ReikiMobileMenu client:media="(max-width: 1024px)" />
+
+  <main class="article-page">
+    <div class="wrap">
+      <a href="/en/journal/" class="article-back">← Journal</a>
+      <div class="article-tag">{article.tag}</div>
+      <h1>{article.title}</h1>
+      <div class="article-meta">{article.read} min read · {article.keyword}</div>
+      <div class="article-body" set:html={bodyHtml} />
+
+      <div class="article-cta">
+        <h3>{cta.title}</h3>
+        <p>{cta.desc}</p>
+        <a href={cta.link} class="btn-gold">Book now <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+    </div>
+  </main>
+
+  <ReikiFooter />
+</EnBaseLayout>

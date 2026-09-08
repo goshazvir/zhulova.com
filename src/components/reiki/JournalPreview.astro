@@ -1,0 +1,26 @@
+---
+// JournalPreview.astro — 6 latest article cards on homepage
+import { getLatestArticles } from '../../lib/articles';
+
+const articles = getLatestArticles(6);
+---
+<section id="journal" class="fade-up">
+  <div class="wrap">
+    <div class="section-label">Journal</div>
+    <h2 class="section-title">Notes on rest, energy and living between countries</h2>
+    <p class="section-lead">Short, honest pieces on what people bring to sessions — jet lag, burnout, a nervous system that won't stand down.</p>
+    <div class="journal-grid">
+      {articles.map((article) => (
+        <a class="journal-card" href={`/en/journal/${article.slug}/`}>
+          <div class="journal-tag">{article.tag}</div>
+          <h3>{article.title}</h3>
+          <p>{article.meta_description}</p>
+          <div class="journal-meta">
+            <span>{article.read} min</span>
+            <span>Read →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

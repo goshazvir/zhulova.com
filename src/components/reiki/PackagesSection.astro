@@ -1,0 +1,63 @@
+---
+// PackagesSection.astro — 5 packages in 2 groups
+---
+<section id="packages" class="fade-up">
+  <div class="wrap">
+    <div class="section-label">Working together</div>
+    <h2 class="section-title">Choose the shape that fits your stay</h2>
+    <p class="section-lead">Every session is 45 minutes, fully clothed, in English. Travel within Cannes, Antibes and Nice is included.</p>
+
+    <div class="pkg-group-label">If you're visiting</div>
+    <div class="pkg-grid pkg-grid-2">
+      <div class="pkg featured">
+        <div class="pkg-kicker">Within 48h of landing</div>
+        <div class="pkg-name">Arrival Reset</div>
+        <div class="pkg-desc">One session in your hotel or villa in the first day or two — to land in your body, not just at the airport. Sleep tends to come back that night.</div>
+        <div class="pkg-price">€180<span class="per">one session</span></div>
+        <a href="#book" class="pkg-btn" data-pkg="Arrival Reset">Book this</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-kicker">During your stay · 3 sessions</div>
+        <div class="pkg-name">Your Week Here</div>
+        <div class="pkg-desc">Three sessions spaced across a week or two — arrival, midway, and before you leave. For a holiday that actually restores something.</div>
+        <div class="pkg-price">€480<span class="per">€160 / session</span></div>
+        <a href="#book" class="pkg-btn" data-pkg="Your Week Here">Book this</a>
+      </div>
+    </div>
+
+    <div class="pkg-group-label">If you live here</div>
+    <div class="pkg-grid pkg-grid-3">
+      <div class="pkg">
+        <div class="pkg-kicker">Single session</div>
+        <div class="pkg-name">Single Session</div>
+        <div class="pkg-desc">A first, unhurried introduction — or a stand-alone reset before a demanding week.</div>
+        <div class="pkg-price">€180<span class="per">one session</span></div>
+        <a href="#book" class="pkg-btn" data-pkg="Single Session">Book this</a>
+      </div>
+      <div class="pkg featured">
+        <div class="pkg-kicker">Most chosen · 4 sessions</div>
+        <div class="pkg-name">The Renewal</div>
+        <div class="pkg-desc">For a specific season — a relocation, a launch, a recovery. Four sessions over 3–5 weeks to let the effect build.</div>
+        <div class="pkg-price">€640<span class="per">€160 / session</span></div>
+        <a href="#book" class="pkg-btn" data-pkg="The Renewal">Book this</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-kicker">8 sessions</div>
+        <div class="pkg-name">The Immersion</div>
+        <div class="pkg-desc">A sustained container for a real transition — a new chapter, or a longer-standing pattern you're ready to work through properly.</div>
+        <div class="pkg-price">€1,120<span class="per">€140 / session</span></div>
+        <a href="#book" class="pkg-btn" data-pkg="The Immersion">Book this</a>
+      </div>
+    </div>
+    <p class="pkg-note">Children's sessions are shorter and gentler — ask on WhatsApp. Payment by card, bank transfer or cash. Free rescheduling with 24h notice.</p>
+  </div>
+</section>
+
+<script is:inline>
+document.querySelectorAll('.pkg-btn[data-pkg]').forEach(function(b) {
+  b.addEventListener('click', function() {
+    var sel = document.getElementById('f-pkg');
+    if (sel) sel.value = b.getAttribute('data-pkg');
+  });
+});
+</script>

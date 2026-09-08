@@ -1,0 +1,37 @@
+---
+import EnBaseLayout from '../../layouts/EnBaseLayout.astro';
+import ReikiHeader from '../../components/reiki/ReikiHeader.astro';
+import ReikiMobileMenu from '../../components/reiki/ReikiMobileMenu.tsx';
+import AboutSection from '../../components/reiki/AboutSection.astro';
+import ReikiFooter from '../../components/reiki/ReikiFooter.astro';
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Viktoria Zhulova",
+  "jobTitle": "Reiki Master & Intuitive Energy Healer",
+  "description": "Certified Usui Reiki Ryoho Level II practitioner based in Cannes, French Riviera. 10+ years in coaching, investing and energy work.",
+  "url": "https://zhulova.com/en/about/",
+  "knowsLanguage": ["en", "ru", "uk"],
+  "address": {"@type": "PostalAddress", "addressLocality": "Cannes", "addressCountry": "FR"},
+  "hasCredential": [
+    {"@type": "EducationalOccupationalCredential", "credentialCategory": "Usui Reiki Ryoho Level I", "dateCreated": "2025-12"},
+    {"@type": "EducationalOccupationalCredential", "credentialCategory": "Usui Reiki Ryoho Level II", "dateCreated": "2026-02"}
+  ]
+};
+---
+
+<EnBaseLayout
+  title="About Viktoria Zhulova — Reiki Practitioner, Cannes"
+  description="Reiki practitioner and energy healer on the French Riviera. 10 years of coaching and energy work. English-speaking, Cannes-based, mobile across the Riviera."
+  jsonLd={jsonLd}
+>
+  <ReikiHeader />
+  <ReikiMobileMenu client:media="(max-width: 1024px)" />
+  <div style="padding-top: 40px;"></div>
+  <AboutSection />
+  <div class="wrap" style="padding-bottom: var(--section-pad);">
+    <a href="/en/#book" class="btn-gold">Book a session <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+  </div>
+  <ReikiFooter />
+</EnBaseLayout>

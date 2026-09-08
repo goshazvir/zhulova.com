@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EN Integration Preview — How /en/ fits into zhulova.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF9F4;
+    --surface:#FFFFFF;
+    --ink:#1B1F2A;
+    --muted:rgba(27,31,42,0.62);
+    --gold:#B9952B;
+    --gold-deep:#9C7C1F;
+    --gold-soft:#F5EDD6;
+    --olive:#6F8464;
+    --olive-deep:#55684C;
+    --olive-soft:#E8EDE2;
+    --line:rgba(27,31,42,0.10);
+    --serif:'Playfair Display', serif;
+    --sans:'Manrope', sans-serif;
+    --radius:22px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:400;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+  @media(max-width:640px){.wrap{padding:0 20px;}}
+
+  /* === DESIGN NOTES BANNER === */
+  .design-notes{background:#1B1F2A;color:#fff;padding:20px 0;font-size:13px;border-bottom:3px solid var(--gold);}
+  .design-notes .wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:center;}
+  .design-notes strong{color:var(--gold);font-size:15px;}
+  .design-notes p{margin:0;opacity:0.85;max-width:600px;}
+
+  /* === HEADER === */
+  header{position:sticky;top:0;z-index:50;background:rgba(251,249,244,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;height:80px;}
+  .brand{font-family:var(--serif);font-size:24px;font-weight:700;display:flex;align-items:center;gap:12px;letter-spacing:-0.01em;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);display:inline-block;}
+  .navlinks{display:none;gap:34px;font-size:16px;font-weight:500;}
+  @media(min-width:960px){.navlinks{display:flex;}}
+  .navlinks a{color:var(--muted);transition:color .2s;padding-bottom:4px;border-bottom:2px solid transparent;}
+  .navlinks a:hover{color:var(--ink);}
+  .navcta{font-size:15px;font-weight:600;padding:12px 22px;border-radius:999px;background:var(--gold-soft);color:var(--gold-deep);transition:background .25s;white-space:nowrap;}
+  .navcta:hover{background:#EFE3BF;}
+
+  /* === CITIES === */
+  .cities-strip{border-bottom:1px solid var(--line);padding:22px 0;}
+  .cities-strip p{text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(14px,1.35vw,18px);line-height:1.9;color:#2F4452;letter-spacing:0.01em;}
+  .cities-strip span{opacity:.45;margin:0 .35em;}
+
+  /* === HERO === */
+  .hero{padding:72px 0 64px;}
+  .hero-grid{display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
+  @media(min-width:960px){.hero-grid{grid-template-columns:1.05fr 0.95fr;gap:64px;}}
+  .hero-name{font-family:var(--serif);font-weight:700;font-size:clamp(36px,4.8vw,60px);line-height:1.04;margin:0 0 14px;letter-spacing:0.06em;}
+  h1.hero-role{font-family:var(--sans);font-size:clamp(19px,2.2vw,26px);color:var(--gold);font-weight:500;margin:0 0 26px;line-height:1.3;}
+  .hero-offer{font-family:var(--serif);font-size:clamp(20px,2.2vw,26px);line-height:1.45;color:var(--ink);margin:0 0 22px;max-width:30ch;}
+  .hero-offer b{font-weight:600;color:var(--olive-deep);}
+  .hero-sub{font-size:16px;color:var(--muted);max-width:50ch;margin:0 0 36px;}
+  .hero-actions{display:flex;gap:22px;flex-wrap:wrap;align-items:center;}
+  .btn-primary{display:inline-block;background:var(--gold);color:#fff;padding:18px 36px;font-size:16px;font-weight:600;border-radius:14px;border:none;cursor:pointer;font-family:var(--sans);transition:background .25s;}
+  .btn-primary:hover{background:var(--gold-deep);}
+  .btn-ghost{font-size:15px;font-weight:500;color:var(--muted);border-bottom:1px solid var(--muted);padding-bottom:2px;}
+  .hero-photo{border-radius:28px;overflow:hidden;background:#EEE9DF;aspect-ratio:4/5;position:relative;}
+  .hero-photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--muted);font-size:14px;text-align:center;padding:24px;}
+  .hero-photo .ph span{font-family:var(--serif);font-size:20px;color:var(--ink);}
+
+  .stat-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:44px;}
+  @media(min-width:600px){.stat-grid{grid-template-columns:1fr 1fr;}}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 24px;display:flex;align-items:center;gap:18px;}
+  .stat .ic{width:52px;height:52px;border-radius:14px;background:var(--olive-soft);color:var(--olive-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .stat .ic svg{width:24px;height:24px;}
+  .stat b{display:block;font-weight:700;font-size:17px;}
+  .stat small{color:var(--muted);font-size:14px;}
+
+  /* === SECTION === */
+  section{padding:104px 0;}
+  @media(max-width:640px){section{padding:68px 0;}}
+  .section-head{max-width:680px;margin-bottom:52px;}
+  .kicker{font-size:14px;font-weight:600;color:var(--olive);margin-bottom:14px;letter-spacing:0.02em;}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,3.8vw,46px);line-height:1.12;margin:0;letter-spacing:-0.01em;}
+  .lead{font-size:17.5px;color:var(--muted);margin-top:18px;max-width:58ch;}
+
+  /* === RECOGNITION === */
+  .recog-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:48px;}
+  @media(min-width:800px){.recog-grid{grid-template-columns:repeat(2,1fr);}}
+  .recog{background:var(--olive-soft);border:1px solid rgba(111,132,100,0.18);border-radius:var(--radius);padding:32px 30px;}
+  .recog .num{font-family:var(--serif);font-size:20px;color:var(--olive-deep);display:block;margin-bottom:14px;}
+  .recog p{font-size:15.5px;color:var(--muted);}
+
+  /* === PACKAGES === */
+  .pkg-group-title{font-family:var(--serif);font-size:22px;font-weight:600;margin:40px 0 -28px;color:var(--ink);}
+  .pkg-grid{display:grid;grid-template-columns:1fr;gap:20px;margin-top:48px;}
+  @media(min-width:860px){.pkg-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(min-width:860px){.pkg-grid-2{grid-template-columns:repeat(2,1fr);max-width:780px;}}
+  .pkg{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:36px 32px;display:flex;flex-direction:column;gap:14px;}
+  .pkg.featured{background:var(--olive-soft);border-color:rgba(111,132,100,0.35);}
+  .pkg .pkg-kicker{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--olive-deep);font-weight:700;}
+  .pkg .pkg-name{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.1;}
+  .pkg .pkg-desc{font-size:14.5px;color:var(--muted);flex:1;}
+  .pkg .pkg-price{font-family:var(--serif);font-size:32px;font-weight:600;margin-top:8px;}
+  .pkg .pkg-price .per{display:block;font-family:var(--sans);font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px;}
+  .pkg .pkg-btn{margin-top:10px;background:var(--gold);color:#fff;padding:14px 22px;border-radius:14px;font-size:15px;font-weight:600;text-align:center;transition:background .25s;display:block;}
+  .pkg .pkg-btn:hover{background:var(--gold-deep);}
+
+  /* === FOOTER === */
+  footer{border-top:1px solid var(--line);padding:48px 0;font-size:13px;color:var(--muted);}
+  footer .wrap{display:flex;flex-direction:column;gap:16px;}
+  @media(min-width:760px){footer .wrap{flex-direction:row;justify-content:space-between;align-items:flex-start;}}
+  .disclaimer{max-width:58ch;}
+  .crosslink{margin-top:12px;font-size:12px;opacity:0.6;border-top:1px solid var(--line);padding-top:12px;}
+  .crosslink a{text-decoration:underline;text-underline-offset:3px;}
+  .crosslink a:hover{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- DESIGN NOTES -->
+<div class="design-notes">
+  <div class="wrap">
+    <strong>🎨 Integration Preview</strong>
+    <p>This shows how the <code>/en/</code> Reiki section integrates with zhulova.com — shared VZ branding, independent EN navigation, cross-link in footer, Reiki theme (cream/olive/gold). Content is from the approved prototype v5.</p>
+  </div>
+</div>
+
+<!-- HEADER — same VZ brand, EN-specific navigation -->
+<header>
+  <nav class="wrap">
+    <a href="/en/" class="brand">VZ <span class="dot"></span></a>
+    <div class="navlinks">
+      <a href="/en/about/">About</a>
+      <a href="/en/#outcomes">Results</a>
+      <a href="/en/#reiki">What is Reiki</a>
+      <a href="/en/distance/">Distance</a>
+      <a href="/en/packages/">Packages</a>
+      <a href="/en/#faq">FAQ</a>
+      <a href="/en/journal/">Journal</a>
+    </div>
+    <a href="/en/book/" class="navcta">Book a session</a>
+  </nav>
+</header>
+
+<!-- CITIES STRIP -->
+<div class="cities-strip">
+  <div class="wrap">
+    <p>Saint-Tropez<span>–</span>Cannes<span>–</span>Antibes<span>–</span>Nice<span>–</span>Monaco<span>–</span>Mougins<span>–</span>Juan-les-Pins<span>–</span>Cap d'Antibes<span>–</span>Villefranche-sur-Mer<span>–</span>Saint-Jean-Cap-Ferrat<span>–</span>Èze<span>–</span>Menton<span>–</span>Côte d'Azur</p>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-name">VIKTORIA ZHULOVA</div>
+      <h1 class="hero-role">Reiki Master &amp; Intuitive Energy Healer · Cannes, French Riviera</h1>
+      <p class="hero-offer">I help internationals on the Riviera <b>step out of fight-or-flight and get their sleep, energy and calm back</b> within 3–4 sessions — through private Reiki in Cannes, at your villa, or at a distance, <b>even if you're the last person who'd believe in energy work.</b></p>
+      <p class="hero-sub">In English · at your villa, yacht, hotel or my space in Cannes · whether you live here or are here for a week.</p>
+      <div class="hero-actions">
+        <a href="/en/book/" class="btn-primary">Book a private session</a>
+        <a href="/en/packages/" class="btn-ghost">See packages</a>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div><div><b>Usui Reiki Ryoho</b><small>Level I &amp; II, certified</small></div></div>
+        <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><b>10+ years</b><small>Coaching, investing &amp; energy work</small></div></div>
+        <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><div><b>Cannes-based</b><small>In-home &amp; villa sessions</small></div></div>
+        <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div><div><b>In English</b><small>Also Russian &amp; Ukrainian</small></div></div>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="ph"><span>Photo placeholder</span>Viktoria's portrait will be placed here (4:5 ratio)</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOGNITION SECTION -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">If this is familiar</div>
+      <h2>You have built a life here. Some part of you hasn't quite arrived yet.</h2>
+      <p class="lead">The move is done, or the holiday has finally started — and your body hasn't caught up. The nervous system is still running at the old speed. This is who these sessions are for.</p>
+    </div>
+    <div class="recog-grid">
+      <div class="recog"><span class="num">01</span><p>You're anxious for no single reason, wired and tired at the same time, and you can't seem to switch off — even on the terrace, even at the sea.</p></div>
+      <div class="recog"><span class="num">02</span><p>You sleep badly — after the flight, after the move, or just lately — and wake already tired.</p></div>
+      <div class="recog"><span class="num">03</span><p>You want something private and unhurried — not a spa add-on, not a group class, not another appointment in French you have to translate in your head.</p></div>
+      <div class="recog"><span class="num">04</span><p>You're carrying more than you have places to set down — a company, a family abroad, a household in a country that isn't yours yet.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES PREVIEW -->
+<section id="packages" style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Working together</div>
+      <h2>Choose the shape that fits your stay</h2>
+      <p class="lead">Every session is 45 minutes, fully clothed, in English. Travel within Cannes, Antibes and Nice is included; Monaco and Saint-Tropez on request.</p>
+    </div>
+
+    <div class="pkg-group-title">If you're visiting</div>
+    <div class="pkg-grid pkg-grid-2">
+      <div class="pkg featured">
+        <div class="pkg-kicker">Within 48h of landing</div>
+        <div class="pkg-name">Arrival Reset</div>
+        <div class="pkg-desc">One session in your hotel or villa in the first day or two — to land in your body, not just at the airport.</div>
+        <div class="pkg-price">€180<span class="per">one session</span></div>
+        <a href="/en/book/" class="pkg-btn">Book this</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-kicker">During your stay · 3 sessions</div>
+        <div class="pkg-name">Your Week Here</div>
+        <div class="pkg-desc">Three sessions spaced across a week or two — arrival, midway, and before you leave.</div>
+        <div class="pkg-price">€480<span class="per">€160 / session</span></div>
+        <a href="/en/book/" class="pkg-btn">Book this</a>
+      </div>
+    </div>
+
+    <div class="pkg-group-title">If you live here</div>
+    <div class="pkg-grid">
+      <div class="pkg">
+        <div class="pkg-kicker">Single session</div>
+        <div class="pkg-name">Single Session</div>
+        <div class="pkg-desc">A first, unhurried introduction — or a stand-alone reset before a demanding week.</div>
+        <div class="pkg-price">€180<span class="per">one session</span></div>
+        <a href="/en/book/" class="pkg-btn">Book this</a>
+      </div>
+      <div class="pkg featured">
+        <div class="pkg-kicker">Most chosen · 4 sessions</div>
+        <div class="pkg-name">The Renewal</div>
+        <div class="pkg-desc">For a specific season — a relocation, a launch, a recovery. Four sessions over 3–5 weeks.</div>
+        <div class="pkg-price">€640<span class="per">€160 / session</span></div>
+        <a href="/en/book/" class="pkg-btn">Book this</a>
+      </div>
+      <div class="pkg">
+        <div class="pkg-kicker">8 sessions</div>
+        <div class="pkg-name">The Immersion</div>
+        <div class="pkg-desc">A sustained container for a real transition — a new chapter, or a longer-standing pattern.</div>
+        <div class="pkg-price">€1,120<span class="per">€140 / session</span></div>
+        <a href="/en/book/" class="pkg-btn">Book this</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER with cross-link -->
+<footer>
+  <div class="wrap">
+    <div>
+      © 2026 Viktoria Zhulova — Reiki Riviera. Cannes, France.<br>
+      <a href="mailto:viktoriazhulova@gmail.com" style="opacity:.8">viktoriazhulova@gmail.com</a> · 
+      <a href="https://wa.me/380634543338" style="opacity:.8">WhatsApp</a> · 
+      <a href="#" style="opacity:.7">Instagram (coming soon)</a> · 
+      <a href="/en/privacy/" style="opacity:.7">Mentions légales</a>
+      <div class="crosslink">
+        <a href="/">Коучинг українською →</a>
+      </div>
+    </div>
+    <div class="disclaimer">Reiki is a complementary relaxation practice. It does not diagnose, treat, or cure any medical or psychological condition, and is not a substitute for professional medical or mental health care.</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+---
+import EnBaseLayout from '../../../layouts/EnBaseLayout.astro';
+import ReikiHeader from '../../../components/reiki/ReikiHeader.astro';
+import ReikiMobileMenu from '../../../components/reiki/ReikiMobileMenu.tsx';
+import ReikiFooter from '../../../components/reiki/ReikiFooter.astro';
+import { getPublishedArticles, getAllTags } from '../../../lib/articles';
+
+const articles = getPublishedArticles();
+const tags = getAllTags();
+---
+
+<EnBaseLayout
+  title="Journal — Reiki Riviera"
+  description="Notes on rest, energy and living between countries. Short, honest pieces on jet lag, burnout, and the nervous system."
+>
+  <ReikiHeader />
+  <ReikiMobileMenu client:media="(max-width: 1024px)" />
+
+  <main class="journal-listing">
+    <div class="wrap">
+      <div class="section-label">Journal</div>
+      <h1 class="section-title">Notes on rest, energy and living between countries</h1>
+      <p class="section-lead">Short, honest pieces on what people bring to sessions — jet lag, burnout, a nervous system that won't stand down.</p>
+
+      <div class="tag-filter" id="tag-filter">
+        <button class="active" data-tag="all">All</button>
+        {tags.map((tag) => (
+          <button data-tag={tag}>{tag}</button>
+        ))}
+      </div>
+
+      <div class="journal-grid" id="journal-grid">
+        {articles.map((article) => (
+          <a class="journal-card" href={`/en/journal/${article.slug}/`} data-tag={article.tag}>
+            <div class="journal-tag">{article.tag}</div>
+            <h3>{article.title}</h3>
+            <p>{article.meta_description}</p>
+            <div class="journal-meta">
+              <span>{article.read} min</span>
+              <span>Read →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <ReikiFooter />
+</EnBaseLayout>
+
+<script is:inline>
+(function() {
+  var buttons = document.querySelectorAll('#tag-filter button');
+  var cards = document.querySelectorAll('#journal-grid .journal-card');
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var tag = btn.getAttribute('data-tag');
+      cards.forEach(function(card) {
+        if (tag === 'all' || card.getAttribute('data-tag') === tag) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>

@@ -1,0 +1,26 @@
+---
+import GeoPageTemplate from '../../components/reiki/GeoPageTemplate.astro';
+
+const bodyHtml = `<p>Saint-Tropez is an hour and a half from Cannes in June and considerably longer in August, which is why I come on request, with a travel addition agreed before you book. For a single session it's worth it if the first days of your stay matter. For three sessions across a week — Your Week Here — it's the format I'd suggest, because the drive is the same and the week is different.</p>
+<p>Sessions are 45 minutes, fully clothed, at your villa or on board, in English, Russian or Ukrainian.</p>
+<h2>Where sessions happen in Saint-Tropez</h2><p><strong>Villas.</strong> Ramatuelle, Gassin, the roads behind Pampelonne, Les Parcs de Saint-Tropez, the Cap side towards Les Salins. Any bedroom with the shutters down.</p>
+<p><strong>On board.</strong> The Vieux Port at the quay, or at anchor in the Baie de Pampelonne or off the Cap Camarat — tender pickup from the port or the beach.</p>
+<p><strong>Hotels.</strong> The Byblos, the Cheval Blanc, La Réserve at Ramatuelle, the smaller ones in the village and on the Route des Plages.</p>
+<h2>Who comes, and for what</h2><p>Charter guests and villa parties on a week's stay, who landed at Nice on Saturday, drove down, and would like Tuesday to be a holiday rather than a recovery. Families in the Ramatuelle villas for the summer, where one parent is holding it together and hasn't sat down since the flight. And, in September and October when the peninsula empties, the people who stayed — for whom a session becomes something quieter than a summer service.</p>
+<h2>What a session is</h2><p>Forty-five minutes lying on your back, fully clothed. Hands resting lightly on or just above the body from head to feet, in a set sequence. No conversation during, nothing to believe, nothing to do. Most people drop into deep rest within ten minutes; many fall asleep. At the end I let you lie for a moment, then leave you to it. Sleep that night is usually the first thing people notice.</p>
+<h2>Saint-Tropez, specifically</h2><p>Saint-Tropez in season is loud, bright and social, which is exactly the environment a nervous system on alert finds hardest to stand down in. The session is the hour that isn't any of those things. Best times: the day after you arrive, the afternoon after a big night, and the evening before you leave. I'll usually combine two or three clients in a day on the peninsula, so if you're flexible on time the travel addition can be shared.</p>
+<h2>Prices</h2>
+<div class="pk"><div><b>Single session</b><span>€180</span> · 45 minutes, at your home, hotel or yacht</div><div><b>Arrival Reset</b><span>€180</span> · within 48 hours of landing</div><div><b>Your Week Here</b><span>€480</span> · three sessions during a stay</div><div><b>The Renewal</b><span>€640</span> · four sessions over a month — most chosen</div><div><b>The Immersion</b><span>€1 120</span> · eight sessions over two to three months</div><div><b>Distance</b><span>€180</span> · the same session from anywhere</div></div>
+<p>Card, transfer or cash. Free rescheduling with 24 hours' notice. Children's sessions shorter and priced by age. Reiki is complementary — it sits alongside your doctor's care, never instead, and I'll ask about anything medical before we book.</p>`;
+const otherCities = [{"slug":"reiki-cannes","name":"Cannes"},{"slug":"reiki-nice","name":"Nice"},{"slug":"reiki-antibes","name":"Antibes"},{"slug":"reiki-monaco","name":"Monaco"},{"slug":"reiki-mougins-valbonne","name":"Mougins & Valbonne"}];
+---
+
+<GeoPageTemplate
+  title="Reiki in Saint-Tropez | Villa & Yacht Sessions in English"
+  description="Reiki in Saint-Tropez, Ramatuelle, Gassin and Pampelonne — in-villa and on-board sessions in English during your stay. From Cannes on request, travel agreed in advance."
+  h1="Reiki in Saint-Tropez, Ramatuelle and Gassin — Villa and Yacht Sessions in English"
+  bodyHtml={bodyHtml}
+  city="Saint-Tropez"
+  slug="reiki-saint-tropez"
+  otherCities={otherCities}
+/>

@@ -1,0 +1,56 @@
+---
+import EnBaseLayout from '../../layouts/EnBaseLayout.astro';
+import ReikiHeader from '../../components/reiki/ReikiHeader.astro';
+import ReikiMobileMenu from '../../components/reiki/ReikiMobileMenu.tsx';
+import ReikiFooter from '../../components/reiki/ReikiFooter.astro';
+---
+
+<EnBaseLayout
+  title="Privacy Policy — Reiki Riviera"
+  description="Privacy policy and mentions légales for Reiki Riviera by Viktoria Zhulova."
+  noindex={true}
+>
+  <ReikiHeader />
+  <ReikiMobileMenu client:media="(max-width: 1024px)" />
+
+  <main class="privacy-page">
+    <div class="wrap">
+      <h1>Privacy Policy</h1>
+
+      <h2>Who we are</h2>
+      <p>This website is operated by Viktoria Zhulova, an independent Reiki practitioner based in Cannes, France. Contact: <a href="mailto:viktoriazhulova@gmail.com">viktoriazhulova@gmail.com</a>.</p>
+
+      <h2>What data we collect</h2>
+      <p>When you submit the booking form, we collect:</p>
+      <ul>
+        <li>Phone number</li>
+        <li>Email address</li>
+        <li>Your message (what's on your mind)</li>
+        <li>Package preference</li>
+      </ul>
+      <p>This data is used solely to respond to your enquiry via WhatsApp or email. It is not shared with any third party for marketing purposes.</p>
+
+      <h2>How we store your data</h2>
+      <p>Form submissions are stored securely using Supabase (hosted in the EU). Data is retained for the duration of our professional relationship and deleted upon request.</p>
+
+      <h2>Analytics</h2>
+      <p>We use Vercel Analytics and Speed Insights to understand how visitors use the site. These tools collect anonymised, aggregated data about page views and performance — no personal data is collected through these services.</p>
+
+      <h2>Your rights</h2>
+      <p>Under GDPR, you have the right to access, correct, or delete your personal data at any time. To exercise these rights, email <a href="mailto:viktoriazhulova@gmail.com">viktoriazhulova@gmail.com</a>.</p>
+
+      <h2>Cookies</h2>
+      <p>This site uses only essential, first-party cookies required for the website to function. No advertising or tracking cookies are used.</p>
+
+      <h2>Mentions légales</h2>
+      <p>Viktoria Zhulova — Praticienne Reiki indépendante<br>
+      Cannes, Alpes-Maritimes, France<br>
+      Email: viktoriazhulova@gmail.com</p>
+      <p>Hébergeur: Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA.</p>
+
+      <p style="margin-top: 48px;"><a href="/en/" style="color: var(--gold);">← Back to Reiki Riviera</a></p>
+    </div>
+  </main>
+
+  <ReikiFooter />
+</EnBaseLayout>

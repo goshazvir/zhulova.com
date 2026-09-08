@@ -37,7 +37,7 @@
 
   /* Space */
   --wrap: 1200px;
-  --section-pad: clamp(80px, 12vh, 160px);
+  --section-pad: clamp(48px, 8vh, 80px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

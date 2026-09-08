@@ -3,7 +3,7 @@ import EnBaseLayout from '../../../layouts/EnBaseLayout.astro';
 import ReikiHeader from '../../../components/reiki/ReikiHeader.astro';
 import ReikiMobileMenu from '../../../components/reiki/ReikiMobileMenu.tsx';
 import ReikiFooter from '../../../components/reiki/ReikiFooter.astro';
-import { getPublishedSlugs, getArticleBySlug } from '../../../lib/articles';
+import { getPublishedSlugs, getArticleBySlug, getRelatedOrLatest } from '../../../lib/articles';
 
 export function getStaticPaths() {
   const slugs = getPublishedSlugs();
@@ -20,14 +20,10 @@ if (!article) {
 // Convert markdown body to HTML (simple conversion)
 function markdownToHtml(md: string): string {
   let html = md;
-  // Headers
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  // Bold
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // Italic
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  // Paragraphs
   html = html.split('\n\n').map((block) => {
     block = block.trim();
     if (!block) return '';
@@ -43,18 +39,20 @@ function markdownToHtml(md: string): string {
 
 const bodyHtml = markdownToHtml(article.body);
 
-const ctaMap: Record<string, { title: string; desc: string; link: string }> = {
-  arrival: { title: 'The Arrival Reset', desc: 'One session in your first 48 hours — to land in your body, not just at the airport.', link: '#book' },
-  single: { title: 'Single Session', desc: 'A first, unhurried introduction — or a stand-alone reset before a demanding week.', link: '#book' },
-  week: { title: 'Your Week Here', desc: 'Three sessions spaced across a week or two — for a holiday that actually restores something.', link: '#book' },
-  renewal: { title: 'The Renewal', desc: 'Four sessions over 3–5 weeks to let the effect build.', link: '#book' },
-  immersion: { title: 'The Immersion', desc: 'A sustained container for a real transition.', link: '#book' },
-  packages: { title: 'See all packages', desc: 'Choose the shape that fits your stay.', link: '/en/#packages' },
-  distance: { title: 'Distance session', desc: 'The same 45-minute session without the geography.', link: '#book' },
-  child: { title: "Children's sessions", desc: "Gentler, shorter format for children who are anxious or struggling to settle.", link: '#book' },
-  home: { title: 'Sessions at home', desc: 'At your villa, yacht, or hotel room — whichever keeps it unhurried.', link: '#book' },
+const ctaMap: Record<string, { title: string; desc: string; pkg: string }> = {
+  arrival: { title: 'The Arrival Reset', desc: 'One session in your first 48 hours — to land in your body, not just at the airport.', pkg: 'Arrival Reset' },
+  single: { title: 'Single Session', desc: 'A first, unhurried introduction — or a stand-alone reset before a demanding week.', pkg: 'Single Session' },
+  week: { title: 'Your Week Here', desc: 'Three sessions spaced across a week or two — for a holiday that actually restores something.', pkg: 'Your Week Here' },
+  renewal: { title: 'The Renewal', desc: 'Four sessions over 3–5 weeks to let the effect build.', pkg: 'The Renewal' },
+  immersion: { title: 'The Immersion', desc: 'A sustained container for a real transition.', pkg: 'The Immersion' },
+  packages: { title: 'Find the right package', desc: 'Choose the shape that fits your stay.', pkg: 'Not sure yet' },
+  distance: { title: 'Distance session', desc: 'The same 45-minute session without the geography.', pkg: 'Not sure yet' },
+  child: { title: "Children's sessions", desc: "Gentler, shorter format for children who are anxious or struggling to settle.", pkg: 'A session for my child' },
+  home: { title: 'Sessions at home', desc: 'At your villa, yacht, or hotel room — whichever keeps it unhurried.', pkg: 'Not sure yet' },
 };
 const cta = ctaMap[article.cta] || ctaMap.packages;
+
+const related = getRelatedOrLatest(slug!, article.tag, 3);
 
 const siteUrl = 'https://zhulova.com';
 const articleUrl = `${siteUrl}/en/journal/${slug}/`;
@@ -83,21 +81,292 @@ const jsonLd = {
   <ReikiHeader />
   <ReikiMobileMenu client:media="(max-width: 1024px)" />
 
-  <main class="article-page">
+  <main class="article-page" style="padding-top:96px;padding-bottom:48px;">
     <div class="wrap">
-      <a href="/en/journal/" class="article-back">← Journal</a>
+      <!-- Breadcrumb -->
+      <div class="article-breadcrumb">
+        <a href="/en/">Reiki Riviera</a>
+        <span>›</span>
+        <a href="/en/journal/">Journal</a>
+        <span>›</span>
+        <span class="current">{article.tag}</span>
+      </div>
+
       <div class="article-tag">{article.tag}</div>
       <h1>{article.title}</h1>
-      <div class="article-meta">{article.read} min read · {article.keyword}</div>
+      <div class="article-meta">
+        <span>{article.read} min read</span>
+        <span class="dot">·</span>
+        <span>By Viktoria Zhulova</span>
+      </div>
+
+      <!-- Article body -->
       <div class="article-body" set:html={bodyHtml} />
 
-      <div class="article-cta">
-        <h3>{cta.title}</h3>
-        <p>{cta.desc}</p>
-        <a href={cta.link} class="btn-gold">Book now <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      <!-- CTA Block — Book a session -->
+      <div class="article-cta-block">
+        <div class="article-cta-content">
+          <div class="article-cta-label">Ready to begin?</div>
+          <h3>{cta.title}</h3>
+          <p>{cta.desc}</p>
+          <div class="article-cta-actions">
+            <a href={`/en/#book`} class="btn-gold">
+              Book a session
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+            <a href="https://wa.me/380634543338" class="btn-wa-inline" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Or write on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Articles -->
+      {related.length > 0 && (
+        <div class="article-related">
+          <div class="article-related-label">Continue reading</div>
+          <div class="article-related-grid">
+            {related.map((r) => (
+              <a href={`/en/journal/${r.slug}/`} class="article-related-card">
+                <div class="article-related-tag">{r.tag}</div>
+                <h4>{r.title}</h4>
+                <div class="article-related-meta">
+                  <span>{r.read} min read</span>
+                  <span>Read →</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Back to journal -->
+      <div class="article-nav-bottom">
+        <a href="/en/journal/" class="btn-outline">← All articles</a>
+        <a href="/en/#packages" class="btn-outline">See packages</a>
       </div>
     </div>
   </main>
 
   <ReikiFooter />
 </EnBaseLayout>
+
+<style>
+  .article-page .wrap {
+    max-width: 800px;
+  }
+  .article-page {
+    padding-bottom: 0;
+  }
+  .article-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    padding-top: 24px;
+  }
+  .article-breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .article-breadcrumb a:hover { color: var(--gold); }
+  .article-breadcrumb .current { color: var(--text-secondary); }
+
+  .article-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .article-meta .dot { color: var(--gold); }
+
+  .article-body {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+  .article-body :global(h2) {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 48px 0 20px;
+    color: var(--text);
+  }
+  .article-body :global(h3) {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 1.3;
+    margin: 36px 0 16px;
+    color: var(--text);
+  }
+  .article-body :global(p) {
+    margin-bottom: 20px;
+  }
+  .article-body :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .article-body :global(ul) {
+    padding-left: 20px;
+    margin-bottom: 20px;
+  }
+  .article-body :global(li) {
+    margin-bottom: 8px;
+  }
+
+  /* ═══ CTA BLOCK ═══ */
+  .article-cta-block {
+    margin: 56px 0;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    padding: 40px 36px;
+    max-width: 800px;
+  }
+  .article-cta-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .article-cta-content h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .article-cta-content p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    max-width: 48ch;
+  }
+  .article-cta-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-wa-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color .2s;
+  }
+  .btn-wa-inline:hover { color: var(--gold); }
+
+  /* ═══ RELATED ARTICLES ═══ */
+  .article-related {
+    margin: 56px 0;
+    padding-top: 48px;
+    border-top: 1px solid var(--line);
+  }
+  .article-related-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .article-related-label::before {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .article-related-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  @media (min-width: 640px) { .article-related-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .article-related-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 28px 24px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color .3s, background .3s;
+    border-left: 2px solid transparent;
+  }
+  .article-related-card:hover {
+    background: var(--surface-2);
+    border-left-color: var(--gold);
+  }
+  .article-related-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .article-related-card h4 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.35;
+    flex: 1;
+  }
+  .article-related-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .article-related-meta span:last-child {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ═══ BOTTOM NAV ═══ */
+  .article-nav-bottom {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 32px;
+  }
+</style>

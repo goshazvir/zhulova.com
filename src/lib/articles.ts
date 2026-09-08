@@ -45,3 +45,24 @@ export function getAllTags(): string[] {
 export function getLatestArticles(count: number): Article[] {
   return getPublishedArticles().slice(0, count);
 }
+
+/**
+ * Get related articles by same tag, excluding current slug
+ */
+export function getRelatedArticles(slug: string, tag: string, count: number = 3): Article[] {
+  return getPublishedArticles()
+    .filter((a) => a.slug !== slug && a.tag === tag)
+    .slice(0, count);
+}
+
+/**
+ * Get related articles, falling back to latest if not enough by tag
+ */
+export function getRelatedOrLatest(slug: string, tag: string, count: number = 3): Article[] {
+  const byTag = getRelatedArticles(slug, tag, count);
+  if (byTag.length >= count) return byTag;
+  const rest = getPublishedArticles()
+    .filter((a) => a.slug !== slug && !byTag.find(b => b.slug === a.slug))
+    .slice(0, count - byTag.length);
+  return [...byTag, ...rest];
+}

@@ -13,7 +13,6 @@ export default function ReikiSymbolsSection() {
     const labelEl = labelRef.current;
     if (!stage || !canvas || !labelEl) return;
 
-    // Check for reduced motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let renderer: THREE.WebGLRenderer;
@@ -22,7 +21,10 @@ export default function ReikiSymbolsSection() {
     } catch {
       return;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    const isMobile = window.innerWidth < 768;
+    const pr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+    renderer.setPixelRatio(pr);
 
     const getSize = () => ({ w: stage.clientWidth, h: stage.clientHeight });
     let size = getSize();
@@ -31,83 +33,126 @@ export default function ReikiSymbolsSection() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, size.w / size.h, 0.1, 100);
-    camera.position.set(0, 0, 6);
+    camera.position.set(0, 0, 6.4);
 
-    const N = 300;
-    const positions = new Float32Array(N * 3);
-    const targetA = new Float32Array(N * 3);
-    const targetB = new Float32Array(N * 3);
-    const targetC = new Float32Array(N * 3);
-    const randoms = new Float32Array(N);
-    const sizes = new Float32Array(N);
-    const xOff = window.innerWidth < 768 ? 0 : 1.0;
+    // More particles for richer animation
+    const FULL_N = SYMBOL_POINTS.choku.length / 2;
+    const N = isMobile ? Math.min(FULL_N, 500) : Math.min(FULL_N, 800);
+    const step = FULL_N / N;
+    const indices: number[] = [];
+    for (let j = 0; j < N; j++) indices.push(Math.floor(j * step));
 
-    const chokuLen = SYMBOL_POINTS.choku.length;
-    const seihekiLen = SYMBOL_POINTS.seiheki.length;
-    const honshaLen = SYMBOL_POINTS.honsha.length;
+    const aTargetA = new Float32Array(N * 3);
+    const aTargetB = new Float32Array(N * 3);
+    const aTargetC = new Float32Array(N * 3);
+    const aScatter = new Float32Array(N * 3);
+    const aRandom = new Float32Array(N);
+    const aSize = new Float32Array(N);
 
-    for (let i = 0; i < N; i++) {
-      const i3 = i * 3;
+    const scatterRadius = 3.8;
+    const xOffset = isMobile ? 0 : 1.1;
+
+    for (let k = 0; k < N; k++) {
+      const s = indices[k];
+      const o3 = k * 3;
+      const chokuLen = SYMBOL_POINTS.choku.length;
+      const seihekiLen = SYMBOL_POINTS.seiheki.length;
+      const honshaLen = SYMBOL_POINTS.honsha.length;
+
+      aTargetA[o3] = SYMBOL_POINTS.choku[(s * 2) % chokuLen] + xOffset;
+      aTargetA[o3 + 1] = SYMBOL_POINTS.choku[(s * 2 + 1) % chokuLen];
+      aTargetA[o3 + 2] = (Math.random() - 0.5) * 0.25;
+
+      aTargetB[o3] = SYMBOL_POINTS.seiheki[(s * 2) % seihekiLen] + xOffset;
+      aTargetB[o3 + 1] = SYMBOL_POINTS.seiheki[(s * 2 + 1) % seihekiLen];
+      aTargetB[o3 + 2] = (Math.random() - 0.5) * 0.25;
+
+      aTargetC[o3] = SYMBOL_POINTS.honsha[(s * 2) % honshaLen] + xOffset;
+      aTargetC[o3 + 1] = SYMBOL_POINTS.honsha[(s * 2 + 1) % honshaLen];
+      aTargetC[o3 + 2] = (Math.random() - 0.5) * 0.25;
+
       const ang = Math.random() * Math.PI * 2;
-      const rad = Math.pow(Math.random(), 0.5) * 3.5;
-      positions[i3] = Math.cos(ang) * rad;
-      positions[i3 + 1] = (Math.random() - 0.5) * 2.2;
-      positions[i3 + 2] = Math.sin(ang) * rad * 0.5 - 0.5;
+      const rad = Math.pow(Math.random(), 0.5) * scatterRadius;
+      const elev = (Math.random() - 0.5) * 2.4;
+      aScatter[o3] = Math.cos(ang) * rad;
+      aScatter[o3 + 1] = elev;
+      aScatter[o3 + 2] = Math.sin(ang) * rad * 0.6 - 0.6;
 
-      targetA[i3] = SYMBOL_POINTS.choku[(i * 2) % chokuLen] * 2.2 + xOff;
-      targetA[i3 + 1] = SYMBOL_POINTS.choku[(i * 2 + 1) % chokuLen] * 2.2;
-      targetA[i3 + 2] = (Math.random() - 0.5) * 0.2;
-
-      targetB[i3] = SYMBOL_POINTS.seiheki[(i * 2) % seihekiLen] * 2.2 + xOff;
-      targetB[i3 + 1] = SYMBOL_POINTS.seiheki[(i * 2 + 1) % seihekiLen] * 2.2;
-      targetB[i3 + 2] = (Math.random() - 0.5) * 0.2;
-
-      targetC[i3] = SYMBOL_POINTS.honsha[(i * 2) % honshaLen] * 2.2 + xOff;
-      targetC[i3 + 1] = SYMBOL_POINTS.honsha[(i * 2 + 1) % honshaLen] * 2.2;
-      targetC[i3 + 2] = (Math.random() - 0.5) * 0.2;
-
-      randoms[i] = Math.random();
-      sizes[i] = Math.random() < 0.15 ? 3 + Math.random() * 2 : 1 + Math.random() * 1.5;
+      aRandom[k] = Math.random();
+      aSize[k] = Math.random() < 0.14 ? (3.4 + Math.random() * 2.2) : (1.3 + Math.random() * 1.5);
     }
 
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions.slice(), 3));
-    geo.setAttribute('aTargetA', new THREE.BufferAttribute(targetA, 3));
-    geo.setAttribute('aTargetB', new THREE.BufferAttribute(targetB, 3));
-    geo.setAttribute('aTargetC', new THREE.BufferAttribute(targetC, 3));
-    geo.setAttribute('aScatter', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
-    geo.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+    geo.setAttribute('position', new THREE.BufferAttribute(aScatter.slice(), 3));
+    geo.setAttribute('aTargetA', new THREE.BufferAttribute(aTargetA, 3));
+    geo.setAttribute('aTargetB', new THREE.BufferAttribute(aTargetB, 3));
+    geo.setAttribute('aTargetC', new THREE.BufferAttribute(aTargetC, 3));
+    geo.setAttribute('aScatter', new THREE.BufferAttribute(aScatter, 3));
+    geo.setAttribute('aRandom', new THREE.BufferAttribute(aRandom, 1));
+    geo.setAttribute('aSize', new THREE.BufferAttribute(aSize, 1));
 
-    const vShader = `
+    const vertexShader = `
       attribute vec3 aTargetA, aTargetB, aTargetC, aScatter;
       attribute float aRandom, aSize;
-      uniform float uTime, uMorph, uSymbolIndex, uPR;
-      varying float vAlpha, vRandom;
-      void main(){
-        vec3 target = uSymbolIndex < 0.5 ? aTargetA : uSymbolIndex < 1.5 ? aTargetB : aTargetC;
-        float ease = uMorph*uMorph*(3.0-2.0*uMorph);
+      uniform float uTime, uMorph, uSymbolIndex, uHover, uPixelRatio;
+      uniform vec2 uMouse;
+      varying float vAlpha, vRandom, vSizeFrac;
+
+      vec3 turbulence(vec3 p, float t) {
+        float n1 = sin(p.x * 1.4 + t * 0.7) * cos(p.y * 1.8 - t * 0.5);
+        float n2 = cos(p.y * 1.2 - t * 0.6) * sin(p.z * 2.0 + t * 0.35);
+        float n3 = sin(p.z * 1.6 + t * 0.8) * cos(p.x * 1.3 - t * 0.4);
+        return vec3(n1, n2, n3);
+      }
+
+      void main() {
+        vec3 target;
+        if (uSymbolIndex < 0.5) target = aTargetA;
+        else if (uSymbolIndex < 1.5) target = aTargetB;
+        else target = aTargetC;
+
+        float ease = uMorph * uMorph * (3.0 - 2.0 * uMorph);
         vec3 base = mix(aScatter, target, ease);
-        float turbAmp = mix(0.3, 0.04, ease);
-        base.x += sin(base.y*1.4 + uTime*0.5 + aRandom*6.28) * turbAmp;
-        base.y += cos(base.x*1.2 + uTime*0.4) * turbAmp;
-        float twinkle = 0.5 + 0.5*sin(uTime*1.2 + aRandom*40.0);
-        vAlpha = 0.25 + twinkle*0.55;
+
+        // Richer turbulence
+        float stability = mix(1.0, 0.35, uHover);
+        float turbAmp = mix(0.34, 0.05, ease) * stability;
+        vec3 turb = turbulence(base * 0.9 + aRandom * 12.0, uTime * 0.3 + aRandom * 6.2832) * turbAmp;
+
+        // Mouse repulsion
+        vec2 toMouse = uMouse - base.xy;
+        float mouseDist = length(toMouse);
+        float mouseInfluence = smoothstep(1.6, 0.0, mouseDist) * mix(0.22, 0.06, ease);
+        vec2 mousePush = -normalize(toMouse + 0.0001) * mouseInfluence;
+
+        vec3 pos = base + turb;
+        pos.xy += mousePush;
+
+        // Twinkle + brightness
+        float twinkle = 0.5 + 0.5 * sin(uTime * 1.4 + aRandom * 40.0);
+        float brightBoost = mix(1.0, 1.25, uHover);
+        vAlpha = (0.30 + twinkle * 0.55) * brightBoost;
         vRandom = aRandom;
-        vec4 mv = modelViewMatrix * vec4(base, 1.0);
-        gl_PointSize = aSize * uPR * (10.0 / -mv.z) * (0.7 + 0.3*twinkle);
-        gl_Position = projectionMatrix * mv;
+        vSizeFrac = aSize;
+
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+        gl_PointSize = aSize * uPixelRatio * (11.0 / -mvPosition.z) * (0.7 + 0.3 * twinkle);
+        gl_Position = projectionMatrix * mvPosition;
       }
     `;
 
-    const fShader = `
-      varying float vAlpha, vRandom;
-      void main(){
-        float d = length(gl_PointCoord - 0.5);
+    const fragmentShader = `
+      varying float vAlpha, vRandom, vSizeFrac;
+      void main() {
+        vec2 uv = gl_PointCoord - 0.5;
+        float d = length(uv);
         float core = smoothstep(0.5, 0.0, d);
-        float alpha = core * vAlpha;
-        vec3 col = mix(vec3(0.78,0.66,0.30), vec3(0.48,0.61,0.43), vRandom);
-        gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.8));
+        // Soft glow halo for larger particles
+        float halo = smoothstep(0.5, 0.0, d * 0.55) * step(3.0, vSizeFrac) * 0.3;
+        float alpha = (core + halo) * vAlpha;
+        // Gold → olive gradient per particle
+        vec3 col = mix(vec3(0.55, 0.45, 0.18), vec3(0.32, 0.48, 0.28), vRandom);
+        gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.85));
       }
     `;
 
@@ -116,36 +161,70 @@ export default function ReikiSymbolsSection() {
         uTime: { value: 0 },
         uMorph: { value: 0 },
         uSymbolIndex: { value: 0 },
-        uPR: { value: Math.min(window.devicePixelRatio || 1, 2) },
+        uHover: { value: 0 },
+        uMouse: { value: new THREE.Vector2(999, 999) },
+        uPixelRatio: { value: pr },
       },
-      vertexShader: vShader,
-      fragmentShader: fShader,
+      vertexShader,
+      fragmentShader,
       transparent: true,
       depthWrite: false,
+      blending: THREE.NormalBlending,
     });
 
     const pts = new THREE.Points(geo, mat);
     pts.frustumCulled = false;
     scene.add(pts);
 
+    // Mouse interaction
+    const mouseTarget = new THREE.Vector2(999, 999);
+    const mouseCurrent = new THREE.Vector2(999, 999);
+    let hoverTarget = 0;
+    let hoverCurrent = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = stage.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      mouseTarget.set(nx * 2.8, ny * 1.8);
+      hoverTarget = 1;
+    };
+    const handleMouseLeave = () => {
+      hoverTarget = 0;
+      mouseTarget.set(999, 999);
+    };
+
+    stage.addEventListener('mousemove', handleMouseMove);
+    stage.addEventListener('mouseleave', handleMouseLeave);
+
+    // Animation timing — longer holds, smoother transitions
     const names = ['Cho Ku Rei', 'Sei He Ki', 'Hon Sha Ze Sho Nen'];
-    const FORM = 3.2, HOLD = 4.6, DIS = 2.6, PER = FORM + HOLD + DIS, TOTAL = PER * 3;
+    const FORM = 3.2, HOLD = 4.6, DIS = 2.6;
+    const PER = FORM + HOLD + DIS, TOTAL = PER * 3;
     const clock = new THREE.Clock();
     let animId: number;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      const lt = t % TOTAL;
-      const si = Math.floor(lt / PER);
-      const ti = lt - si * PER;
-      const morph = ti < FORM ? ti / FORM : ti < FORM + HOLD ? 1 : 1 - (ti - FORM - HOLD) / DIS;
-      mat.uniforms.uTime.value = t;
+      const elapsed = clock.getElapsedTime();
+      const localT = elapsed % TOTAL;
+      const symbolIndex = Math.floor(localT / PER);
+      const tIn = localT - symbolIndex * PER;
+      const morph = tIn < FORM ? tIn / FORM : tIn < FORM + HOLD ? 1.0 : 1.0 - (tIn - FORM - HOLD) / DIS;
+
+      // Smooth mouse lerp
+      hoverCurrent += (hoverTarget - hoverCurrent) * 0.06;
+      mouseCurrent.lerp(mouseTarget, 0.08);
+
+      mat.uniforms.uTime.value = elapsed;
       mat.uniforms.uMorph.value = morph;
-      mat.uniforms.uSymbolIndex.value = si;
-      labelEl.textContent = names[si];
-      const showLabel = ti > FORM * 0.6 && ti < FORM + HOLD;
-      labelEl.classList.toggle('show', showLabel);
+      mat.uniforms.uSymbolIndex.value = symbolIndex;
+      mat.uniforms.uHover.value = hoverCurrent;
+      mat.uniforms.uMouse.value.copy(mouseCurrent);
+
+      labelEl.textContent = names[symbolIndex];
+      labelEl.classList.toggle('show', tIn > FORM * 0.6 && tIn < FORM + HOLD);
+
       renderer.render(scene, camera);
     };
     animate();
@@ -162,6 +241,8 @@ export default function ReikiSymbolsSection() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      stage.removeEventListener('mousemove', handleMouseMove);
+      stage.removeEventListener('mouseleave', handleMouseLeave);
       renderer.dispose();
       geo.dispose();
       mat.dispose();

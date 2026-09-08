@@ -10,7 +10,8 @@ interface Props {
   image?: string;
   canonical?: string;
   noindex?: boolean;
-  jsonLd?: Record<string, unknown>;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  ogType?: string;
 }
 
 const {
@@ -20,11 +21,14 @@ const {
   canonical,
   noindex = false,
   jsonLd,
+  ogType = 'website',
 } = Astro.props;
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://zhulova.com';
 const canonicalURL = canonical || new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageURL = new URL(image, siteUrl).toString();
+const currentPageUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const jsonLdItems = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 
 <!doctype html>
@@ -46,7 +50,7 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <link rel="canonical" href={canonicalURL} />
 
     <!-- hreflang -->
-    <link rel="alternate" hreflang="en" href={`${siteUrl}/en/`} />
+    <link rel="alternate" hreflang="en" href={currentPageUrl} />
     <link rel="alternate" hreflang="uk" href={`${siteUrl}/`} />
     <link rel="alternate" hreflang="x-default" href={`${siteUrl}/`} />
 
@@ -59,7 +63,7 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <meta name="theme-color" content="#0C0F0A" />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -74,9 +78,9 @@ const ogImageURL = new URL(image, siteUrl).toString();
     <meta property="twitter:image" content={ogImageURL} />
 
     <!-- JSON-LD -->
-    {jsonLd && (
-      <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    )}
+    {jsonLdItems.map((item) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

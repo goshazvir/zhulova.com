@@ -20,25 +20,39 @@ interface Props {
 
 const { title, description, h1, bodyHtml, city, slug, otherCities } = Astro.props;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": `Reiki Riviera — Viktoria Zhulova (${city})`,
-  "description": description,
-  "areaServed": city,
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": city,
-    "addressCountry": "FR"
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": `Reiki Riviera — Viktoria Zhulova (${city})`,
+    "description": description,
+    "areaServed": city,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": city,
+      "addressCountry": "FR"
+    },
+    "priceRange": "€180–€1120",
+    "url": `https://zhulova.com/en/${slug}/`,
+    "founder": {
+      "@type": "Person",
+      "name": "Viktoria Zhulova"
+    },
+    "availableLanguage": ["en", "ru", "uk"],
+    "openingHours": "Mo-Su 09:00-20:00",
+    "telephone": "+380634543338",
+    "email": "viktoriazhulova@gmail.com"
   },
-  "priceRange": "€180–€1120",
-  "url": `https://zhulova.com/en/${slug}/`,
-  "founder": {
-    "@type": "Person",
-    "name": "Viktoria Zhulova"
-  },
-  "availableLanguage": ["en", "ru", "uk"]
-};
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://zhulova.com/en/"},
+      {"@type": "ListItem", "position": 2, "name": "Reiki Riviera", "item": "https://zhulova.com/en/"},
+      {"@type": "ListItem", "position": 3, "name": `Reiki in ${city}`, "item": `https://zhulova.com/en/${slug}/`}
+    ]
+  }
+];
 ---
 
 <EnBaseLayout

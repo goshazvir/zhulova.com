@@ -56,14 +56,21 @@ const ctaMap: Record<string, { title: string; desc: string; link: string }> = {
 };
 const cta = ctaMap[article.cta] || ctaMap.packages;
 
+const siteUrl = 'https://zhulova.com';
+const articleUrl = `${siteUrl}/en/journal/${slug}/`;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": article.title,
   "author": { "@type": "Person", "name": "Viktoria Zhulova" },
+  "publisher": { "@type": "Person", "name": "Viktoria Zhulova", "url": "https://zhulova.com/en/" },
   "datePublished": article.publishDate,
   "description": article.meta_description,
   "keywords": article.keyword,
+  "mainEntityOfPage": articleUrl,
+  "image": "https://zhulova.com/images/reiki/hero-viktoria.webp",
+  "inLanguage": "en"
 };
 ---
 
@@ -71,6 +78,7 @@ const jsonLd = {
   title={article.meta_title}
   description={article.meta_description}
   jsonLd={jsonLd}
+  ogType="article"
 >
   <ReikiHeader />
   <ReikiMobileMenu client:media="(max-width: 1024px)" />

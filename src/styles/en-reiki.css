@@ -732,6 +732,39 @@ section {
   color: var(--text-secondary);
 }
 
+/* ═══ CERTIFICATES ═══ */
+.cert-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin-top: 48px;
+}
+@media (min-width: 760px) { .cert-grid { grid-template-columns: 1fr 1fr; max-width: 820px; } }
+.cert {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 22px;
+}
+.cert img { width: 100%; }
+.cert .cert-title {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 400;
+  margin: 20px 0 4px;
+  color: var(--text);
+}
+.cert .cert-meta {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+.cert-note {
+  margin-top: 28px;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
 /* ═══ SESSION FLOW ═══ */
 .flow-grid {
   display: grid;
